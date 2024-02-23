@@ -1,6 +1,6 @@
 package com.yeohangttukttak.api.domain.travel;
 
-public enum TravelMotivation {
+public enum Motivation {
     EXIST,      // 재미
     EDUCATION,  // 교육
     SOCIAL,     // 친목
