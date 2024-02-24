@@ -17,9 +17,9 @@ public class PlaceRepository {
     public List<Place> findByLocation(Location location, int radius) {
         return entityManager.createQuery(
                 "SELECT p FROM Place AS p" +
-                        " WHERE st_dwithin(p.point, :point, :distance, false) is true", Place.class)
+                        " WHERE st_dwithin(p.point, :point, :radius, false) is true", Place.class)
                 .setParameter("point", location.getPoint())
-                .setParameter("distance", radius)
+                .setParameter("radius", radius)
                 .getResultList();
     }
 
