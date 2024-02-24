@@ -1,7 +1,7 @@
 package com.yeohangttukttak.api.repository;
 
+import com.yeohangttukttak.api.domain.place.Location;
 import com.yeohangttukttak.api.domain.place.Place;
-import com.yeohangttukttak.api.repository.PlaceRepository.PlaceSearchQuery;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,26 +29,26 @@ class PlaceRepositoryTest {
     @Test
     public void search() throws Exception {
         // given
+        Location locationA = new Location(36.6665, 127.4945);
+
         Place placeA = Place.builder()
                         .name("그랜드 플라자 청주 호텔")
-                        .latitude(36.6665)
-                        .longitude(127.4945)
+                        .location(locationA)
                         .build();
+
+        Location locationB = new Location(37.422, -122.084);
 
         Place placeB = Place.builder()
                         .name("Google 본사")
-                        .latitude(37.422)
-                        .longitude(-122.084)
+                        .location(locationB)
                         .build();
 
         entityManager.persist(placeA);
         entityManager.persist(placeB);
 
         // when
-        List<Place> foundPlaces = placeRepository.search(
-                new PlaceSearchQuery(
-                36.6665, 127.4945, 3000
-                ));
+        List<Place> foundPlaces = placeRepository.findByLocation(locationA, 3000);
+
 
         // then
         assertTrue(foundPlaces.contains(placeA), "그랜드 플라자가 있어야 한다.");

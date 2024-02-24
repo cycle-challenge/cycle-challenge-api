@@ -6,10 +6,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
-import org.locationtech.jts.geom.PrecisionModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,19 +28,17 @@ public class Place extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private PlaceType type;
 
-    private Point location;
+    private Point point;
 
     @OneToMany(mappedBy = "place")
     private List<Visit> visits = new ArrayList<>();
 
 
     @Builder
-    public Place(String name, PlaceType type, Double latitude, Double longitude) {
+    public Place(String name, PlaceType type, Location location) {
         this.name = name;
         this.type = type;
-
-        GeometryFactory factory = new GeometryFactory(new PrecisionModel(), 4326);
-        this.location = factory.createPoint(new Coordinate(longitude, latitude));
+        this.point = location.getPoint();
     }
 
 }
