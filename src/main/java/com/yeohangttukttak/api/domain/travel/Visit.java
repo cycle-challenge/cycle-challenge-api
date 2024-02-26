@@ -5,11 +5,14 @@ import com.yeohangttukttak.api.domain.place.Place;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import static jakarta.persistence.FetchType.LAZY;
 import static lombok.AccessLevel.PROTECTED;
 
 @Entity
+@Getter
 @NoArgsConstructor(access = PROTECTED)
 public class Visit extends BaseEntity {
 
@@ -20,11 +23,11 @@ public class Visit extends BaseEntity {
 
     private int orderOfVisit;
 
-    @ManyToOne
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "travel_id")
     private Travel travel;
 
-    @ManyToOne
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "place_id")
     private Place place;
 

@@ -16,7 +16,7 @@ public class TravelPeriod {
 
     private LocalDate endedOn;
 
-    public void TravelPurpose(LocalDate startedOn, LocalDate endedOn) {
+    public TravelPeriod(LocalDate startedOn, LocalDate endedOn) {
         if (endedOn.isBefore(startedOn)) {
             throw new IllegalArgumentException("종료 날짜는 시작 날짜 이후여야 합니다.");
         }

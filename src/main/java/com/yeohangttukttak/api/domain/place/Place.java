@@ -38,7 +38,7 @@ public class Place extends BaseEntity implements Attachable {
     @OneToMany(mappedBy = "place")
     private List<Visit> visits = new ArrayList<>();
 
-    @OneToMany(mappedBy = "source")
+    @OneToMany(mappedBy = "sourceId")
     @SQLRestriction("source_type = 'Place'")
     private List<File> files = new ArrayList<>();
 

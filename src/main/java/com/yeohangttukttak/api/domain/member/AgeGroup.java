@@ -1,18 +1,8 @@
 package com.yeohangttukttak.api.domain.member;
 
 public enum AgeGroup {
-    TWENTIES("20s"),
-    THIRTIES("30s"),
-    FORTIES("40s"),
-    FIFTY_PLUS("50plus");
-
-    private final String group;
-
-    AgeGroup(String group) {
-        this.group = group;
-    }
-
-    public String getGroup() {
-        return group;
-    }
+    S20, // 20 ~ 30대
+    S30, // 30 ~ 40대
+    S40, // 40 ~ 50대
+    P50  // 50대 이상
 }
