@@ -18,6 +18,8 @@ public class TravelDTO {
 
     private AccompanyType accompanyType;
 
+    private TransportType transportType;
+
     private LocalDate startedOn;
 
     private LocalDate endedOn;
@@ -31,6 +33,7 @@ public class TravelDTO {
         this.name = travel.getName();
         this.motivation = travel.getMotivation();
         this.accompanyType = travel.getAccompanyType();
+        this.transportType = travel.getTransportType();
         this.startedOn = travel.getPeriod().getStartedOn();
         this.endedOn = travel.getPeriod().getEndedOn();
         this.image = new ImageDTO(file);

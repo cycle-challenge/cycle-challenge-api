@@ -1,9 +1,22 @@
 package com.yeohangttukttak.api.domain.travel;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
 public enum AccompanyType {
-    SOLO,       // 나홀로
-    FRIENDS,    // 지인과
-    PARENTS,    // 부모님과
-    CHILDREN,   // 자녀와
-    OTHERS      // 기타
+
+    SOLO("solo"),       // 나홀로
+    FRIENDS("friends"),    // 지인과
+    PARENTS("parents"),    // 부모님과
+    CHILDREN("children"),   // 자녀와
+    OTHERS("others");      // 기타
+
+    private final String value;
+
+    @JsonValue
+    public String getValue() {
+        return value;
+    }
+
 }
