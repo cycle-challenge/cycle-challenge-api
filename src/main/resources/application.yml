@@ -18,3 +18,12 @@ spring:
 logging:
   level:
     org.hibernate.SQL: debug
+
+management:
+  endpoints:
+    enabled-by-default: false
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health.enabled: true
