@@ -1,11 +1,11 @@
-package com.yeohangttukttak.api.controller;
+package com.yeohangttukttak.api.domain.place;
 
 import com.yeohangttukttak.api.domain.place.Location;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 
-@Getter
-@AllArgsConstructor
+@Data
 public class LocationDTO {
 
     private double latitude;

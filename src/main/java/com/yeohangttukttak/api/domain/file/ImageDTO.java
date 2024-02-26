@@ -1,9 +1,10 @@
-package com.yeohangttukttak.api.controller;
+package com.yeohangttukttak.api.domain.file;
 
 import com.yeohangttukttak.api.domain.file.File;
+import lombok.Data;
 import lombok.Getter;
 
-@Getter
+@Data
 public class ImageDTO {
 
     private Long id;

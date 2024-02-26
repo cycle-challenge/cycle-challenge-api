@@ -1,12 +1,14 @@
-package com.yeohangttukttak.api.controller;
+package com.yeohangttukttak.api.domain.place;
+import com.yeohangttukttak.api.domain.file.ImageDTO;
 import com.yeohangttukttak.api.domain.place.Location;
+import com.yeohangttukttak.api.domain.place.LocationDTO;
 import com.yeohangttukttak.api.domain.place.Place;
 import com.yeohangttukttak.api.domain.place.PlaceType;
-import lombok.Getter;
+import lombok.Data;
 
 import java.util.List;
 
-@Getter
+@Data
 public class PlaceDTO {
 
     private Long id;
