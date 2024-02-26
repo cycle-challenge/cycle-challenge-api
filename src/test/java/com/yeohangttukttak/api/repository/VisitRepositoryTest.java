@@ -18,13 +18,13 @@ import static org.junit.jupiter.api.Assertions.*;
 @Transactional
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @TestPropertySource(properties = {"spring.config.location = classpath:application-test.yml"})
-class PlaceRepositoryTest {
+class VisitRepositoryTest {
 
     @Autowired
     private EntityManager entityManager;
 
     @Autowired
-    private PlaceRepository placeRepository;
+    private VisitRepository visitRepository;
 
     @Test
     public void search() throws Exception {
@@ -47,7 +47,7 @@ class PlaceRepositoryTest {
         entityManager.persist(placeB);
 
         // when
-        List<Place> foundPlaces = placeRepository.findByLocation(locationA, 3000);
+        List<Place> foundPlaces = visitRepository.findByLocation(locationA, 3000);
 
 
         // then
