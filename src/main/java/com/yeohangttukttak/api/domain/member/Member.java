@@ -8,8 +8,9 @@ import lombok.NoArgsConstructor;
 import static lombok.AccessLevel.PROTECTED;
 
 @Entity
-@NoArgsConstructor(access = PROTECTED) @Getter
-class Member extends BaseEntity {
+@Getter
+@NoArgsConstructor(access = PROTECTED)
+public class Member extends BaseEntity {
 
     @Id @GeneratedValue
     private Long id;
