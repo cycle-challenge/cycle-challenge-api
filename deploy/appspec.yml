@@ -12,7 +12,11 @@ permissions:
     owner: ubuntu
     group: ubuntu
 
-hooks: 
+hooks:
+  BeforeInstall:
+    - location: before_install.sh
+      timeout: 60
+      runas: ubuntu
   ApplicationStop:
     - location: stop_application.sh
       timeout: 60
