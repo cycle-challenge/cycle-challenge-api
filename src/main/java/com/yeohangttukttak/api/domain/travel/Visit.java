@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.FetchType.LAZY;
 import static lombok.AccessLevel.PROTECTED;
 
@@ -23,11 +24,11 @@ public class Visit extends BaseEntity {
 
     private int orderOfVisit;
 
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne(fetch = LAZY, cascade = ALL)
     @JoinColumn(name = "travel_id")
     private Travel travel;
 
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne(fetch = LAZY, cascade = ALL)
     @JoinColumn(name = "place_id")
     private Place place;
 
@@ -39,6 +40,7 @@ public class Visit extends BaseEntity {
         this.travel = travel;
 
         place.getVisits().add(this);
+        travel.getVisits().add(this);
     }
 
 }
