@@ -2,11 +2,15 @@ package com.yeohangttukttak.api.repository;
 
 import com.yeohangttukttak.api.domain.place.Location;
 import com.yeohangttukttak.api.domain.place.Place;
+import com.yeohangttukttak.api.domain.travel.Travel;
+import com.yeohangttukttak.api.domain.travel.Visit;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,10 +18,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
-@Transactional
+@Import(VisitRepository.class)
+@DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@TestPropertySource(properties = {"spring.config.location = classpath:application-test.yml"})
 class VisitRepositoryTest {
 
     @Autowired
@@ -27,14 +30,18 @@ class VisitRepositoryTest {
     private VisitRepository visitRepository;
 
     @Test
-    public void search() throws Exception {
+    public void findByLocation() throws Exception {
         // given
+        Travel travel = Travel.builder().build();
+
         Location locationA = new Location(36.6665, 127.4945);
 
         Place placeA = Place.builder()
                         .name("그랜드 플라자 청주 호텔")
                         .location(locationA)
                         .build();
+
+        Visit visitA = Visit.builder().place(placeA).travel(travel).build();
 
         Location locationB = new Location(37.422, -122.084);
 
@@ -43,15 +50,16 @@ class VisitRepositoryTest {
                         .location(locationB)
                         .build();
 
-        entityManager.persist(placeA);
-        entityManager.persist(placeB);
+        Visit visitB = Visit.builder().place(placeB).travel(travel).build();
+
+        entityManager.persist(visitA);
+        entityManager.persist(visitB);
 
         // when
-        List<Place> foundPlaces = visitRepository.findByLocation(locationA, 3000);
-
+        List<Visit> foundVisits = visitRepository.findByLocation(new Location(36.6600, 127.4900), 3000);
 
         // then
-        assertTrue(foundPlaces.contains(placeA), "그랜드 플라자가 있어야 한다.");
-        assertFalse(foundPlaces.contains(placeB), "구글 본사는 없어야 한다.");
+        assertTrue(foundVisits.contains(visitA), "그랜드 플라자가 있어야 한다.");
+        assertFalse(foundVisits.contains(visitB), "구글 본사는 없어야 한다.");
     }
 }

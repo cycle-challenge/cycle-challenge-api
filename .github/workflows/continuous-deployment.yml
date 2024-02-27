@@ -11,6 +11,21 @@ jobs:
     name: Deploy Project
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgis/postgis
+        env:
+          POSTGRES_USER: testuser
+          POSTGRES_PASSWORD: testpassword
+          POSTGRES_DB: testdb
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK 17
@@ -24,8 +39,14 @@ jobs:
         shell: bash
 
       - name: Build with Gradle
-        run: ./gradlew build
+        run: ./gradlew build --info
         shell: bash
+        env:
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_NAME: testdb
+          DB_USERNAME: testuser
+          DB_PASSWORD: testpassword
 
       - name: Compress project to deploy
         run: zip -r ./$GITHUB_SHA.zip .
@@ -34,8 +55,8 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ env.AWS_DEPLOY_ROLE }}
-          aws-region: ${{ env.AWS_DEFAULT_REGION }}
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
       
       - name: Upload to remote blob container
-        run: aws s3 cp --region $AWS_DEFAULT_REGION ./$GITHUB_SHA.zip s3://$AWS_DEPLOY_BUCKET/$GITHUB_SHA.zip
+        run: aws s3 cp --region ${{ secrets.AWS_DEFAULT_REGION }} ./$GITHUB_SHA.zip s3://{{ secrets.AWS_DEPLOY_BUCKET }}/$GITHUB_SHA.zip
