@@ -2,6 +2,7 @@ package com.yeohangttukttak.api.controller;
 
 import com.yeohangttukttak.api.domain.place.Place;
 import com.yeohangttukttak.api.domain.place.PlaceDTO;
+import com.yeohangttukttak.api.domain.travel.Travel;
 import com.yeohangttukttak.api.domain.travel.TravelDTO;
 import com.yeohangttukttak.api.domain.travel.Visit;
 import lombok.Data;
@@ -9,6 +10,8 @@ import lombok.Data;
 import java.util.List;
 import java.util.function.Function;
 
+import static java.util.Comparator.comparing;
+import static java.util.Map.Entry.comparingByKey;
 import static java.util.stream.Collectors.*;
 
 @Data
@@ -25,6 +28,7 @@ public class VisitSearchDTO {
         this.travels = visits.stream()
                 .collect(groupingBy(Visit::getTravel, mapping(Visit::getPlace, toList())))
                 .entrySet().stream()
+                .sorted(comparingByKey(comparing(Travel::getId)))
                 .map(entry -> new TravelDTO(entry.getKey(), getFirstElement(entry.getValue(), Place::getFiles)))
                 .toList();
 
