@@ -24,6 +24,7 @@ jobs:
       - name: Download built artifact
         uses: actions/download-artifact@v4
         with:
+          path: deploy
           name: application # 빌드 작업에서 업로드한 아티팩트 다운로드
 
       - name: Configure AWS credentials
@@ -33,7 +34,7 @@ jobs:
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
 
       - name: Compress application for deployment
-        run: zip -r ./$GITHUB_SHA.zip ./ # 다운로드한 아티팩트 압축
+        run: zip -r ./$GITHUB_SHA.zip ./deploy # 다운로드한 아티팩트 압축
         
       - name: Upload to remote blob container
         env:
