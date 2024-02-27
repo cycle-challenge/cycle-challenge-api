@@ -1,0 +1,22 @@
+version: 0.0
+os: linux
+
+files:
+  - source: /
+    destination: /home/ubuntu/build
+    overwrite: yes
+  
+permissions:
+  - object: /
+    pattern: "**"
+    owner: ubuntu
+    group: ubuntu
+
+hooks: 
+  ApplicationStop:
+    - location: stop_application.sh
+      timeout: 60
+  ApplicationStart: 
+    - location: start_application.sh
+      timeout: 60
+      runas: ubuntu
