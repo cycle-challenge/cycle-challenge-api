@@ -1,0 +1,12 @@
+name: Continuous Integration(CI)
+
+on:
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    uses: ./.github/workflows/build.yml
+    with:
+      upload_artifact: false
