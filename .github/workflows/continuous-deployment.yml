@@ -7,9 +7,12 @@ on:
 
 jobs:
   deploy:
-    environment: development
     name: Deploy Project
     runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
 
     services:
       postgres:
@@ -33,7 +36,13 @@ jobs:
         with:
           java-version: '17'
           distribution: 'zulu'
-          
+      
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1.7.0
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+      
       - name: Grant Execution Permission to gradlew
         run: chmod +x gradlew
         shell: bash
@@ -51,12 +60,8 @@ jobs:
       - name: Compress project to deploy
         run: zip -r ./$GITHUB_SHA.zip .
         shell: bash
-      
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE }}
-          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
-      
       - name: Upload to remote blob container
-        run: aws s3 cp --region ${{ secrets.AWS_DEFAULT_REGION }} ./$GITHUB_SHA.zip s3://{{ secrets.AWS_DEPLOY_BUCKET }}/$GITHUB_SHA.zip
+        env:
+          AWS_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+          AWS_BUCKET: ${{ secrets.AWS_DEPLOY_BUCKET }}
+        run: aws s3 cp --region $AWS_REGION ./$GITHUB_SHA.zip s3://$AWS_BUCKET/$GITHUB_SHA.zip
