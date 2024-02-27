@@ -1,0 +1,51 @@
+name: Build Project
+
+on:
+  workflow_call:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    # 테스트를 위한 Postgres/PostGIS 서비스 설정
+    services:
+      postgres:
+        image: postgis/postgis
+        env:
+          POSTGRES_USER: testuser
+          POSTGRES_PASSWORD: testpassword
+          POSTGRES_DB: testdb
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v3 # 소스 코드 체크아웃
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'zulu'
+          cache: gradle # Gradle 캐시 설정
+
+      - name: Grant Execution Permission to gradlew
+        run: chmod +x gradlew # gradlew 실행 권한 부여
+
+      - name: Build with Gradle
+        run: ./gradlew build # Gradle을 사용한 프로젝트 빌드
+        env:
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_NAME: testdb
+          DB_USERNAME: testuser
+          DB_PASSWORD: testpassword
+
+      - name: Upload build artifact # 빌드 결과물 업로드
+        uses: actions/upload-artifact@v4
+        with:
+          name: application
+          path: ./build/libs/*.jar
