@@ -1,5 +1,6 @@
 package com.yeohangttukttak.api.controller;
 
+import com.yeohangttukttak.api.domain.place.LocationDTO;
 import com.yeohangttukttak.api.service.visit.VisitSearchDTO;
 import com.yeohangttukttak.api.service.visit.VisitSearchService;
 import com.yeohangttukttak.api.domain.place.Location;
@@ -23,7 +24,10 @@ public class VisitController {
     public ApiResponse<VisitSearchDTO> search(
             @Valid @ModelAttribute VisitSearchParams params
     ) {
-        VisitSearchDTO dto = visitSearchService.search(params.getLocation(),
+        VisitSearchDTO dto = visitSearchService.search(
+                new Location(
+                        params.location.getLatitude(),
+                        params.location.getLongitude()),
                 params.getRadius());
 
         return new ApiResponse<>(dto);
@@ -32,7 +36,7 @@ public class VisitController {
     @Data
     static class VisitSearchParams {
         @Valid
-        private Location location;
+        private LocationDTO location;
 
         @NotNull @Range(min = 3000, max = 50000)
         private Integer radius;

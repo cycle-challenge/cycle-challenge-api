@@ -1,20 +1,26 @@
 package com.yeohangttukttak.api.domain.place;
 
-import com.yeohangttukttak.api.domain.place.Location;
-import lombok.AllArgsConstructor;
+import com.yeohangttukttak.api.validator.ValidLatitude;
+import com.yeohangttukttak.api.validator.ValidLongitude;
 import lombok.Data;
-import lombok.Getter;
 
 @Data
 public class LocationDTO {
 
+    @ValidLatitude
     private double latitude;
 
+    @ValidLongitude
     private double longitude;
 
     public LocationDTO (Location location) {
         this.latitude = location.getLatitude();
         this.longitude = location.getLongitude();
+    }
+
+    public LocationDTO (Double latitude, Double longitude) {
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
 }

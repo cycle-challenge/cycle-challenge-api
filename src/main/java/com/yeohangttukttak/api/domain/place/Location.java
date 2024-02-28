@@ -17,10 +17,8 @@ import java.math.BigDecimal;
 @Getter
 public class Location {
 
-    @ValidLatitude
     private final Double latitude;
 
-    @ValidLongitude
     private final Double longitude;
 
     private final Point point;
