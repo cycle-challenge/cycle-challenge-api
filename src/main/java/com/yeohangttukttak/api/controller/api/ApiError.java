@@ -13,10 +13,13 @@ public class ApiError {
 
     private String message;
 
-    public ApiError(ApiErrorCode code, String message) {
+    private String target;
+
+    public ApiError(ApiErrorCode code, String message, String target) {
         this.status = code.getStatus();
         this.code = code.name();
         this.message = message;
+        this.target = target;
     }
 
 }
