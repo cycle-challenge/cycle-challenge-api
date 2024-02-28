@@ -3,6 +3,7 @@ package com.yeohangttukttak.api.domain.travel;
 import com.yeohangttukttak.api.domain.file.ImageDTO;
 import com.yeohangttukttak.api.domain.member.MemberDTO;
 import com.yeohangttukttak.api.domain.file.File;
+import com.yeohangttukttak.api.domain.place.Place;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -28,7 +29,7 @@ public class TravelDTO {
 
     private MemberDTO member;
 
-    public TravelDTO(Travel travel, File file) {
+    public TravelDTO(Travel travel, Place place) {
         this.id = travel.getId();
         this.name = travel.getName();
         this.motivation = travel.getMotivation();
@@ -36,7 +37,10 @@ public class TravelDTO {
         this.transportType = travel.getTransportType();
         this.startedOn = travel.getPeriod().getStartedOn();
         this.endedOn = travel.getPeriod().getEndedOn();
-        this.image = new ImageDTO(file);
+
+        this.image = place.getFiles().stream()
+                .findFirst().map(ImageDTO::new)
+                .orElse(null);
         this.member = new MemberDTO(travel.getMember());
     }
 
