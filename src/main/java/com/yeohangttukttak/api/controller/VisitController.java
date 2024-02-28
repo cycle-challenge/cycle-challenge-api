@@ -4,6 +4,7 @@ import com.yeohangttukttak.api.service.visit.VisitSearchDTO;
 import com.yeohangttukttak.api.service.visit.VisitSearchService;
 import com.yeohangttukttak.api.domain.place.Location;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -30,10 +31,10 @@ public class VisitController {
 
     @Data
     static class VisitSearchParams {
-        @NotNull
-        Location location;
+        @Valid
+        private Location location;
 
-        @NotNull @Range(min = 3000, max = 50000, message = "값은 3000 ~ 50000 미터 이하여야 합니다.")
-        int radius;
+        @NotNull @Range(min = 3000, max = 50000)
+        private Integer radius;
     }
 }
