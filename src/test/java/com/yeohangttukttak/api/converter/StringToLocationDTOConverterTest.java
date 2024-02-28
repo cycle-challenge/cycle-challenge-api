@@ -1,13 +1,14 @@
 package com.yeohangttukttak.api.converter;
 
 import com.yeohangttukttak.api.domain.place.Location;
+import com.yeohangttukttak.api.domain.place.LocationDTO;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-class StringToLocationConverterTest {
+class StringToLocationDTOConverterTest {
 
-    private final StringToLocationConverter converter = new StringToLocationConverter();
+    private final StringToLocationDTOConverter converter = new StringToLocationDTOConverter();
 
     @Nested
     class 성공_케이스 {
@@ -18,7 +19,7 @@ class StringToLocationConverterTest {
             String pointString = "36.6416,127.4849";
 
             // when
-            Location location = converter.convert(pointString);
+            LocationDTO location = converter.convert(pointString);
 
             // then
             assertNotNull(location, "객체가 null이 아니어야 한다.");
@@ -32,7 +33,7 @@ class StringToLocationConverterTest {
             String pointString = "36.6416 , 127.4849";
 
             // when
-            Location location = converter.convert(pointString);
+            LocationDTO location = converter.convert(pointString);
 
             // then
             assertNotNull(location, "객체가 null이 아니어야 한다.");
@@ -82,7 +83,7 @@ class StringToLocationConverterTest {
             String pointString = "36,127";
 
             // when
-            Location location = converter.convert(pointString);
+            LocationDTO location = converter.convert(pointString);
 
             // then
             assertNotNull(location, "객체가 null이 아니어야 한다.");

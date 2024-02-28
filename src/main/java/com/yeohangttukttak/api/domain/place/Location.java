@@ -1,22 +1,25 @@
 package com.yeohangttukttak.api.domain.place;
 
+import com.yeohangttukttak.api.validator.ValidLatitude;
+import com.yeohangttukttak.api.validator.ValidLongitude;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
 import lombok.Builder;
 import lombok.Getter;
+import org.hibernate.validator.constraints.Range;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.PrecisionModel;
 
+import java.math.BigDecimal;
+
 @Getter
 public class Location {
 
-    @DecimalMin("-90.0") @DecimalMax("90.0")
-    private final double latitude;
+    private final Double latitude;
 
-    @DecimalMin("-90.0") @DecimalMax("90.0")
-    private final double longitude;
+    private final Double longitude;
 
     private final Point point;
 
@@ -24,7 +27,7 @@ public class Location {
     private static final GeometryFactory factory = new GeometryFactory(
             new PrecisionModel(), 4326);
 
-    public Location (double latitude, double longitude) {
+    public Location (Double latitude, Double longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
         this.point = factory.createPoint(new Coordinate(longitude, latitude));

@@ -1,14 +1,15 @@
 package com.yeohangttukttak.api.converter;
 
 import com.yeohangttukttak.api.domain.place.Location;
+import com.yeohangttukttak.api.domain.place.LocationDTO;
 import org.springframework.core.convert.converter.Converter;
 
 import java.util.Arrays;
 
-public class StringToLocationConverter implements Converter<String, Location> {
+public class StringToLocationDTOConverter implements Converter<String, LocationDTO> {
 
     @Override
-    public Location convert(String source) {
+    public LocationDTO convert(String source) {
         double[] tokens = Arrays.stream(source.split(","))
                 .map(String::trim)
                 .mapToDouble(Double::parseDouble)
@@ -17,7 +18,7 @@ public class StringToLocationConverter implements Converter<String, Location> {
         if (tokens.length != 2)
             throw new IllegalArgumentException("입력 값은 콤마(,)로 구분된 위도와 경도 값을 포함해야 합니다.");
 
-        return new Location(tokens[0], tokens[1]);
+        return new LocationDTO(tokens[0], tokens[1]);
     }
 
 }
