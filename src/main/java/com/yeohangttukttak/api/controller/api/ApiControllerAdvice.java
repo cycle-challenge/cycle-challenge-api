@@ -1,8 +1,5 @@
-package com.yeohangttukttak.api.controller.advice;
+package com.yeohangttukttak.api.controller.api;
 
-import com.yeohangttukttak.api.controller.ApiError;
-import com.yeohangttukttak.api.controller.ApiErrorCode;
-import com.yeohangttukttak.api.controller.ApiErrorResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;

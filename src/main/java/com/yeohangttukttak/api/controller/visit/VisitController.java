@@ -1,11 +1,11 @@
-package com.yeohangttukttak.api.controller;
+package com.yeohangttukttak.api.controller.visit;
 
+import com.yeohangttukttak.api.controller.api.ApiResponse;
 import com.yeohangttukttak.api.domain.place.LocationDTO;
 import com.yeohangttukttak.api.service.visit.VisitSearchDTO;
 import com.yeohangttukttak.api.service.visit.VisitSearchService;
 import com.yeohangttukttak.api.domain.place.Location;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
