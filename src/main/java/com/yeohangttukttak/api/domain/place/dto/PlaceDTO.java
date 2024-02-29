@@ -1,5 +1,5 @@
 package com.yeohangttukttak.api.domain.place.dto;
-import com.yeohangttukttak.api.domain.file.ImageDTO;
+import com.yeohangttukttak.api.domain.file.dto.ImageDTO;
 import com.yeohangttukttak.api.domain.place.entity.Location;
 import com.yeohangttukttak.api.domain.place.entity.Place;
 import com.yeohangttukttak.api.domain.place.entity.PlaceType;

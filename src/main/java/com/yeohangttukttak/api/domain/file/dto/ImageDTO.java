@@ -1,8 +1,7 @@
-package com.yeohangttukttak.api.domain.file;
+package com.yeohangttukttak.api.domain.file.dto;
 
-import com.yeohangttukttak.api.domain.file.File;
+import com.yeohangttukttak.api.domain.file.entity.File;
 import lombok.Data;
-import lombok.Getter;
 
 @Data
 public class ImageDTO {

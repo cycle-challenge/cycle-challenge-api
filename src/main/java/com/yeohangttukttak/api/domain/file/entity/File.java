@@ -1,4 +1,4 @@
-package com.yeohangttukttak.api.domain.file;
+package com.yeohangttukttak.api.domain.file.entity;
 
 import com.yeohangttukttak.api.domain.Attachable;
 import com.yeohangttukttak.api.domain.BaseEntity;

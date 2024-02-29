@@ -1,7 +1,7 @@
 package com.yeohangttukttak.api.domain.travel.entity;
 
 import com.yeohangttukttak.api.domain.BaseEntity;
-import com.yeohangttukttak.api.domain.member.Member;
+import com.yeohangttukttak.api.domain.member.entity.Member;
 import com.yeohangttukttak.api.domain.visit.entity.Visit;
 import jakarta.persistence.*;
 import lombok.Builder;

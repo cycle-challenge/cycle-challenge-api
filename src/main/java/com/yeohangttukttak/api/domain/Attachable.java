@@ -1,6 +1,6 @@
 package com.yeohangttukttak.api.domain;
 
-import com.yeohangttukttak.api.domain.file.File;
+import com.yeohangttukttak.api.domain.file.entity.File;
 
 import java.util.List;
 

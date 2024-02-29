@@ -1,7 +1,8 @@
-package com.yeohangttukttak.api.domain.member;
+package com.yeohangttukttak.api.domain.member.entity;
 
 import com.yeohangttukttak.api.domain.BaseEntity;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -20,4 +21,10 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private AgeGroup ageGroup;
 
+    @Builder
+    public Member(Long id, String nickname, AgeGroup ageGroup) {
+        this.id = id;
+        this.nickname = nickname;
+        this.ageGroup = ageGroup;
+    }
 }

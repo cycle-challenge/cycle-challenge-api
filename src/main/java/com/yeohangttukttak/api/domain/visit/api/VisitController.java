@@ -1,7 +1,7 @@
 package com.yeohangttukttak.api.domain.visit.api;
 
 import com.yeohangttukttak.api.controller.api.ApiResponse;
-import com.yeohangttukttak.api.domain.member.AgeGroup;
+import com.yeohangttukttak.api.domain.member.entity.AgeGroup;
 import com.yeohangttukttak.api.domain.place.dto.LocationDTO;
 import com.yeohangttukttak.api.domain.travel.entity.AccompanyType;
 import com.yeohangttukttak.api.domain.travel.entity.Motivation;

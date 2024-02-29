@@ -1,4 +1,4 @@
-package com.yeohangttukttak.api.domain.member;
+package com.yeohangttukttak.api.domain.member.entity;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.yeohangttukttak.api.domain.ValueBasedEnum;

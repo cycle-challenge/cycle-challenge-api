@@ -1,7 +1,7 @@
 package com.yeohangttukttak.api.domain.travel.dto;
 
-import com.yeohangttukttak.api.domain.file.ImageDTO;
-import com.yeohangttukttak.api.domain.member.MemberDTO;
+import com.yeohangttukttak.api.domain.file.dto.ImageDTO;
+import com.yeohangttukttak.api.domain.member.dto.MemberDTO;
 import com.yeohangttukttak.api.domain.place.entity.Place;
 import com.yeohangttukttak.api.domain.travel.entity.AccompanyType;
 import com.yeohangttukttak.api.domain.travel.entity.Motivation;

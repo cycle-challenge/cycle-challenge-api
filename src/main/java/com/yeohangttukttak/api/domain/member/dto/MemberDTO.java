@@ -1,6 +1,6 @@
-package com.yeohangttukttak.api.domain.member;
-import com.yeohangttukttak.api.domain.member.AgeGroup;
-import com.yeohangttukttak.api.domain.member.Member;
+package com.yeohangttukttak.api.domain.member.dto;
+import com.yeohangttukttak.api.domain.member.entity.AgeGroup;
+import com.yeohangttukttak.api.domain.member.entity.Member;
 import lombok.Data;
 
 @Data
