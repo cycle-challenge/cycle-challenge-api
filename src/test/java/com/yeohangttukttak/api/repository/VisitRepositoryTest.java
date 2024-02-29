@@ -1,8 +1,8 @@
 package com.yeohangttukttak.api.repository;
 
-import com.yeohangttukttak.api.domain.place.Location;
-import com.yeohangttukttak.api.domain.place.Place;
-import com.yeohangttukttak.api.domain.travel.Travel;
+import com.yeohangttukttak.api.domain.place.entity.Location;
+import com.yeohangttukttak.api.domain.place.entity.Place;
+import com.yeohangttukttak.api.domain.travel.entity.Travel;
 import com.yeohangttukttak.api.domain.visit.entity.Visit;
 import com.yeohangttukttak.api.domain.visit.dao.VisitRepository;
 import jakarta.persistence.EntityManager;

@@ -1,15 +1,13 @@
-package com.yeohangttukttak.api.domain.travel;
+package com.yeohangttukttak.api.domain.travel.entity;
 
 import com.yeohangttukttak.api.domain.BaseEntity;
-import com.yeohangttukttak.api.domain.file.File;
 import com.yeohangttukttak.api.domain.member.Member;
+import com.yeohangttukttak.api.domain.visit.entity.Visit;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,17 +44,19 @@ public class Travel extends BaseEntity {
     private List<Visit> visits = new ArrayList<>();
 
     @Builder
-    public Travel(String name,
+    public Travel(Long id, String name,
                   TravelPeriod period,
                   AccompanyType accompanyType,
                   TransportType transportType,
-                  Motivation motivation) {
-
+                  Motivation motivation,
+                  Member member) {
+        this.id = id;
         this.name = name;
         this.period = period;
         this.accompanyType = accompanyType;
         this.transportType = transportType;
         this.motivation = motivation;
+        this.member = member;
     }
 
 }

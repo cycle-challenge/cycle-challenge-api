@@ -1,10 +1,9 @@
 package com.yeohangttukttak.api.domain.visit.entity;
 
 import com.yeohangttukttak.api.domain.BaseEntity;
-import com.yeohangttukttak.api.domain.place.Place;
-import com.yeohangttukttak.api.domain.travel.Travel;
+import com.yeohangttukttak.api.domain.place.entity.Place;
+import com.yeohangttukttak.api.domain.travel.entity.Travel;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

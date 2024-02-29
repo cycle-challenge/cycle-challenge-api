@@ -1,7 +1,7 @@
 package com.yeohangttukttak.api.domain.file;
 
-import com.yeohangttukttak.api.domain.place.Location;
-import com.yeohangttukttak.api.domain.place.Place;
+import com.yeohangttukttak.api.domain.place.entity.Location;
+import com.yeohangttukttak.api.domain.place.entity.Place;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 

@@ -1,4 +1,4 @@
-package com.yeohangttukttak.api.domain.travel;
+package com.yeohangttukttak.api.domain.travel.entity;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.yeohangttukttak.api.domain.ValueBasedEnum;

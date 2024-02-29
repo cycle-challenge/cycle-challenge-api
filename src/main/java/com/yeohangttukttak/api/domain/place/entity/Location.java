@@ -1,4 +1,4 @@
-package com.yeohangttukttak.api.domain.place;
+package com.yeohangttukttak.api.domain.place.entity;
 
 import com.yeohangttukttak.api.validator.ValidLatitude;
 import com.yeohangttukttak.api.validator.ValidLongitude;

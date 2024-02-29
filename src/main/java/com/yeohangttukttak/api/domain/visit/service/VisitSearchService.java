@@ -1,7 +1,7 @@
 package com.yeohangttukttak.api.domain.visit.service;
 
 import com.yeohangttukttak.api.domain.place.dto.PlaceDTO;
-import com.yeohangttukttak.api.domain.travel.TravelDTO;
+import com.yeohangttukttak.api.domain.travel.dto.TravelDTO;
 import com.yeohangttukttak.api.domain.visit.entity.Visit;
 import com.yeohangttukttak.api.domain.visit.dto.VisitSearch;
 import com.yeohangttukttak.api.domain.visit.dto.VisitSearchDTO;

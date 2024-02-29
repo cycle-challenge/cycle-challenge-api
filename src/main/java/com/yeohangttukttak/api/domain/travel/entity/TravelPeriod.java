@@ -1,4 +1,4 @@
-package com.yeohangttukttak.api.domain.travel;
+package com.yeohangttukttak.api.domain.travel.entity;
 
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;

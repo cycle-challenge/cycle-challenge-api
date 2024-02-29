@@ -1,7 +1,7 @@
 package com.yeohangttukttak.api.domain.visit.dto;
 
 import com.yeohangttukttak.api.domain.place.dto.PlaceDTO;
-import com.yeohangttukttak.api.domain.travel.TravelDTO;
+import com.yeohangttukttak.api.domain.travel.dto.TravelDTO;
 import lombok.Data;
 
 import java.util.List;
