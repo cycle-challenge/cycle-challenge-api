@@ -1,4 +1,4 @@
-package com.yeohangttukttak.api.repository;
+package com.yeohangttukttak.api.domain.visit.dao;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.BooleanTemplate;
@@ -9,8 +9,8 @@ import com.yeohangttukttak.api.domain.place.Location;
 import com.yeohangttukttak.api.domain.travel.AccompanyType;
 import com.yeohangttukttak.api.domain.travel.Motivation;
 import com.yeohangttukttak.api.domain.travel.TransportType;
-import com.yeohangttukttak.api.domain.travel.Visit;
-import com.yeohangttukttak.api.service.visit.VisitSearch;
+import com.yeohangttukttak.api.domain.visit.entity.Visit;
+import com.yeohangttukttak.api.domain.visit.dto.VisitSearch;
 import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Repository;
 

@@ -1,4 +1,4 @@
-package com.yeohangttukttak.api.service.visit;
+package com.yeohangttukttak.api.domain.visit.dto;
 
 import com.yeohangttukttak.api.domain.member.AgeGroup;
 import com.yeohangttukttak.api.domain.place.Location;

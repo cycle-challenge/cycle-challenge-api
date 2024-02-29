@@ -1,7 +1,8 @@
-package com.yeohangttukttak.api.domain.travel;
+package com.yeohangttukttak.api.domain.visit.entity;
 
 import com.yeohangttukttak.api.domain.BaseEntity;
 import com.yeohangttukttak.api.domain.place.Place;
+import com.yeohangttukttak.api.domain.travel.Travel;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;

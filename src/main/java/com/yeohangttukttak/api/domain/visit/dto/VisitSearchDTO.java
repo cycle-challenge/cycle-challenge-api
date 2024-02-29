@@ -1,6 +1,6 @@
-package com.yeohangttukttak.api.service.visit;
+package com.yeohangttukttak.api.domain.visit.dto;
 
-import com.yeohangttukttak.api.domain.place.PlaceDTO;
+import com.yeohangttukttak.api.domain.place.dto.PlaceDTO;
 import com.yeohangttukttak.api.domain.travel.TravelDTO;
 import lombok.Data;
 

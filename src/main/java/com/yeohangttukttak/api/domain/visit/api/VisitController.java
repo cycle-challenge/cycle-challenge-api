@@ -1,14 +1,14 @@
-package com.yeohangttukttak.api.controller.visit;
+package com.yeohangttukttak.api.domain.visit.api;
 
 import com.yeohangttukttak.api.controller.api.ApiResponse;
 import com.yeohangttukttak.api.domain.member.AgeGroup;
-import com.yeohangttukttak.api.domain.place.LocationDTO;
+import com.yeohangttukttak.api.domain.place.dto.LocationDTO;
 import com.yeohangttukttak.api.domain.travel.AccompanyType;
 import com.yeohangttukttak.api.domain.travel.Motivation;
 import com.yeohangttukttak.api.domain.travel.TransportType;
-import com.yeohangttukttak.api.service.visit.VisitSearch;
-import com.yeohangttukttak.api.service.visit.VisitSearchDTO;
-import com.yeohangttukttak.api.service.visit.VisitSearchService;
+import com.yeohangttukttak.api.domain.visit.dto.VisitSearch;
+import com.yeohangttukttak.api.domain.visit.dto.VisitSearchDTO;
+import com.yeohangttukttak.api.domain.visit.service.VisitSearchService;
 import com.yeohangttukttak.api.domain.place.Location;
 import com.yeohangttukttak.api.validator.ValidValueBasedEnum;
 import jakarta.validation.Valid;

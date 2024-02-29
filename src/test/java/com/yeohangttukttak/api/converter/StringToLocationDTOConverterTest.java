@@ -1,7 +1,6 @@
 package com.yeohangttukttak.api.converter;
 
-import com.yeohangttukttak.api.domain.place.Location;
-import com.yeohangttukttak.api.domain.place.LocationDTO;
+import com.yeohangttukttak.api.domain.place.dto.LocationDTO;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;

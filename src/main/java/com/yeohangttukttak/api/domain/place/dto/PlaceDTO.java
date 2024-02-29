@@ -1,7 +1,6 @@
-package com.yeohangttukttak.api.domain.place;
+package com.yeohangttukttak.api.domain.place.dto;
 import com.yeohangttukttak.api.domain.file.ImageDTO;
 import com.yeohangttukttak.api.domain.place.Location;
-import com.yeohangttukttak.api.domain.place.LocationDTO;
 import com.yeohangttukttak.api.domain.place.Place;
 import com.yeohangttukttak.api.domain.place.PlaceType;
 import lombok.Data;

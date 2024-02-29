@@ -1,7 +1,6 @@
 package com.yeohangttukttak.api.converter;
 
-import com.yeohangttukttak.api.domain.place.Location;
-import com.yeohangttukttak.api.domain.place.LocationDTO;
+import com.yeohangttukttak.api.domain.place.dto.LocationDTO;
 import org.springframework.core.convert.converter.Converter;
 
 import java.util.Arrays;

@@ -1,10 +1,11 @@
-package com.yeohangttukttak.api.service.visit;
+package com.yeohangttukttak.api.domain.visit.service;
 
-import com.yeohangttukttak.api.domain.place.Location;
-import com.yeohangttukttak.api.domain.place.PlaceDTO;
+import com.yeohangttukttak.api.domain.place.dto.PlaceDTO;
 import com.yeohangttukttak.api.domain.travel.TravelDTO;
-import com.yeohangttukttak.api.domain.travel.Visit;
-import com.yeohangttukttak.api.repository.VisitRepository;
+import com.yeohangttukttak.api.domain.visit.entity.Visit;
+import com.yeohangttukttak.api.domain.visit.dto.VisitSearch;
+import com.yeohangttukttak.api.domain.visit.dto.VisitSearchDTO;
+import com.yeohangttukttak.api.domain.visit.dao.VisitRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
