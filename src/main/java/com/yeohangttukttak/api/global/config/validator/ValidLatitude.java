@@ -1,4 +1,4 @@
-package com.yeohangttukttak.api.validator;
+package com.yeohangttukttak.api.global.config.validator;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
@@ -6,11 +6,11 @@ import jakarta.validation.Payload;
 import java.lang.annotation.*;
 
 @Documented
-@Constraint(validatedBy = LongitudeValidator.class)
+@Constraint(validatedBy = LatitudeValidator.class)
 @Target({ ElementType.METHOD, ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ValidLongitude {
-    String message() default "Invalid longitude";
+public @interface ValidLatitude {
+    String message() default "Invalid latitude";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

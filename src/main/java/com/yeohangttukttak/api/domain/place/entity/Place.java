@@ -1,6 +1,6 @@
 package com.yeohangttukttak.api.domain.place.entity;
 
-import com.yeohangttukttak.api.domain.Attachable;
+import com.yeohangttukttak.api.global.interfaces.Attachable;
 import com.yeohangttukttak.api.domain.BaseEntity;
 import com.yeohangttukttak.api.domain.file.entity.File;
 import com.yeohangttukttak.api.domain.visit.entity.Visit;

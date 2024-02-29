@@ -1,7 +1,7 @@
-package com.yeohangttukttak.api.config;
+package com.yeohangttukttak.api.global.config;
 
-import com.yeohangttukttak.api.converter.StringToLocationDTOConverter;
-import com.yeohangttukttak.api.converter.StringToValueBasedEnumConverter;
+import com.yeohangttukttak.api.global.config.converter.StringToLocationDTOConverter;
+import com.yeohangttukttak.api.global.config.converter.StringToValueBasedEnumConverter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;

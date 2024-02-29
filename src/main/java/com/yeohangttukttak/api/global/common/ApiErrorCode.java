@@ -1,4 +1,4 @@
-package com.yeohangttukttak.api.controller.api;
+package com.yeohangttukttak.api.global.common;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

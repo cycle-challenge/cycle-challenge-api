@@ -1,18 +1,10 @@
 package com.yeohangttukttak.api.domain.place.entity;
 
-import com.yeohangttukttak.api.validator.ValidLatitude;
-import com.yeohangttukttak.api.validator.ValidLongitude;
-import jakarta.validation.constraints.DecimalMax;
-import jakarta.validation.constraints.DecimalMin;
-import lombok.Builder;
 import lombok.Getter;
-import org.hibernate.validator.constraints.Range;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.PrecisionModel;
-
-import java.math.BigDecimal;
 
 @Getter
 public class Location {

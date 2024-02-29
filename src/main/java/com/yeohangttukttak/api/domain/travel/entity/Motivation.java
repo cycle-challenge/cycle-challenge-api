@@ -1,7 +1,7 @@
 package com.yeohangttukttak.api.domain.travel.entity;
 
 import com.fasterxml.jackson.annotation.JsonValue;
-import com.yeohangttukttak.api.domain.ValueBasedEnum;
+import com.yeohangttukttak.api.global.interfaces.ValueBasedEnum;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor

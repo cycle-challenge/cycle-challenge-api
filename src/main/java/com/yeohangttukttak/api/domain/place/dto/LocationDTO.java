@@ -1,8 +1,8 @@
 package com.yeohangttukttak.api.domain.place.dto;
 
 import com.yeohangttukttak.api.domain.place.entity.Location;
-import com.yeohangttukttak.api.validator.ValidLatitude;
-import com.yeohangttukttak.api.validator.ValidLongitude;
+import com.yeohangttukttak.api.global.config.validator.ValidLatitude;
+import com.yeohangttukttak.api.global.config.validator.ValidLongitude;
 import lombok.Data;
 
 @Data

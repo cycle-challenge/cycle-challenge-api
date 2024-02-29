@@ -1,6 +1,6 @@
 package com.yeohangttukttak.api.domain.visit.api;
 
-import com.yeohangttukttak.api.controller.api.ApiResponse;
+import com.yeohangttukttak.api.global.common.ApiResponse;
 import com.yeohangttukttak.api.domain.member.entity.AgeGroup;
 import com.yeohangttukttak.api.domain.place.dto.LocationDTO;
 import com.yeohangttukttak.api.domain.travel.entity.AccompanyType;
@@ -10,7 +10,6 @@ import com.yeohangttukttak.api.domain.visit.dto.VisitSearch;
 import com.yeohangttukttak.api.domain.visit.dto.VisitSearchDTO;
 import com.yeohangttukttak.api.domain.visit.service.VisitSearchService;
 import com.yeohangttukttak.api.domain.place.entity.Location;
-import com.yeohangttukttak.api.validator.ValidValueBasedEnum;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;

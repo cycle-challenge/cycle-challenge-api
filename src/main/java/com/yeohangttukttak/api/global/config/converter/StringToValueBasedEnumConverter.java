@@ -1,6 +1,6 @@
-package com.yeohangttukttak.api.converter;
+package com.yeohangttukttak.api.global.config.converter;
 
-import com.yeohangttukttak.api.domain.ValueBasedEnum;
+import com.yeohangttukttak.api.global.interfaces.ValueBasedEnum;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.converter.ConverterFactory;
 import org.springframework.util.StringUtils;

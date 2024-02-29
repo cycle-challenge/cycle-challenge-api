@@ -1,4 +1,4 @@
-package com.yeohangttukttak.api.controller.api;
+package com.yeohangttukttak.api.global.common;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

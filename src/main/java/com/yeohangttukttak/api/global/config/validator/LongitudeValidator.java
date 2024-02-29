@@ -1,4 +1,4 @@
-package com.yeohangttukttak.api.validator;
+package com.yeohangttukttak.api.global.config.validator;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;

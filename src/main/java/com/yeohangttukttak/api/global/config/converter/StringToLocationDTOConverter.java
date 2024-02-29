@@ -1,4 +1,4 @@
-package com.yeohangttukttak.api.converter;
+package com.yeohangttukttak.api.global.config.converter;
 
 import com.yeohangttukttak.api.domain.place.dto.LocationDTO;
 import org.springframework.core.convert.converter.Converter;

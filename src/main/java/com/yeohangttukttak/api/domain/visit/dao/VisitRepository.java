@@ -16,9 +16,10 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static com.yeohangttukttak.api.domain.place.QPlace.place;
-import static com.yeohangttukttak.api.domain.travel.QTravel.travel;
-import static com.yeohangttukttak.api.domain.travel.QVisit.visit;
+import static com.yeohangttukttak.api.domain.place.entity.QPlace.place;
+import static com.yeohangttukttak.api.domain.travel.entity.QTravel.travel;
+import static com.yeohangttukttak.api.domain.visit.entity.QVisit.visit;
+
 
 @Repository
 public class VisitRepository {

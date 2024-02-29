@@ -1,4 +1,4 @@
-package com.yeohangttukttak.api;
+package com.yeohangttukttak.api.global.config;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
