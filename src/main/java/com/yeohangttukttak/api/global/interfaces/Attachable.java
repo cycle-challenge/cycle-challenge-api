@@ -1,4 +1,4 @@
-package com.yeohangttukttak.api.domain;
+package com.yeohangttukttak.api.global.interfaces;
 
 import com.yeohangttukttak.api.domain.file.entity.File;
 
