@@ -9,10 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -56,7 +53,7 @@ class VisitRepositoryTest {
         entityManager.persist(visitB);
 
         // when
-        List<Visit> foundVisits = visitRepository.findByLocation(new Location(36.6600, 127.4900), 3000);
+        List<Visit> foundVisits = visitRepository.search(new Location(36.6600, 127.4900), 3000);
 
         // then
         assertTrue(foundVisits.contains(visitA), "그랜드 플라자가 있어야 한다.");

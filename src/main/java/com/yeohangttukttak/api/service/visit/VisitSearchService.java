@@ -22,7 +22,7 @@ public class VisitSearchService {
     private final VisitRepository visitRepository;
 
     public VisitSearchDTO search(Location location, int radius) {
-        List<Visit> visits = visitRepository.findByLocation(location, radius);
+        List<Visit> visits = visitRepository.search(location, radius);
 
         // place 탐색
         List<PlaceDTO> placeDTOS = visits.stream()
