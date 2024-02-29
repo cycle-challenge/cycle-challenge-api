@@ -1,11 +1,12 @@
 package com.yeohangttukttak.api.domain.place;
 
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.yeohangttukttak.api.domain.ValueBasedEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @AllArgsConstructor
-public enum PlaceType {
+public enum PlaceType implements ValueBasedEnum {
 
     NATURE("nature"),     // 자연
     ATTRACTION("attraction"), // 관광지

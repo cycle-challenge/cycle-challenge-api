@@ -1,10 +1,11 @@
 package com.yeohangttukttak.api.domain.travel;
 
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.yeohangttukttak.api.domain.ValueBasedEnum;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public enum AccompanyType {
+public enum AccompanyType implements ValueBasedEnum {
 
     SOLO("solo"),       // 나홀로
     FRIENDS("friends"),    // 지인과

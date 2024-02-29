@@ -1,10 +1,11 @@
 package com.yeohangttukttak.api.domain.travel;
 
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.yeohangttukttak.api.domain.ValueBasedEnum;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public enum TransportType {
+public enum TransportType implements ValueBasedEnum {
     CAR ("car"),
     PUBLIC ("public");
 

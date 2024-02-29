@@ -1,10 +1,11 @@
 package com.yeohangttukttak.api.domain.travel;
 
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.yeohangttukttak.api.domain.ValueBasedEnum;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public enum Motivation {
+public enum Motivation implements ValueBasedEnum {
     EXIST("existing"),          // 재미
     EDUCATION("education"),     // 교육
     SOCIAL("social"),           // 친목

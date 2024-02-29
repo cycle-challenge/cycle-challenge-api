@@ -1,10 +1,11 @@
 package com.yeohangttukttak.api.domain.member;
 
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.yeohangttukttak.api.domain.ValueBasedEnum;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public enum AgeGroup {
+public enum AgeGroup implements ValueBasedEnum {
     S20("20s"), // 20 ~ 30대
     S30("30s"), // 30 ~ 40대
     S40("40s"), // 40 ~ 50대
