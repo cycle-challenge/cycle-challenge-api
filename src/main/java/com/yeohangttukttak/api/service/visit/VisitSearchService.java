@@ -21,8 +21,8 @@ public class VisitSearchService {
 
     private final VisitRepository visitRepository;
 
-    public VisitSearchDTO search(Location location, int radius) {
-        List<Visit> visits = visitRepository.search(location, radius);
+    public VisitSearchDTO search(VisitSearch visitSearch) {
+        List<Visit> visits = visitRepository.search(visitSearch);
 
         // place 탐색
         List<PlaceDTO> placeDTOS = visits.stream()

@@ -1,20 +1,28 @@
 package com.yeohangttukttak.api.controller.visit;
 
 import com.yeohangttukttak.api.controller.api.ApiResponse;
+import com.yeohangttukttak.api.domain.member.AgeGroup;
 import com.yeohangttukttak.api.domain.place.LocationDTO;
+import com.yeohangttukttak.api.domain.travel.AccompanyType;
+import com.yeohangttukttak.api.domain.travel.Motivation;
+import com.yeohangttukttak.api.domain.travel.TransportType;
+import com.yeohangttukttak.api.service.visit.VisitSearch;
 import com.yeohangttukttak.api.service.visit.VisitSearchDTO;
 import com.yeohangttukttak.api.service.visit.VisitSearchService;
 import com.yeohangttukttak.api.domain.place.Location;
+import com.yeohangttukttak.api.validator.ValidValueBasedEnum;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/visits")
 @RequiredArgsConstructor
+@Slf4j
 public class VisitController {
 
     private final VisitSearchService visitSearchService;
@@ -24,13 +32,22 @@ public class VisitController {
     public ApiResponse<VisitSearchDTO> search(
             @Valid @ModelAttribute VisitSearchParams params
     ) {
-        VisitSearchDTO dto = visitSearchService.search(
-                new Location(
-                        params.location.getLatitude(),
-                        params.location.getLongitude()),
-                params.getRadius());
+        Location location = new Location(
+                params.getLocation().getLatitude(),
+                params.getLocation().getLongitude());
 
-        return new ApiResponse<>(dto);
+        VisitSearch search = VisitSearch.builder()
+                .location(location)
+                .radius(params.getRadius())
+                .accompanyType(params.getAccompanyType())
+                .motivation(params.getMotivation())
+                .ageGroup(params.getAgeGroup())
+                .transportType(params.getTransportType())
+                .build();
+
+        log.info(search.toString());
+
+        return new ApiResponse<>(visitSearchService.search(search));
     }
 
     @Data
@@ -40,5 +57,14 @@ public class VisitController {
 
         @NotNull @Range(min = 3000, max = 50000)
         private Integer radius;
+
+        private AgeGroup ageGroup;
+
+        private Motivation motivation;
+
+        private AccompanyType accompanyType;
+
+        private TransportType transportType;
+
     }
 }
