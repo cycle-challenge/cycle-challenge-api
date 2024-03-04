@@ -36,10 +36,10 @@ public class VisitRepository {
                 .join(visit.travel, travel).fetchJoin()
                 .join(visit.place, place).fetchJoin()
                 .where(dwithin(search.getLocation(), search.getRadius()),
-                        motivationEq(search.getMotivation()),
-                        accompanyTypeEq(search.getAccompanyType()),
-                        ageGroupEq(search.getAgeGroup()),
-                        transportTypeEq(search.getTransportType())).fetch();
+                        motivationEq(search.getMotivations()),
+                        accompanyTypeEq(search.getAccompanyTypes()),
+                        ageGroupEq(search.getAgeGroups()),
+                        transportTypeEq(search.getTransportTypes())).fetch();
     }
 
     private BooleanTemplate dwithin(Location location, int radius) {
@@ -51,20 +51,20 @@ public class VisitRepository {
         );
     }
 
-    private BooleanExpression motivationEq(Motivation motivation) {
-        return motivation != null ? travel.motivation.eq(motivation) : null;
+    private BooleanExpression motivationEq(List<Motivation> motivations) {
+        return motivations != null ? travel.motivation.in(motivations) : null;
     }
 
-    private BooleanExpression accompanyTypeEq(AccompanyType accompanyType) {
-        return accompanyType != null ? travel.accompanyType.eq(accompanyType) : null;
+    private BooleanExpression accompanyTypeEq(List<AccompanyType> accompanyTypes) {
+        return accompanyTypes != null ? travel.accompanyType.in(accompanyTypes) : null;
     }
 
-    private BooleanExpression ageGroupEq(AgeGroup ageGroup) {
-        return ageGroup != null ? travel.member.ageGroup.eq(ageGroup) : null;
+    private BooleanExpression ageGroupEq(List<AgeGroup> ageGroups) {
+        return ageGroups != null ? travel.member.ageGroup.in(ageGroups) : null;
     }
 
-    private BooleanExpression transportTypeEq(TransportType transportType) {
-        return transportType != null ? travel.transportType.eq(transportType) : null;
+    private BooleanExpression transportTypeEq(List<TransportType> transportTypes) {
+        return transportTypes != null ? travel.transportType.in(transportTypes) : null;
     }
 
 }

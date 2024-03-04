@@ -1,5 +1,6 @@
 package com.yeohangttukttak.api.domain.visit.api;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.yeohangttukttak.api.global.common.ApiResponse;
 import com.yeohangttukttak.api.domain.member.entity.AgeGroup;
 import com.yeohangttukttak.api.domain.place.dto.LocationDTO;
@@ -17,6 +18,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/visits")
@@ -38,10 +41,10 @@ public class VisitController {
         VisitSearch search = VisitSearch.builder()
                 .location(location)
                 .radius(params.getRadius())
-                .accompanyType(params.getAccompanyType())
-                .motivation(params.getMotivation())
-                .ageGroup(params.getAgeGroup())
-                .transportType(params.getTransportType())
+                .accompanyTypes(params.getAccompanyTypes())
+                .motivations(params.getMotivations())
+                .ageGroups(params.getAgeGroups())
+                .transportTypes(params.getTransportTypes())
                 .build();
 
         log.info(search.toString());
@@ -57,13 +60,13 @@ public class VisitController {
         @NotNull @Range(min = 3000, max = 50000)
         private Integer radius;
 
-        private AgeGroup ageGroup;
+        private List<AgeGroup> ageGroups;
 
-        private Motivation motivation;
+        private List<Motivation> motivations;
 
-        private AccompanyType accompanyType;
+        private List<AccompanyType> accompanyTypes;
 
-        private TransportType transportType;
+        private List<TransportType> transportTypes;
 
     }
 }

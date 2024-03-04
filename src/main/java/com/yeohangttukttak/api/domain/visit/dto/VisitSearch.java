@@ -8,6 +8,8 @@ import com.yeohangttukttak.api.domain.travel.entity.TransportType;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class VisitSearch {
 
@@ -15,26 +17,26 @@ public class VisitSearch {
 
     private int radius;
 
-    private Motivation motivation;
+    private List<AgeGroup> ageGroups;
 
-    private AccompanyType accompanyType;
+    private List<Motivation> motivations;
 
-    private AgeGroup ageGroup;
+    private List<AccompanyType> accompanyTypes;
 
-    private TransportType transportType;
+    private List<TransportType> transportTypes;
 
     @Builder
     public VisitSearch(Location location,
                        int radius,
-                       Motivation motivation,
-                       AccompanyType accompanyType,
-                       AgeGroup ageGroup,
-                       TransportType transportType) {
+                       List<AgeGroup> ageGroups,
+                       List<Motivation> motivations,
+                       List<AccompanyType> accompanyTypes,
+                       List<TransportType> transportTypes) {
         this.location = location;
         this.radius = radius;
-        this.motivation = motivation;
-        this.accompanyType = accompanyType;
-        this.ageGroup = ageGroup;
-        this.transportType = transportType;
+        this.ageGroups = ageGroups;
+        this.motivations = motivations;
+        this.accompanyTypes = accompanyTypes;
+        this.transportTypes = transportTypes;
     }
 }
