@@ -1,6 +1,6 @@
 package com.yeohangttukttak.api.domain.visit.api;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.yeohangttukttak.api.domain.travel.entity.Season;
 import com.yeohangttukttak.api.global.common.ApiResponse;
 import com.yeohangttukttak.api.domain.member.entity.AgeGroup;
 import com.yeohangttukttak.api.domain.place.dto.LocationDTO;
@@ -19,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/v1/visits")
@@ -45,6 +45,7 @@ public class VisitController {
                 .motivations(params.getMotivations())
                 .ageGroups(params.getAgeGroups())
                 .transportTypes(params.getTransportTypes())
+                .seasons(params.getSeasons())
                 .build();
 
         log.info(search.toString());
@@ -60,13 +61,15 @@ public class VisitController {
         @NotNull @Range(min = 3000, max = 50000)
         private Integer radius;
 
-        private List<AgeGroup> ageGroups;
+        private Set<AgeGroup> ageGroups;
 
-        private List<Motivation> motivations;
+        private Set<Motivation> motivations;
 
-        private List<AccompanyType> accompanyTypes;
+        private Set<AccompanyType> accompanyTypes;
 
-        private List<TransportType> transportTypes;
+        private Set<TransportType> transportTypes;
+
+        private Set<Season> seasons;
 
     }
 }

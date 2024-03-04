@@ -4,11 +4,12 @@ import com.yeohangttukttak.api.domain.member.entity.AgeGroup;
 import com.yeohangttukttak.api.domain.place.entity.Location;
 import com.yeohangttukttak.api.domain.travel.entity.AccompanyType;
 import com.yeohangttukttak.api.domain.travel.entity.Motivation;
+import com.yeohangttukttak.api.domain.travel.entity.Season;
 import com.yeohangttukttak.api.domain.travel.entity.TransportType;
 import lombok.Builder;
 import lombok.Data;
 
-import java.util.List;
+import java.util.Set;
 
 @Data
 public class VisitSearch {
@@ -17,26 +18,30 @@ public class VisitSearch {
 
     private int radius;
 
-    private List<AgeGroup> ageGroups;
+    private Set<AgeGroup> ageGroups;
 
-    private List<Motivation> motivations;
+    private Set<Motivation> motivations;
 
-    private List<AccompanyType> accompanyTypes;
+    private Set<AccompanyType> accompanyTypes;
 
-    private List<TransportType> transportTypes;
+    private Set<TransportType> transportTypes;
+
+    private Set<Season> seasons;
 
     @Builder
     public VisitSearch(Location location,
                        int radius,
-                       List<AgeGroup> ageGroups,
-                       List<Motivation> motivations,
-                       List<AccompanyType> accompanyTypes,
-                       List<TransportType> transportTypes) {
+                       Set<AgeGroup> ageGroups,
+                       Set<Motivation> motivations,
+                       Set<AccompanyType> accompanyTypes,
+                       Set<TransportType> transportTypes,
+                       Set<Season> seasons) {
         this.location = location;
         this.radius = radius;
         this.ageGroups = ageGroups;
         this.motivations = motivations;
         this.accompanyTypes = accompanyTypes;
         this.transportTypes = transportTypes;
+        this.seasons = seasons;
     }
 }

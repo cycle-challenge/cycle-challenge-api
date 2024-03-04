@@ -5,7 +5,6 @@ import com.yeohangttukttak.api.domain.place.entity.Place;
 import com.yeohangttukttak.api.domain.place.entity.PlaceType;
 import com.yeohangttukttak.api.domain.travel.dto.TravelDTO;
 import com.yeohangttukttak.api.domain.travel.entity.Travel;
-import com.yeohangttukttak.api.domain.visit.entity.Visit;
 import lombok.Data;
 
 import java.util.List;

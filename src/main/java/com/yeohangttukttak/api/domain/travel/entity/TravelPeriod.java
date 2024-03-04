@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Set;
 
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PROTECTED) @Getter
@@ -32,6 +35,19 @@ public class TravelPeriod {
     public int getDurationInDays() {
         Period period = Period.between(startedOn, endedOn);
         return period.getDays();
+    }
+
+    public Set<Season> getSeasons() {
+        LocalDate curtDate = startedOn;
+
+        Set<Season> seasons = EnumSet.noneOf(Season.class);
+
+        while (curtDate.isBefore(endedOn)) {
+            seasons.add(Season.valueOf(curtDate.getMonthValue()));
+            curtDate = curtDate.plusMonths(1);
+        }
+
+        return seasons;
     }
 
 

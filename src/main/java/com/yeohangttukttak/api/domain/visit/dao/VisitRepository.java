@@ -8,13 +8,16 @@ import com.yeohangttukttak.api.domain.member.entity.AgeGroup;
 import com.yeohangttukttak.api.domain.place.entity.Location;
 import com.yeohangttukttak.api.domain.travel.entity.AccompanyType;
 import com.yeohangttukttak.api.domain.travel.entity.Motivation;
+import com.yeohangttukttak.api.domain.travel.entity.Season;
 import com.yeohangttukttak.api.domain.travel.entity.TransportType;
 import com.yeohangttukttak.api.domain.visit.entity.Visit;
 import com.yeohangttukttak.api.domain.visit.dto.VisitSearch;
 import jakarta.persistence.EntityManager;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 import static com.yeohangttukttak.api.domain.place.entity.QPlace.place;
 import static com.yeohangttukttak.api.domain.travel.entity.QTravel.travel;
@@ -22,6 +25,7 @@ import static com.yeohangttukttak.api.domain.visit.entity.QVisit.visit;
 
 
 @Repository
+@Slf4j
 public class VisitRepository {
 
     private final JPAQueryFactory queryFactory;
@@ -31,15 +35,26 @@ public class VisitRepository {
     }
 
     public List<Visit> search(VisitSearch search) {
-        return queryFactory
+        List<Visit> visits = queryFactory
                 .selectFrom(visit)
                 .join(visit.travel, travel).fetchJoin()
                 .join(visit.place, place).fetchJoin()
                 .where(dwithin(search.getLocation(), search.getRadius()),
-                        motivationEq(search.getMotivations()),
-                        accompanyTypeEq(search.getAccompanyTypes()),
-                        ageGroupEq(search.getAgeGroups()),
-                        transportTypeEq(search.getTransportTypes())).fetch();
+                        motivationsIn(search.getMotivations()),
+                        accompanyTypesIn(search.getAccompanyTypes()),
+                        ageGroupsIn(search.getAgeGroups()),
+                        transportTypesIn(search.getTransportTypes())
+                ).fetch();
+
+        return visits.stream()
+                .filter(visit -> seasonsIn(search, visit))
+                .toList();
+    }
+
+    private boolean seasonsIn(VisitSearch search, Visit visit) {
+        Set<Season> intersection = visit.getTravel().getPeriod().getSeasons();
+        intersection.retainAll(search.getSeasons());
+        return !intersection.isEmpty();
     }
 
     private BooleanTemplate dwithin(Location location, int radius) {
@@ -51,19 +66,19 @@ public class VisitRepository {
         );
     }
 
-    private BooleanExpression motivationEq(List<Motivation> motivations) {
+    private BooleanExpression motivationsIn(Set<Motivation> motivations) {
         return motivations != null ? travel.motivation.in(motivations) : null;
     }
 
-    private BooleanExpression accompanyTypeEq(List<AccompanyType> accompanyTypes) {
+    private BooleanExpression accompanyTypesIn(Set<AccompanyType> accompanyTypes) {
         return accompanyTypes != null ? travel.accompanyType.in(accompanyTypes) : null;
     }
 
-    private BooleanExpression ageGroupEq(List<AgeGroup> ageGroups) {
+    private BooleanExpression ageGroupsIn(Set<AgeGroup> ageGroups) {
         return ageGroups != null ? travel.member.ageGroup.in(ageGroups) : null;
     }
 
-    private BooleanExpression transportTypeEq(List<TransportType> transportTypes) {
+    private BooleanExpression transportTypesIn(Set<TransportType> transportTypes) {
         return transportTypes != null ? travel.transportType.in(transportTypes) : null;
     }
 
