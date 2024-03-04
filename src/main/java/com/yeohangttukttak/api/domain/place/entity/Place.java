@@ -36,8 +36,8 @@ public class Place extends BaseEntity implements Attachable {
     @OneToMany(mappedBy = "place")
     private List<Visit> visits = new ArrayList<>();
 
-    @OneToMany(mappedBy = "sourceId")
-    @SQLRestriction("source_type = 'Place'")
+    @OneToMany
+    @JoinColumn(name = "place_id")
     private List<File> files = new ArrayList<>();
 
     @Builder

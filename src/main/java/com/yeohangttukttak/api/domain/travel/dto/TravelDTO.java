@@ -28,11 +28,11 @@ public class TravelDTO {
 
     private LocalDate endedOn;
 
-    private ImageDTO image;
+    private ImageDTO thumbnail;
 
     private MemberDTO member;
 
-    public TravelDTO(Travel travel, Place place) {
+    public TravelDTO(Travel travel) {
         this.id = travel.getId();
         this.name = travel.getName();
         this.motivation = travel.getMotivation();
@@ -41,9 +41,7 @@ public class TravelDTO {
         this.startedOn = travel.getPeriod().getStartedOn();
         this.endedOn = travel.getPeriod().getEndedOn();
 
-        this.image = place.getFiles().stream()
-                .findFirst().map(ImageDTO::new)
-                .orElse(null);
+        this.thumbnail = new ImageDTO(travel.getThumbnail());
         this.member = new MemberDTO(travel.getMember());
     }
 

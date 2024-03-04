@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import static java.util.Comparator.comparing;
@@ -27,18 +29,16 @@ public class VisitSearchService {
 
         // place 탐색
         List<PlaceDTO> placeDTOS = visits.stream()
-                .map(Visit::getPlace).distinct().map(PlaceDTO::new).toList();
+                .collect(groupingBy(Visit::getPlace,
+                        mapping(Visit::getTravel, toList())))
+                .entrySet().stream()
+                .map(entry -> new PlaceDTO(entry.getKey(), entry.getValue()))
+                .toList();
 
         // travelDTO 조립
-        List<TravelDTO> travelDTOS = visits.stream()
-                .collect(toMap(
-                    Visit::getTravel, Visit::getPlace,
-                    (existValue, newValue) -> existValue
-                ))
-                .entrySet().stream()
-                .map(entry -> new TravelDTO(entry.getKey(), entry.getValue()))
-                .sorted(comparing(TravelDTO::getId))
-                .toList();
+        List<TravelDTO> travelDTOS = placeDTOS.stream()
+                .map(PlaceDTO::getTravels)
+                .flatMap(Collection::stream).distinct().toList();
 
         return new VisitSearchDTO(travelDTOS, placeDTOS);
     }

@@ -1,6 +1,7 @@
 package com.yeohangttukttak.api.domain.travel.entity;
 
 import com.yeohangttukttak.api.domain.BaseEntity;
+import com.yeohangttukttak.api.domain.file.entity.File;
 import com.yeohangttukttak.api.domain.member.entity.Member;
 import com.yeohangttukttak.api.domain.visit.entity.Visit;
 import jakarta.persistence.*;
@@ -14,8 +15,7 @@ import java.util.List;
 import static jakarta.persistence.FetchType.LAZY;
 import static lombok.AccessLevel.PROTECTED;
 
-@Entity
-@Getter
+@Entity @Getter
 @NoArgsConstructor(access = PROTECTED)
 public class Travel extends BaseEntity {
 
@@ -42,6 +42,10 @@ public class Travel extends BaseEntity {
 
     @OneToMany(mappedBy = "travel")
     private List<Visit> visits = new ArrayList<>();
+
+    @OneToOne
+    @JoinColumn(name = "thumbnail_id")
+    private File thumbnail;
 
     @Builder
     public Travel(Long id, String name,
