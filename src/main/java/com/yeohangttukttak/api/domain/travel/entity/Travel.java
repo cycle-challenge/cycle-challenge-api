@@ -6,6 +6,7 @@ import com.yeohangttukttak.api.domain.member.entity.Member;
 import com.yeohangttukttak.api.domain.visit.entity.Visit;
 import jakarta.persistence.*;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -17,6 +18,7 @@ import static lombok.AccessLevel.PROTECTED;
 
 @Entity @Getter
 @NoArgsConstructor(access = PROTECTED)
+@EqualsAndHashCode
 public class Travel extends BaseEntity {
 
     @Id @GeneratedValue

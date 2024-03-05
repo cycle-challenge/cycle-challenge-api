@@ -52,6 +52,8 @@ public class VisitRepository {
     }
 
     private boolean seasonsIn(VisitSearch search, Visit visit) {
+        if (search.getSeasons() == null) return true;
+
         Set<Season> intersection = visit.getTravel().getPeriod().getSeasons();
         intersection.retainAll(search.getSeasons());
         return !intersection.isEmpty();
