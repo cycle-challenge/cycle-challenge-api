@@ -1,22 +1,27 @@
 package com.yeohangttukttak.api.repository;
 
-import com.yeohangttukttak.api.domain.place.Location;
-import com.yeohangttukttak.api.domain.place.Place;
-import com.yeohangttukttak.api.domain.travel.Travel;
-import com.yeohangttukttak.api.domain.travel.Visit;
+import com.yeohangttukttak.api.domain.member.entity.AgeGroup;
+import com.yeohangttukttak.api.domain.member.entity.Member;
+import com.yeohangttukttak.api.domain.place.entity.Location;
+import com.yeohangttukttak.api.domain.place.entity.Place;
+import com.yeohangttukttak.api.domain.travel.entity.*;
+import com.yeohangttukttak.api.domain.visit.dto.VisitSearch;
+import com.yeohangttukttak.api.domain.visit.entity.Visit;
+import com.yeohangttukttak.api.domain.visit.dao.VisitRepository;
 import jakarta.persistence.EntityManager;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Import(VisitRepository.class)
 @DataJpaTest
@@ -29,37 +34,196 @@ class VisitRepositoryTest {
     @Autowired
     private VisitRepository visitRepository;
 
-    @Test
-    public void findByLocation() throws Exception {
-        // given
-        Travel travel = Travel.builder().build();
+    Member memberA, memberB;
+    Travel travelA, travelB;
+    Place placeA, placeB;
+    Visit visitA, visitB;
 
-        Location locationA = new Location(36.6665, 127.4945);
+    @BeforeEach
+    public void init() {
 
-        Place placeA = Place.builder()
-                        .name("그랜드 플라자 청주 호텔")
-                        .location(locationA)
-                        .build();
+        memberA = Member.builder()
+                .ageGroup(AgeGroup.S20)
+                .build();
 
-        Visit visitA = Visit.builder().place(placeA).travel(travel).build();
+        travelA = Travel.builder()
+                .member(memberA)
+                .accompanyType(AccompanyType.PARENTS)
+                .motivation(Motivation.RELAX)
+                .transportType(TransportType.CAR)
+                .period(new TravelPeriod(
+                        LocalDate.parse("2022-03-19"),
+                        LocalDate.parse("2022-03-21")
+                ))
+                .build();
 
-        Location locationB = new Location(37.422, -122.084);
+        placeA = Place.builder()
+                .name("그랜드 플라자 청주 호텔")
+                .location(new Location(36.6665, 127.4945))
+                .build();
 
-        Place placeB = Place.builder()
-                        .name("Google 본사")
-                        .location(locationB)
-                        .build();
+        memberB = Member.builder()
+                .ageGroup(AgeGroup.S30)
+                .build();
 
-        Visit visitB = Visit.builder().place(placeB).travel(travel).build();
+        visitA = Visit.builder().place(placeA).travel(travelA).build();
 
+        travelB = Travel.builder()
+                .member(memberB)
+                .accompanyType(AccompanyType.CHILDREN)
+                .motivation(Motivation.EDUCATION)
+                .transportType(TransportType.PUBLIC)
+                .period(new TravelPeriod(
+                        LocalDate.parse("2022-08-15"),
+                        LocalDate.parse("2022-08-17")
+                ))
+                .accompanyType(AccompanyType.FRIENDS)
+                .build();
+
+        placeB = Place.builder()
+                .name("청주 시립 미술관")
+                .location(new Location(36.6347, 127.4784))
+                .build();
+
+        visitB = Visit.builder().place(placeB).travel(travelB).build();
+
+        entityManager.persist(memberA);
+        entityManager.persist(memberB);
         entityManager.persist(visitA);
         entityManager.persist(visitB);
 
+    }
+
+
+    @Test
+    public void 범위_검색() throws Exception {
+        // given
+        VisitSearch search = VisitSearch.builder()
+                .location(new Location(36.6600, 127.4900))
+                .radius(2000)
+                .build();
+
         // when
-        List<Visit> foundVisits = visitRepository.findByLocation(new Location(36.6600, 127.4900), 3000);
+        List<Visit> foundVisits = visitRepository.search(search);
 
         // then
-        assertTrue(foundVisits.contains(visitA), "그랜드 플라자가 있어야 한다.");
-        assertFalse(foundVisits.contains(visitB), "구글 본사는 없어야 한다.");
+        assertThat(foundVisits)
+                .as("그랜드 플라자가 있어야 한다.")
+                .contains(visitA);
+
+        assertThat(foundVisits)
+                .as("구글 본사는 없어야 한다.")
+                .doesNotContain(visitB);
+    }
+
+    @Test
+    public void 연령_검색() throws Exception {
+        // given
+        VisitSearch searchAll = VisitSearch.builder()
+                .location(new Location(36.6600, 127.4900))
+                .radius(20000)
+                .ageGroups(Set.of(AgeGroup.S20, AgeGroup.P50))
+                .build();
+
+        // when
+        List<Visit> foundVisits = visitRepository.search(searchAll);
+
+        // then
+        assertThat(foundVisits)
+                .as("20대의 여행은 반환되어야 한다.")
+                .contains(visitA);
+
+        assertThat(foundVisits)
+                .as("30대의 여행은 반한되지 말아야 한다.")
+                .doesNotContain(visitB);
+    }
+
+
+    @Test
+    public void 계절_검색() throws Exception {
+        // given
+        VisitSearch searchAll = VisitSearch.builder()
+                .location(new Location(36.6600, 127.4900))
+                .radius(20000)
+                .seasons(Set.of(Season.SPRING, Season.WINTER))
+                .build();
+
+        // when
+        List<Visit> foundVisits = visitRepository.search(searchAll);
+
+        // then
+        assertThat(foundVisits)
+                .as("봄 여행은 반환되어야 한다.")
+                .contains(visitA);
+
+        assertThat(foundVisits)
+                .as("여름 여행은 반환되지 말아야 한다.")
+                .doesNotContain(visitB);
+    }
+
+    @Test
+    public void 동반_유형_검색() throws Exception {
+        // given
+        VisitSearch searchAll = VisitSearch.builder()
+                .location(new Location(36.6600, 127.4900))
+                .radius(20000)
+                .accompanyTypes(Set.of(AccompanyType.PARENTS, AccompanyType.SOLO))
+                .build();
+
+        // when
+        List<Visit> foundVisits = visitRepository.search(searchAll);
+
+        // then
+        assertThat(foundVisits)
+                .as("부모 동반 여행은 반환되어야 한다..")
+                .contains(visitA);
+
+        assertThat(foundVisits)
+                .as("자녀 동반 여행은 반환되지 말아야 한다.")
+                .doesNotContain(visitB);
+    }
+
+    @Test
+    public void 여행_동기_검색() throws Exception {
+        // given
+        VisitSearch searchAll = VisitSearch.builder()
+                .location(new Location(36.6600, 127.4900))
+                .radius(20000)
+                .motivations(Set.of(Motivation.RELAX, Motivation.EXPERIENCE))
+                .build();
+
+        // when
+        List<Visit> foundVisits = visitRepository.search(searchAll);
+
+        // then
+        assertThat(foundVisits)
+                .as("힐링 여행은 반환되어야 한다..")
+                .contains(visitA);
+
+        assertThat(foundVisits)
+                .as("교육 여행은 반환되지 말아야 한다.")
+                .doesNotContain(visitB);
+    }
+
+    @Test
+    public void 이동_수단_검색() throws Exception {
+        // given
+        VisitSearch searchAll = VisitSearch.builder()
+                .location(new Location(36.6600, 127.4900))
+                .radius(20000)
+                .transportTypes(Set.of(TransportType.CAR))
+                .build();
+
+        // when
+        List<Visit> foundVisits = visitRepository.search(searchAll);
+
+        // then
+        assertThat(foundVisits)
+                .as("자차 여행은 반환되어야 한다..")
+                .contains(visitA);
+
+        assertThat(foundVisits)
+                .as("대중교통 여행은 반환되지 말아야 한다.")
+                .doesNotContain(visitB);
     }
 }
