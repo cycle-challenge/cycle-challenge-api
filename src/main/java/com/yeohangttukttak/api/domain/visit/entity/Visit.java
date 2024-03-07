@@ -33,7 +33,8 @@ public class Visit extends BaseEntity {
     private Place place;
 
     @Builder
-    public Visit(int dayOfTravel, int orderOfVisit, Place place, Travel travel) {
+    public Visit(Long id, int dayOfTravel, int orderOfVisit, Place place, Travel travel) {
+        this.id = id;
         this.dayOfTravel = dayOfTravel;
         this.orderOfVisit = orderOfVisit;
         this.place = place;

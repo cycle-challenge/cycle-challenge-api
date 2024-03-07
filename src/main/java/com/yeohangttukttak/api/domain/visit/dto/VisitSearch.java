@@ -8,10 +8,12 @@ import com.yeohangttukttak.api.domain.travel.entity.Season;
 import com.yeohangttukttak.api.domain.travel.entity.TransportType;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Set;
 
 @Data
+@NoArgsConstructor
 public class VisitSearch {
 
     private Location location;
