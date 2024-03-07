@@ -7,6 +7,7 @@ import com.yeohangttukttak.api.domain.travel.entity.AccompanyType;
 import com.yeohangttukttak.api.domain.travel.entity.Motivation;
 import com.yeohangttukttak.api.domain.travel.entity.TransportType;
 import com.yeohangttukttak.api.domain.travel.entity.Travel;
+import com.yeohangttukttak.api.domain.visit.dao.VisitSearchResult;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -43,6 +44,10 @@ public class TravelDTO {
 
         this.thumbnail = new ImageDTO(travel.getThumbnail());
         this.member = new MemberDTO(travel.getMember());
+    }
+
+    public TravelDTO(VisitSearchResult result) {
+        this(result.getTravel());
     }
 
 }

@@ -1,6 +1,6 @@
 package com.yeohangttukttak.api.domain.visit.dao;
 
-import com.querydsl.core.Tuple;
+import com.yeohangttukttak.api.domain.place.entity.Place;
 import com.yeohangttukttak.api.domain.travel.entity.Travel;
 import com.yeohangttukttak.api.domain.visit.entity.Visit;
 import lombok.AllArgsConstructor;
@@ -14,12 +14,8 @@ public class VisitSearchResult {
 
     private Travel travel;
 
-    private Double distance;
+    private Place place;
 
-    public VisitSearchResult(Tuple tuple) {
-        visit = tuple.get(0, Visit.class);
-        travel = tuple.get(1, Travel.class);
-        distance = tuple.get(2, Double.class);
-    }
+    private Double distance;
 
 }

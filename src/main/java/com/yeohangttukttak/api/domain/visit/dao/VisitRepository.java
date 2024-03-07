@@ -1,6 +1,7 @@
 package com.yeohangttukttak.api.domain.visit.dao;
 
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.BooleanTemplate;
 import com.querydsl.core.types.dsl.Expressions;
@@ -42,8 +43,9 @@ public class VisitRepository {
                 .distance(asGeometry(search.getLocation().getPoint())
         );
 
-        List<Tuple> result = queryFactory
-                .select(visit, travel, distanceExpr)
+        List<VisitSearchResult> result = queryFactory
+                .select(Projections.constructor(VisitSearchResult.class,
+                        visit, travel, place, distanceExpr))
                 .from(visit)
                 .join(visit.travel, travel).fetchJoin()
                 .join(visit.place, place).fetchJoin()
@@ -54,7 +56,7 @@ public class VisitRepository {
                         transportTypesIn(search.getTransportTypes())
                 ).fetch();
 
-        return result.stream().map(VisitSearchResult::new)
+        return result.stream()
                 .filter(record -> seasonsIn(search, record.getTravel()))
                 .toList();
     }

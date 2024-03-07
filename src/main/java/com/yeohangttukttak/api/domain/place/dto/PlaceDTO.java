@@ -4,10 +4,16 @@ import com.yeohangttukttak.api.domain.place.entity.Location;
 import com.yeohangttukttak.api.domain.place.entity.Place;
 import com.yeohangttukttak.api.domain.place.entity.PlaceType;
 import com.yeohangttukttak.api.domain.travel.entity.Travel;
+import com.yeohangttukttak.api.domain.visit.dao.VisitSearchResult;
+import com.yeohangttukttak.api.domain.visit.entity.Visit;
+import com.yeohangttukttak.api.global.common.Reference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.*;
+import java.util.Map.Entry;
+
+import static java.util.Comparator.comparing;
 
 
 @Data
@@ -33,23 +39,18 @@ public class PlaceDTO {
         this.images = place.getFiles().stream().map(ImageDTO::new).toList();
     }
 
-
-    public PlaceDTO(Map.Entry<Place, List<Travel>> entry) {
+    public PlaceDTO(Entry<Place, List<VisitSearchResult>> entry) {
         this(entry.getKey());
+        List<VisitSearchResult> results = entry.getValue();
 
-        this.travels = entry.getValue().stream()
-                .map(travel -> new Reference(travel.getId(), "travel"))
-                .distinct().toList();
-    }
+        location.setDistance(results.get(0).getDistance());
 
-    @Data
-    @AllArgsConstructor
-    public static class Reference {
-
-        private Long id;
-
-        private String type;
-
+        travels = results.stream()
+                .map(VisitSearchResult::getTravel)
+                .map(result -> new Reference(result.getId(), "travel"))
+                .distinct()
+                .sorted(comparing(Reference::getId))
+                .toList();
     }
 
 }
