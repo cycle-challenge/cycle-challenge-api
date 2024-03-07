@@ -42,12 +42,8 @@ public class TravelDTO {
         this.startedOn = travel.getPeriod().getStartedOn();
         this.endedOn = travel.getPeriod().getEndedOn();
 
-        this.thumbnail = new ImageDTO(travel.getThumbnail());
+        this.thumbnail = travel.getThumbnail() != null ? new ImageDTO(travel.getThumbnail()) : null;
         this.member = new MemberDTO(travel.getMember());
-    }
-
-    public TravelDTO(VisitSearchResult result) {
-        this(result.getTravel());
     }
 
 }

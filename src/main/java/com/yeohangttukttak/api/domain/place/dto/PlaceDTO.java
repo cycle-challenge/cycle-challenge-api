@@ -1,5 +1,6 @@
 package com.yeohangttukttak.api.domain.place.dto;
 import com.yeohangttukttak.api.domain.file.dto.ImageDTO;
+import com.yeohangttukttak.api.domain.file.entity.File;
 import com.yeohangttukttak.api.domain.place.entity.Location;
 import com.yeohangttukttak.api.domain.place.entity.Place;
 import com.yeohangttukttak.api.domain.place.entity.PlaceType;
@@ -36,7 +37,11 @@ public class PlaceDTO {
         this.name = place.getName();
         this.type = place.getType();
         this.location = new LocationDTO(place.getLocation());
-        this.images = place.getFiles().stream().map(ImageDTO::new).toList();
+        this.images = place.getFiles().stream()
+                .sorted(comparing(File::getId))
+                .limit(5)
+                .map(ImageDTO::new)
+                .toList();
     }
 
     public PlaceDTO(Entry<Place, List<VisitSearchResult>> entry) {

@@ -45,7 +45,7 @@ public class Travel extends BaseEntity {
     @OneToMany(mappedBy = "travel")
     private List<Visit> visits = new ArrayList<>();
 
-    @OneToOne
+    @OneToOne(fetch = LAZY)
     @JoinColumn(name = "thumbnail_id")
     private File thumbnail;
 
