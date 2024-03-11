@@ -7,7 +7,10 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum TransportType implements ValueBasedEnum {
     CAR ("car"),
-    PUBLIC ("public");
+    PUBLIC ("public"),
+    CYCLE("cycle"),
+    WORK("work"),
+    OTHERS("others");
 
     private final String value;
 
