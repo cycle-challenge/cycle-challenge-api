@@ -76,7 +76,7 @@ public class VisitSearchServiceTest {
                 .id(2L)
                 .member(memberB)
                 .accompanyType(AccompanyType.CHILDREN)
-                .motivation(Motivation.EDUCATION)
+                .motivation(Motivation.EDU)
                 .transportType(TransportType.PUBLIC)
                 .period(new TravelPeriod(
                         LocalDate.parse("2022-08-15"),
@@ -119,7 +119,7 @@ public class VisitSearchServiceTest {
 
         Collections.shuffle(files);
 
-        files.forEach(file -> placeA.getFiles().add(file));
+        files.forEach(file -> visitA.getFiles().add(file));
     }
 
 
@@ -134,7 +134,7 @@ public class VisitSearchServiceTest {
                 createResult(visitB2),
                 createResult(visitB),
                 createResult(visitA)
-        );;
+        );
 
         when(visitRepository.search(search)).thenReturn(results);
 

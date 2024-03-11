@@ -72,7 +72,7 @@ class VisitRepositoryTest {
         travelB = Travel.builder()
                 .member(memberB)
                 .accompanyType(AccompanyType.CHILDREN)
-                .motivation(Motivation.EDUCATION)
+                .motivation(Motivation.EDU)
                 .transportType(TransportType.PUBLIC)
                 .period(new TravelPeriod(
                         LocalDate.parse("2022-08-15"),
@@ -125,7 +125,7 @@ class VisitRepositoryTest {
         VisitSearch search = VisitSearch.builder()
                 .location(new Location(36.6600, 127.4900))
                 .radius(20000)
-                .ageGroups(Set.of(AgeGroup.S20, AgeGroup.P50))
+                .ageGroups(Set.of(AgeGroup.S20, AgeGroup.S50))
                 .build();
 
         // when
@@ -198,7 +198,7 @@ class VisitRepositoryTest {
         VisitSearch search = VisitSearch.builder()
                 .location(new Location(36.6600, 127.4900))
                 .radius(20000)
-                .motivations(Set.of(Motivation.RELAX, Motivation.EXPERIENCE))
+                .motivations(Set.of(Motivation.RELAX, Motivation.EXPR))
                 .build();
 
         // when
