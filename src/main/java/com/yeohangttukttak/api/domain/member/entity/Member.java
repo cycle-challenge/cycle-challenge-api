@@ -21,10 +21,14 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private AgeGroup ageGroup;
 
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
+
     @Builder
-    public Member(Long id, String nickname, AgeGroup ageGroup) {
+    public Member(Long id, String nickname, AgeGroup ageGroup, Gender gender) {
         this.id = id;
         this.nickname = nickname;
         this.ageGroup = ageGroup;
+        this.gender = gender;
     }
 }
