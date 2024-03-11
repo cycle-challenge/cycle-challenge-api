@@ -1,6 +1,7 @@
 package com.yeohangttukttak.api.domain.travel.dto;
 
 import com.yeohangttukttak.api.domain.file.dto.ImageDTO;
+import com.yeohangttukttak.api.domain.file.entity.File;
 import com.yeohangttukttak.api.domain.member.dto.MemberDTO;
 import com.yeohangttukttak.api.domain.place.entity.Place;
 import com.yeohangttukttak.api.domain.travel.entity.AccompanyType;
@@ -33,7 +34,7 @@ public class TravelDTO {
 
     private MemberDTO member;
 
-    public TravelDTO(Travel travel) {
+    public TravelDTO(Travel travel, ImageDTO thumbnail) {
         this.id = travel.getId();
         this.name = travel.getName();
         this.motivation = travel.getMotivation();
@@ -42,7 +43,7 @@ public class TravelDTO {
         this.startedOn = travel.getPeriod().getStartedOn();
         this.endedOn = travel.getPeriod().getEndedOn();
 
-        this.thumbnail = travel.getThumbnail() != null ? new ImageDTO(travel.getThumbnail()) : null;
+        this.thumbnail = thumbnail;
         this.member = new MemberDTO(travel.getMember());
     }
 

@@ -37,25 +37,14 @@ public class PlaceDTO {
         this.name = place.getName();
         this.type = place.getType();
         this.location = new LocationDTO(place.getLocation());
-        this.images = place.getFiles().stream()
-                .sorted(comparing(File::getId))
-                .limit(5)
-                .map(ImageDTO::new)
-                .toList();
     }
 
-    public PlaceDTO(Entry<Place, List<VisitSearchResult>> entry) {
-        this(entry.getKey());
-        List<VisitSearchResult> results = entry.getValue();
+    public PlaceDTO(Place place, List<Reference> travels, List<ImageDTO> imageDTOS, Double distance) {
+        this(place);
 
-        location.setDistance(results.get(0).getDistance());
-
-        travels = results.stream()
-                .map(VisitSearchResult::getTravel)
-                .map(result -> new Reference(result.getId(), "travel"))
-                .distinct()
-                .sorted(comparing(Reference::getId))
-                .toList();
+        this.getLocation().setDistance(distance);
+        this.travels = travels;
+        this.images = imageDTOS;
     }
 
 }
