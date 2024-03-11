@@ -1,21 +1,20 @@
-package com.yeohangttukttak.api.domain.travel.entity;
+package com.yeohangttukttak.api.domain.member.entity;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.yeohangttukttak.api.global.interfaces.ValueBasedEnum;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public enum TransportType implements ValueBasedEnum {
-    CAR ("car"),
-    PUBLIC ("public"),
-    CYCLE("cycle"),
-    WORK("work"),
-    OTHERS("others");
+public enum Gender implements ValueBasedEnum {
 
-    private final String value;
+    MALE("male"),
+    FEMALE("female");
+
+    private String value;
 
     @JsonValue
     public String getValue() {
         return value;
     }
+
 }

@@ -1,13 +1,20 @@
 package com.yeohangttukttak.api.domain.place.dto;
 import com.yeohangttukttak.api.domain.file.dto.ImageDTO;
+import com.yeohangttukttak.api.domain.file.entity.File;
 import com.yeohangttukttak.api.domain.place.entity.Location;
 import com.yeohangttukttak.api.domain.place.entity.Place;
 import com.yeohangttukttak.api.domain.place.entity.PlaceType;
 import com.yeohangttukttak.api.domain.travel.entity.Travel;
+import com.yeohangttukttak.api.domain.visit.dao.VisitSearchResult;
+import com.yeohangttukttak.api.domain.visit.entity.Visit;
+import com.yeohangttukttak.api.global.common.Reference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.*;
+import java.util.Map.Entry;
+
+import static java.util.Comparator.comparing;
 
 
 @Data
@@ -29,27 +36,15 @@ public class PlaceDTO {
         this.id = place.getId();
         this.name = place.getName();
         this.type = place.getType();
-        this.location = new LocationDTO(new Location(place.getPoint()));
-        this.images = place.getFiles().stream().map(ImageDTO::new).toList();
+        this.location = new LocationDTO(place.getLocation());
     }
 
+    public PlaceDTO(Place place, List<Reference> travels, List<ImageDTO> imageDTOS, Double distance) {
+        this(place);
 
-    public PlaceDTO(Map.Entry<Place, List<Travel>> entry) {
-        this(entry.getKey());
-
-        this.travels = entry.getValue().stream()
-                .map(travel -> new Reference(travel.getId(), "travel"))
-                .distinct().toList();
-    }
-
-    @Data
-    @AllArgsConstructor
-    public static class Reference {
-
-        private Long id;
-
-        private String type;
-
+        this.getLocation().setDistance(distance);
+        this.travels = travels;
+        this.images = imageDTOS;
     }
 
 }

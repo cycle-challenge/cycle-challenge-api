@@ -6,12 +6,15 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public enum Motivation implements ValueBasedEnum {
-    EXIST("existing"),          // 재미
-    EDUCATION("education"),     // 교육
+    REFRESH("refresh"),          // 재미
+    RELAX("relax"),
+    EDU("education"),     // 교육
     SOCIAL("social"),           // 친목
     REFLECT("reflect"),         // 성찰
-    EXPERIENCE("experience"),   // 경험
-    RELAX("relax");             // 힐링
+    SNS("sns"),
+    ENERGY("energy"),
+    EXPR("experience"),   // 경험
+    OTHERS("others");             // 힐링
 
     private final String value;
 
