@@ -63,7 +63,7 @@ public class VisitRepository {
 
     private BooleanTemplate dwithin(Location location, int radius) {
         return Expressions.booleanTemplate(
-                "st_dwithin({0}, {1}, {2}, false) is true",
+                "dwithin({0}, {1}, {2}, false)",
                 place.location.point,
                 location.getPoint(),
                 radius
