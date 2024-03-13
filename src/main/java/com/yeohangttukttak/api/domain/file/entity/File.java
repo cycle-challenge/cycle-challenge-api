@@ -30,9 +30,6 @@ public class File extends BaseEntity {
 
     private String mimeType;
 
-//    @OneToOne(fetch = LAZY)
-//    private Travel travel;
-
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "visit_id")
     private Visit visit;

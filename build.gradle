@@ -27,6 +27,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
+	implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
+
+
 	runtimeOnly 'org.postgresql:postgresql'
 	implementation 'org.hibernate:hibernate-spatial:6.4.1.Final'
 	implementation 'com.querydsl:querydsl-spatial'

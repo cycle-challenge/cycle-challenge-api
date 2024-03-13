@@ -32,10 +32,13 @@ public class PlaceDTO {
 
     private List<Reference> travels;
 
+    private String googlePlaceId;
+
     public PlaceDTO(Place place) {
         this.id = place.getId();
         this.name = place.getName();
         this.type = place.getType();
+        this.googlePlaceId = place.getGooglePlaceId();
         this.location = new LocationDTO(place.getLocation());
     }
 
