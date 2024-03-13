@@ -5,20 +5,13 @@ spring:
       ddl-auto: update
     properties:
       hibernate:
-        format_sql: true
-        highlight_sql: true
         default_batch_fetch_size: 1000
 
   datasource:
-    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
-    driver-class-name: org.postgresql.Driver
+    url: jdbc:log4jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
-
-logging:
-  level:
-    org.hibernate.SQL: debug
-    org.hibernate.type.descriptor.sql: trace
 
 management:
   endpoints:
@@ -28,3 +21,11 @@ management:
         include: health
   endpoint:
     health.enabled: true
+
+logging.level:
+    jdbc.sqlonly: off
+    jdbc.sqltiming: info
+    jdbc.resultsettable: off
+    jdbc.audit: off
+    jdbc.resultset: off
+    jdbc.connection: off
