@@ -19,7 +19,6 @@ import static lombok.AccessLevel.PROTECTED;
 
 @Entity @Getter
 @NoArgsConstructor(access = PROTECTED)
-@EqualsAndHashCode
 public class Travel extends BaseEntity implements Attachable {
 
     @Id @GeneratedValue

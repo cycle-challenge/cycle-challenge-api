@@ -29,3 +29,7 @@ logging.level:
     jdbc.audit: off
     jdbc.resultset: off
     jdbc.connection: off
+
+host:
+  storage:
+    local: ${LOCAL_STORAGE_PATH}
