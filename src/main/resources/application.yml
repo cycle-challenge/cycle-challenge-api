@@ -30,6 +30,6 @@ logging.level:
     jdbc.resultset: off
     jdbc.connection: off
 
-path:
+host:
   storage:
     local: ${LOCAL_STORAGE_PATH}

@@ -2,28 +2,32 @@ package com.yeohangttukttak.api.domain.file.entity;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Component
 public class FileURL {
 
-    private static String localPath;
+    private static String localHost;
 
-    @Value("${path.storage.local}")
-    public void setLocalPath(String localPath) {
-        FileURL.localPath = localPath;
+    @Value("${host.storage.local}")
+    public void setLocalPath(String localHost) {
+        FileURL.localHost = localHost;
     }
 
     public static String create(StorageType storageType,
                                 String path, String name) {
-        final StringBuilder sb = new StringBuilder();
+
+        UriComponentsBuilder builder = UriComponentsBuilder
+                .newInstance()
+                .scheme("https");
 
         if (storageType == StorageType.LOCAL) {
-            sb.append(localPath);
+            builder.host(localHost);
         }
 
-        return sb.append(path)
-                .append(name)
-                .toString();
+        return builder.path(path)
+                .path(name)
+                .build().toString();
     }
 
 }
