@@ -1,7 +1,7 @@
 package com.yeohangttukttak.api.domain.file.dto;
 
-import com.yeohangttukttak.api.domain.file.entity.File;
 import com.yeohangttukttak.api.domain.file.entity.FileURL;
+import com.yeohangttukttak.api.domain.file.entity.Image;
 import lombok.Data;
 
 @Data
@@ -9,15 +9,21 @@ public class ImageDTO {
 
     private Long id;
 
-    private String url;
+    private String small;
 
-    private String mimeType;
+    private String medium;
 
-    public ImageDTO (File file) {
-        this.id = file.getId();
-        this.url = FileURL.create(file.getStorageType(),
-                          file.getPath(), file.getName());
-        this.mimeType = file.getMimeType();
+    private String large;
+
+    public ImageDTO (Image image) {
+        this.id = image.getId();
+
+        this.small = FileURL.create(image.getStorageType(),
+                "/_144", image.getPath(), image.getName());
+        this.medium = FileURL.create(image.getStorageType(),
+                "/_360", image.getPath(), image.getName());
+        this.large = FileURL.create(image.getStorageType(),
+                "/_720", image.getPath(), image.getName());
     }
 
 }

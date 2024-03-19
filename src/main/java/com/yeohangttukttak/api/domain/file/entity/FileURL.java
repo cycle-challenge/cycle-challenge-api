@@ -2,7 +2,8 @@ package com.yeohangttukttak.api.domain.file.entity;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.web.util.UriComponentsBuilder;
+
+import java.util.Arrays;
 
 @Component
 public class FileURL {
@@ -14,20 +15,16 @@ public class FileURL {
         FileURL.localHost = localHost;
     }
 
-    public static String create(StorageType storageType,
-                                String path, String name) {
+    public static String create(StorageType storageType, String... tokens) {
 
-        UriComponentsBuilder builder = UriComponentsBuilder
-                .newInstance()
-                .scheme("https");
+        StringBuilder sb = new StringBuilder();
 
         if (storageType == StorageType.LOCAL) {
-            builder.host(localHost);
+            sb.append(localHost);
         }
 
-        return builder.path(path)
-                .path(name)
-                .build().toString();
+        Arrays.stream(tokens).forEach(sb::append);
+        return sb.toString();
     }
 
 }

@@ -1,7 +1,7 @@
 package com.yeohangttukttak.api.service.visit;
 
 import com.yeohangttukttak.api.domain.file.dto.ImageDTO;
-import com.yeohangttukttak.api.domain.file.entity.File;
+import com.yeohangttukttak.api.domain.file.entity.Image;
 import com.yeohangttukttak.api.domain.member.entity.AgeGroup;
 import com.yeohangttukttak.api.domain.member.entity.Member;
 import com.yeohangttukttak.api.domain.place.dto.PlaceDTO;
@@ -45,7 +45,7 @@ public class VisitSearchServiceTest {
     Travel travelA, travelB;
     Place placeA, placeB;
     Visit visitA, visitB, visitA2, visitB2;
-    List<File> files;
+    List<Image> images;
 
     @BeforeEach
     public void init() {
@@ -113,13 +113,13 @@ public class VisitSearchServiceTest {
                 .id(4L).place(placeB).travel(travelB)
                 .build();
 
-        files = new ArrayList<>(LongStream.range(1, 11)
-                .mapToObj(id -> File.builder().id(id).build())
+        images = new ArrayList<>(LongStream.range(1, 11)
+                .mapToObj(id -> Image.builder().id(id).build())
                 .toList());
 
-        Collections.shuffle(files);
+        Collections.shuffle(images);
 
-        files.forEach(file -> visitA.getFiles().add(file));
+        images.forEach(file -> visitA.getImages().add(file));
     }
 
 

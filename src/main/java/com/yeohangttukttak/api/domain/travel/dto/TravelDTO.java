@@ -1,14 +1,11 @@
 package com.yeohangttukttak.api.domain.travel.dto;
 
 import com.yeohangttukttak.api.domain.file.dto.ImageDTO;
-import com.yeohangttukttak.api.domain.file.entity.File;
 import com.yeohangttukttak.api.domain.member.dto.MemberDTO;
-import com.yeohangttukttak.api.domain.place.entity.Place;
 import com.yeohangttukttak.api.domain.travel.entity.AccompanyType;
 import com.yeohangttukttak.api.domain.travel.entity.Motivation;
 import com.yeohangttukttak.api.domain.travel.entity.TransportType;
 import com.yeohangttukttak.api.domain.travel.entity.Travel;
-import com.yeohangttukttak.api.domain.visit.dao.VisitSearchResult;
 import lombok.Data;
 
 import java.time.LocalDate;

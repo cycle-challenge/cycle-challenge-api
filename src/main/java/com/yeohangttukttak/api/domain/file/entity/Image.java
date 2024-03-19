@@ -1,6 +1,5 @@
 package com.yeohangttukttak.api.domain.file.entity;
 
-import com.yeohangttukttak.api.domain.travel.entity.Travel;
 import com.yeohangttukttak.api.domain.visit.entity.Visit;
 import com.yeohangttukttak.api.domain.BaseEntity;
 import jakarta.persistence.*;
@@ -8,16 +7,19 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static jakarta.persistence.FetchType.LAZY;
 import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
-public class File extends BaseEntity {
+public class Image extends BaseEntity {
 
     @Id @GeneratedValue
-    @Column(name = "file_id")
+    @Column(name = "image_id")
     private Long id;
 
     private String name;
@@ -33,12 +35,8 @@ public class File extends BaseEntity {
     @JoinColumn(name = "visit_id")
     private Visit visit;
 
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "travel_id")
-    private Travel travel;
-
     @Builder
-    public File(Long id, String name, String path, String mimeType) {
+    public Image(Long id, String name, String path, String mimeType) {
         this.id = id;
         this.name = name;
         this.path = path;
