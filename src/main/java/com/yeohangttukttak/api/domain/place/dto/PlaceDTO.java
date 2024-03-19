@@ -1,18 +1,11 @@
 package com.yeohangttukttak.api.domain.place.dto;
 import com.yeohangttukttak.api.domain.file.dto.ImageDTO;
-import com.yeohangttukttak.api.domain.file.entity.File;
-import com.yeohangttukttak.api.domain.place.entity.Location;
 import com.yeohangttukttak.api.domain.place.entity.Place;
 import com.yeohangttukttak.api.domain.place.entity.PlaceType;
-import com.yeohangttukttak.api.domain.travel.entity.Travel;
-import com.yeohangttukttak.api.domain.visit.dao.VisitSearchResult;
-import com.yeohangttukttak.api.domain.visit.entity.Visit;
 import com.yeohangttukttak.api.global.common.Reference;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.*;
-import java.util.Map.Entry;
 
 import static java.util.Comparator.comparing;
 

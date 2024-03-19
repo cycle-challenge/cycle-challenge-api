@@ -1,7 +1,7 @@
 package com.yeohangttukttak.api.domain.visit.service;
 
 import com.yeohangttukttak.api.domain.file.dto.ImageDTO;
-import com.yeohangttukttak.api.domain.file.entity.File;
+import com.yeohangttukttak.api.domain.file.entity.Image;
 import com.yeohangttukttak.api.domain.place.dto.PlaceDTO;
 import com.yeohangttukttak.api.domain.travel.dto.TravelDTO;
 import com.yeohangttukttak.api.domain.travel.entity.Travel;
@@ -64,9 +64,9 @@ public class VisitSearchService {
     private List<ImageDTO> getPreviewImages(List<VisitSearchResult> results) {
         return results.stream()
                 .map(VisitSearchResult::getVisit)
-                .map(Visit::getFiles)
+                .map(Visit::getImages)
                 .flatMap(Collection::stream)
-                .sorted(comparing(File::getId))
+                .sorted(comparing(Image::getId))
                 .limit(5)
                 .map(ImageDTO::new)
                 .toList();
@@ -82,8 +82,7 @@ public class VisitSearchService {
     }
 
     private ImageDTO getThumbnail(Travel travel) {
-        File thumbnail = travel.getFiles().stream().findFirst().orElse(null);
-        return thumbnail == null ? null : new ImageDTO(thumbnail);
+        return travel.getThumbnail() == null ? null : new ImageDTO(travel.getThumbnail());
     }
 
 

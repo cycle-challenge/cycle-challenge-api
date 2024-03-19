@@ -1,10 +1,9 @@
 package com.yeohangttukttak.api.domain.visit.entity;
 
 import com.yeohangttukttak.api.domain.BaseEntity;
-import com.yeohangttukttak.api.domain.file.entity.File;
+import com.yeohangttukttak.api.domain.file.entity.Image;
 import com.yeohangttukttak.api.domain.place.entity.Place;
 import com.yeohangttukttak.api.domain.travel.entity.Travel;
-import com.yeohangttukttak.api.global.interfaces.Attachable;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,7 +19,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
-public class Visit extends BaseEntity implements Attachable {
+public class Visit extends BaseEntity {
 
     @Id @GeneratedValue
     @Column(name = "visit_id")
@@ -39,7 +38,7 @@ public class Visit extends BaseEntity implements Attachable {
     private Place place;
 
     @OneToMany(mappedBy = "visit")
-    private List<File> files = new ArrayList<>();
+    private List<Image> images = new ArrayList<>();
 
     @Builder
     public Visit(Long id, int dayOfTravel, int orderOfVisit, Place place, Travel travel) {
