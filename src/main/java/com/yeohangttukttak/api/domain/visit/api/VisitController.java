@@ -1,5 +1,6 @@
 package com.yeohangttukttak.api.domain.visit.api;
 
+import com.yeohangttukttak.api.domain.travel.dto.TravelDTO;
 import com.yeohangttukttak.api.domain.travel.entity.Season;
 import com.yeohangttukttak.api.global.common.ApiResponse;
 import com.yeohangttukttak.api.domain.member.entity.AgeGroup;
@@ -19,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -31,7 +33,7 @@ public class VisitController {
 
 
     @GetMapping("/search")
-    public ApiResponse<VisitSearchDTO> search(
+    public ApiResponse<List<TravelDTO>> search(
             @Valid @ModelAttribute VisitSearchParams params
     ) {
         Location location = new Location(

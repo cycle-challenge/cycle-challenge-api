@@ -23,9 +23,9 @@ public class PlaceDTO {
 
     private List<ImageDTO> images;
 
-    private List<Reference> travels;
-
     private String googlePlaceId;
+
+    private int visitCount;
 
     public PlaceDTO(Place place) {
         this.id = place.getId();
@@ -35,12 +35,12 @@ public class PlaceDTO {
         this.location = new LocationDTO(place.getLocation());
     }
 
-    public PlaceDTO(Place place, List<Reference> travels, List<ImageDTO> imageDTOS, Double distance) {
+    public PlaceDTO(Place place, List<ImageDTO> imageDTOS, Double distance, int visitCount) {
         this(place);
 
         this.getLocation().setDistance(distance);
-        this.travels = travels;
         this.images = imageDTOS;
+        this.visitCount = visitCount;
     }
 
 }

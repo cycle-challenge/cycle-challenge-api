@@ -1,22 +1,17 @@
 package com.yeohangttukttak.api.domain.visit.dao;
 
-import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.BooleanTemplate;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.querydsl.spatial.GeometryExpression;
-import com.querydsl.spatial.GeometryExpressions;
 import com.yeohangttukttak.api.domain.member.entity.AgeGroup;
 import com.yeohangttukttak.api.domain.place.entity.Location;
 import com.yeohangttukttak.api.domain.travel.entity.*;
-import com.yeohangttukttak.api.domain.visit.entity.Visit;
 import com.yeohangttukttak.api.domain.visit.dto.VisitSearch;
 import jakarta.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
-import org.geolatte.geom.Geometry;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

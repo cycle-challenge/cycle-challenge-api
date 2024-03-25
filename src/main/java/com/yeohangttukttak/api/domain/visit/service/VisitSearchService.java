@@ -28,33 +28,41 @@ public class VisitSearchService {
 
     private final VisitRepository visitRepository;
 
-    public VisitSearchDTO search(VisitSearch search) {
+    public List<TravelDTO> search(VisitSearch search) {
         List<VisitSearchResult> results = visitRepository.search(search);
 
+        Map<Long, List<PlaceDTO>> map = new HashMap<>();
+
         // place 탐색
-        List<PlaceDTO> placeDTOS = results.stream()
+        results.stream()
                 .collect(groupingBy(
                         VisitSearchResult::getPlace,
-                            mapping(identity(), toList()
+                        mapping(identity(), toList()
                         )))
-                .entrySet().stream()
-                .map(entry -> new PlaceDTO(entry.getKey(),
-                        getTravelRef(entry.getValue()),
-                        getPreviewImages(entry.getValue()),
-                        getDistance(entry.getValue()))
-                )
-                .sorted(comparing(PlaceDTO::getId))
-                .toList();
+                .forEach((key, value) -> {
+                    PlaceDTO placeDTO = new PlaceDTO(key,
+                            getPreviewImages(value),
+                            getDistance(value),
+                            value.size());
+                    value.forEach(e -> {
+                        Long travelId = e.getTravel().getId();
+
+                        if (!map.containsKey(travelId))
+                            map.put(travelId, new ArrayList<>());
+
+                        map.get(travelId).add(placeDTO);
+                    });
+                });
+
 
         // travelDTO 조립
-        List<TravelDTO> travelDTOS = results.stream()
+        return results.stream()
                 .map(VisitSearchResult::getTravel)
-                .map(travel -> new TravelDTO(travel, getThumbnail(travel)))
+                .map(travel -> new TravelDTO(travel,
+                        map.get(travel.getId()), getThumbnail(travel)))
                 .distinct()
                 .sorted(comparing(TravelDTO::getId))
                 .toList();
-
-        return new VisitSearchDTO(travelDTOS, placeDTOS);
     }
 
     private Double getDistance(List<VisitSearchResult> results) {
