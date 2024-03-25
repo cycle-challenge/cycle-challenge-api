@@ -6,23 +6,16 @@ import jakarta.persistence.EntityManager;
 import com.yeohangttukttak.api.domain.file.entity.Image;
 import com.yeohangttukttak.api.global.common.PageResult;
 import com.yeohangttukttak.api.global.common.PageSearch;
-import com.querydsl.jpa.impl.JPAQueryFactory;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import static com.yeohangttukttak.api.domain.file.entity.QImage.image;
-import static com.yeohangttukttak.api.domain.place.entity.QPlace.place;
 
 import java.util.List;
 
 @Repository
+@RequiredArgsConstructor
 public class PlaceRepository {
 
     private final EntityManager em;
-    private final JPAQueryFactory queryFactory;
-
-    public PlaceRepository (EntityManager entityManager) {
-        em = entityManager;
-        this.queryFactory = new JPAQueryFactory(entityManager);
-    }
 
     public List<FindPlaceNearbyQueryDTO> findNearby(Location location, int radius) {
         return em.createQuery("SELECT new com.yeohangttukttak.api.domain.place.dto" +
@@ -34,21 +27,15 @@ public class PlaceRepository {
                 .getResultList();
     }
 
-    public PageResult<Image> getPlaceImage(Long id, PageSearch search) {
-
-        return em.createQuery(
-                "SELECT i from Image as i join i.place"
-        )
-
-        List<Image> files = queryFactory.select(image)
-                .from(image)
-                .join(image.place, place)
-                .where(place.id.eq(id))
-                .offset(search.getOffset())
-                .limit(search.getPageSize() + 1)
-                .orderBy(image.id.asc())
-                .fetch();
-
-        return new PageResult<>(files, search);
+    public PageResult<Image> getImage(Long id, PageSearch search) {
+        return new PageResult<>(em.createQuery(
+                "SELECT i FROM Image as i " +
+                        "JOIN i.place as p " +
+                        "WHERE p.id = :id " +
+                        "ORDER BY p.id", Image.class)
+                .setParameter("id", id)
+                .setFirstResult(search.getOffset())
+                .setMaxResults(search.getPageSize() + 1)
+                .getResultList(), search);
     }
 }

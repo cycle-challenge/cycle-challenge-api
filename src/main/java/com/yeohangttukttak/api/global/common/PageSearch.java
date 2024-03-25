@@ -5,11 +5,11 @@ import lombok.Data;
 @Data
 public class PageSearch {
 
-    private Long page;
+    private int page;
 
-    private Long pageSize;
+    private int pageSize;
 
-    public Long getOffset() {
+    public int getOffset() {
         return (page - 1) * pageSize;
     }
 

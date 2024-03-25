@@ -18,9 +18,9 @@ public class PageResult<T> {
     @AllArgsConstructor
     public static class PageInfo {
 
-        private Long page;
+        private int page;
 
-        private Long pageSize;
+        private int pageSize;
 
         private boolean hasNextPage;
 

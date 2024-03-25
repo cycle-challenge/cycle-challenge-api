@@ -29,19 +29,20 @@ public class PlaceDTO {
 
     private List<TravelDTO> travels;
 
-    public PlaceDTO(Place place) {
+    public PlaceDTO(Place place, List<ImageDTO> images, Double distance) {
         this.id = place.getId();
         this.name = place.getName();
         this.type = place.getType();
         this.googlePlaceId = place.getGooglePlaceId();
-        this.location = new LocationDTO(place.getLocation());
-        this.travels = place.getVisits().stream().map(Visit::getTravel)
-                .map(TravelDTO::new).toList();
-    }
 
-    public PlaceDTO(FindPlaceNearbyQueryDTO queryDTO) {
-        this(queryDTO.getPlace());
-        this.getLocation().setDistance(queryDTO.getDistance());
+        this.location = new LocationDTO(place.getLocation());
+        this.getLocation().setDistance(distance);
+
+        this.travels = place.getVisits().stream()
+                .map(Visit::getTravel)
+                .map(TravelDTO::new).toList();
+
+        this.images = images;
     }
 
 }

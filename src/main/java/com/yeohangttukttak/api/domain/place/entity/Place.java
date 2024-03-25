@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +36,9 @@ public class Place extends BaseEntity {
 
     @OneToMany(mappedBy = "place")
     private List<Visit> visits = new ArrayList<>();
+
+    @OneToMany(mappedBy = "place")
+    private List<Image> images = new ArrayList<>();
 
     @Builder
     public Place(Long id, String name, PlaceType type, Location location) {
