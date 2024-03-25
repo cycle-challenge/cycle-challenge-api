@@ -10,20 +10,23 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import com.yeohangttukttak.api.domain.file.dto.ImageDTO;
+import com.yeohangttukttak.api.domain.file.entity.Image;
+import com.yeohangttukttak.api.global.common.PageResult;
+import com.yeohangttukttak.api.global.common.PageSearch;
+import lombok.AllArgsConstructor;
+
 @RestController
-@RequestMapping("/api/v1/places")
 @RequiredArgsConstructor
-@Slf4j
+@RequestMapping("/api/v1/places")
 public class PlaceController {
 
     private final PlaceRepository placeRepository;
-
 
     @GetMapping("/nearby")
     public ApiResponse<List<PlaceDTO>> findNearby(
@@ -49,6 +52,25 @@ public class PlaceController {
 
         @NotNull @Range(min = 3000, max = 50000)
         private Integer radius;
+
+    }
+
+    @GetMapping("/{id}/images")
+    public ApiResponse<PlaceImageDTO> getPlaceImages(
+            @PathVariable("id") Long id,
+            @ModelAttribute PageSearch search) {
+
+        PageResult<Image> images = placeRepository.getPlaceImage(id, search);
+
+        return new ApiResponse<>(new PlaceImageDTO(images.convertEntities(ImageDTO::new)));
+
+    }
+
+    @Data
+    @AllArgsConstructor
+    public static class PlaceImageDTO {
+
+        PageResult<ImageDTO> images;
 
     }
 }
