@@ -33,9 +33,7 @@ public class TravelDTO {
 
     private MemberDTO member;
 
-    private List<PlaceDTO> places;
-
-    public TravelDTO(Travel travel, List<PlaceDTO> places, ImageDTO thumbnail) {
+    public TravelDTO(Travel travel) {
         this.id = travel.getId();
         this.name = travel.getName();
         this.motivation = travel.getMotivation();
@@ -45,9 +43,8 @@ public class TravelDTO {
         this.endedOn = travel.getPeriod().getEndedOn();
         this.seasons = travel.getPeriod().getSeasons();
 
-        this.thumbnail = thumbnail;
+        this.thumbnail = new ImageDTO(travel.getThumbnail());
         this.member = new MemberDTO(travel.getMember());
-        this.places = places;
     }
 
 }

@@ -2,6 +2,8 @@ package com.yeohangttukttak.api.domain.place.dto;
 import com.yeohangttukttak.api.domain.file.dto.ImageDTO;
 import com.yeohangttukttak.api.domain.place.entity.Place;
 import com.yeohangttukttak.api.domain.place.entity.PlaceType;
+import com.yeohangttukttak.api.domain.travel.dto.TravelDTO;
+import com.yeohangttukttak.api.domain.visit.entity.Visit;
 import com.yeohangttukttak.api.global.common.Reference;
 import lombok.Data;
 
@@ -25,7 +27,7 @@ public class PlaceDTO {
 
     private String googlePlaceId;
 
-    private int visitCount;
+    private List<TravelDTO> travels;
 
     public PlaceDTO(Place place) {
         this.id = place.getId();
@@ -33,14 +35,13 @@ public class PlaceDTO {
         this.type = place.getType();
         this.googlePlaceId = place.getGooglePlaceId();
         this.location = new LocationDTO(place.getLocation());
+        this.travels = place.getVisits().stream().map(Visit::getTravel)
+                .map(TravelDTO::new).toList();
     }
 
-    public PlaceDTO(Place place, List<ImageDTO> imageDTOS, Double distance, int visitCount) {
-        this(place);
-
-        this.getLocation().setDistance(distance);
-        this.images = imageDTOS;
-        this.visitCount = visitCount;
+    public PlaceDTO(FindPlaceNearbyQueryDTO queryDTO) {
+        this(queryDTO.getPlace());
+        this.getLocation().setDistance(queryDTO.getDistance());
     }
 
 }

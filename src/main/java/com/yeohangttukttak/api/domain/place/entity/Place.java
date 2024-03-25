@@ -1,6 +1,7 @@
 package com.yeohangttukttak.api.domain.place.entity;
 
 import com.yeohangttukttak.api.domain.BaseEntity;
+import com.yeohangttukttak.api.domain.file.entity.Image;
 import com.yeohangttukttak.api.domain.visit.entity.Visit;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -30,10 +31,10 @@ public class Place extends BaseEntity {
     @Embedded
     private Location location;
 
+    private String googlePlaceId;
+
     @OneToMany(mappedBy = "place")
     private List<Visit> visits = new ArrayList<>();
-
-    private String googlePlaceId;
 
     @Builder
     public Place(Long id, String name, PlaceType type, Location location) {
