@@ -6,11 +6,11 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public enum AgeGroup implements ValueBasedEnum {
-    S20("20s"), // 20 ~ 30대
-    S30("30s"), // 30 ~ 40대
-    S40("40s"), // 40 ~ 50대
-    S50("50s"), // 50 ~ 60대
-    P60("60s"); // 60대 ~
+    S20("s20"), // 20 ~ 30대
+    S30("s30"), // 30 ~ 40대
+    S40("s40"), // 40 ~ 50대
+    S50("s50"), // 50 ~ 60대
+    P60("p60"); // 60대 ~
 
     private final String value;
 
