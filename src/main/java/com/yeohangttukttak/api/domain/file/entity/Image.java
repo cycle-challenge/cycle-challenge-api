@@ -41,10 +41,11 @@ public class Image extends BaseEntity {
     private Place place;
 
     @Builder
-    public Image(Long id, String name, String path, String mimeType) {
+    public Image(Long id, String name, String path, String mimeType, Place place) {
         this.id = id;
         this.name = name;
         this.path = path;
         this.mimeType = mimeType;
+        this.place = place;
     }
 }

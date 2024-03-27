@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class FindPlaceNearbyQueryDTO {
+public class PlaceFindNearbyQueryDTO {
 
     private Place place;
 

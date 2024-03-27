@@ -54,7 +54,8 @@ public class Travel extends BaseEntity {
                   AccompanyType accompanyType,
                   TransportType transportType,
                   Motivation motivation,
-                  Member member) {
+                  Member member,
+                  Image thumbnail) {
         this.id = id;
         this.name = name;
         this.period = period;
@@ -62,6 +63,7 @@ public class Travel extends BaseEntity {
         this.transportType = transportType;
         this.motivation = motivation;
         this.member = member;
+        this.thumbnail = thumbnail;
     }
 
 }

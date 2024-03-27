@@ -1,7 +1,7 @@
 package com.yeohangttukttak.api.repository;
 
 import com.yeohangttukttak.api.domain.place.dao.PlaceRepository;
-import com.yeohangttukttak.api.domain.place.dto.FindPlaceNearbyQueryDTO;
+import com.yeohangttukttak.api.domain.place.dto.PlaceFindNearbyQueryDTO;
 import com.yeohangttukttak.api.domain.place.entity.Location;
 import com.yeohangttukttak.api.domain.place.entity.Place;
 import jakarta.persistence.EntityManager;
@@ -44,13 +44,13 @@ class PlaceRepositoryTest {
         int radius = 2000;
 
         // when
-        List<FindPlaceNearbyQueryDTO> results = placeRepository.findNearby(location, radius);
+        List<PlaceFindNearbyQueryDTO> results = placeRepository.findNearby(location, radius);
 
         results.forEach(result -> System.out.println(result.getDistance()));
 
         // then
         assertThat(results)
-                .extracting(FindPlaceNearbyQueryDTO::getPlace)
+                .extracting(PlaceFindNearbyQueryDTO::getPlace)
                 .as("2KM 이내의 장소는 반환되어야 한다.")
                 .contains(placeA)
                 .as("2KM 이상 떨어진 장소는 반한되서는 안된다.")
@@ -75,12 +75,12 @@ class PlaceRepositoryTest {
         int radius = 3000;
 
         // when
-        List<FindPlaceNearbyQueryDTO> results = placeRepository.findNearby(location, radius);
+        List<PlaceFindNearbyQueryDTO> results = placeRepository.findNearby(location, radius);
 
 
         // then
         assertThat(results)
-                .extracting(FindPlaceNearbyQueryDTO::getDistance)
+                .extracting(PlaceFindNearbyQueryDTO::getDistance)
                 .extracting(Math::floor)
                 .as("두 장소 모두 반환해야 한다.")
                 .hasSize(2)

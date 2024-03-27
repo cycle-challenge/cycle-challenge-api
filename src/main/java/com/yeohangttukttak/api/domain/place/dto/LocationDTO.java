@@ -23,14 +23,15 @@ public class LocationDTO {
         this.longitude = location.getLongitude();
     }
 
+    public LocationDTO (Location location, Double distance) {
+        this(location);
+        DecimalFormat df = new DecimalFormat("#.#");
+        this.distance = Double.parseDouble(df.format(distance / 1000));
+    }
+
     public LocationDTO (Double latitude, Double longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
-    }
-
-    public void setDistance(Double distance) {
-        DecimalFormat df = new DecimalFormat("#.#");
-        this.distance = Double.parseDouble(df.format(distance / 1000));
     }
 
 }

@@ -1,6 +1,6 @@
 package com.yeohangttukttak.api.domain.place.dao;
 
-import com.yeohangttukttak.api.domain.place.dto.FindPlaceNearbyQueryDTO;
+import com.yeohangttukttak.api.domain.place.dto.PlaceFindNearbyQueryDTO;
 import com.yeohangttukttak.api.domain.place.entity.Location;
 import jakarta.persistence.EntityManager;
 import com.yeohangttukttak.api.domain.file.entity.Image;
@@ -17,11 +17,11 @@ public class PlaceRepository {
 
     private final EntityManager em;
 
-    public List<FindPlaceNearbyQueryDTO> findNearby(Location location, int radius) {
+    public List<PlaceFindNearbyQueryDTO> findNearby(Location location, int radius) {
         return em.createQuery("SELECT new com.yeohangttukttak.api.domain.place.dto" +
                         ".FindPlaceNearbyQueryDTO(p, distance_sphere(p.location.point, :point)) " +
                         "FROM Place as p " +
-                        "WHERE dwithin(p.location.point, :point, :radius, false)", FindPlaceNearbyQueryDTO.class)
+                        "WHERE dwithin(p.location.point, :point, :radius, false)", PlaceFindNearbyQueryDTO.class)
                 .setParameter("point", location.getPoint())
                 .setParameter("radius", radius)
                 .getResultList();
