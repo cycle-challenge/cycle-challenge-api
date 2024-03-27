@@ -10,6 +10,6 @@ public class FindPlaceNearbyQueryDTO {
 
     private Place place;
 
-    private double distance;
+    private Double distance;
 
 }

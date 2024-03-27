@@ -29,8 +29,8 @@ public class LocationDTO {
     }
 
     public void setDistance(Double distance) {
-        DecimalFormat df = new DecimalFormat("#.##");
-        this.distance = Double.parseDouble(df.format(distance * 100));
+        DecimalFormat df = new DecimalFormat("#.#");
+        this.distance = Double.parseDouble(df.format(distance / 1000));
     }
 
 }

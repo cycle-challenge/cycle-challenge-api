@@ -19,7 +19,7 @@ public class PlaceRepository {
 
     public List<FindPlaceNearbyQueryDTO> findNearby(Location location, int radius) {
         return em.createQuery("SELECT new com.yeohangttukttak.api.domain.place.dto" +
-                        ".FindPlaceNearbyQueryDTO(p, st_distance(p.location.point, :point)) " +
+                        ".FindPlaceNearbyQueryDTO(p, distance_sphere(p.location.point, :point)) " +
                         "FROM Place as p " +
                         "WHERE dwithin(p.location.point, :point, :radius, false)", FindPlaceNearbyQueryDTO.class)
                 .setParameter("point", location.getPoint())
