@@ -43,19 +43,12 @@ public class PlaceController {
 
 
     @GetMapping("/{id}/images")
-    public ApiResponse<PlaceImageDTO> getPlaceImages(
+    public ApiResponse<PageResult<ImageDTO>> getPlaceImages(
             @PathVariable("id") Long id,
             @ModelAttribute PageSearch search) {
 
         PageResult<Image> images = placeRepository.getImage(id, search);
-        return new ApiResponse<>(new PlaceImageDTO(images.convertEntities(ImageDTO::new)));
+        return new ApiResponse<>(images.convertEntities(ImageDTO::new));
     }
 
-    @Data
-    @AllArgsConstructor
-    public static class PlaceImageDTO {
-
-        PageResult<ImageDTO> images;
-
-    }
 }
