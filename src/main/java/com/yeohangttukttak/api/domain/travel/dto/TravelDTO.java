@@ -2,13 +2,13 @@ package com.yeohangttukttak.api.domain.travel.dto;
 
 import com.yeohangttukttak.api.domain.file.dto.ImageDTO;
 import com.yeohangttukttak.api.domain.member.dto.MemberDTO;
-import com.yeohangttukttak.api.domain.travel.entity.AccompanyType;
-import com.yeohangttukttak.api.domain.travel.entity.Motivation;
-import com.yeohangttukttak.api.domain.travel.entity.TransportType;
-import com.yeohangttukttak.api.domain.travel.entity.Travel;
+import com.yeohangttukttak.api.domain.place.dto.PlaceDTO;
+import com.yeohangttukttak.api.domain.travel.entity.*;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Set;
 
 @Data
 public class TravelDTO {
@@ -27,11 +27,13 @@ public class TravelDTO {
 
     private LocalDate endedOn;
 
+    private Set<Season> seasons;
+
     private ImageDTO thumbnail;
 
     private MemberDTO member;
 
-    public TravelDTO(Travel travel, ImageDTO thumbnail) {
+    public TravelDTO(Travel travel) {
         this.id = travel.getId();
         this.name = travel.getName();
         this.motivation = travel.getMotivation();
@@ -39,8 +41,9 @@ public class TravelDTO {
         this.transportType = travel.getTransportType();
         this.startedOn = travel.getPeriod().getStartedOn();
         this.endedOn = travel.getPeriod().getEndedOn();
+        this.seasons = travel.getPeriod().getSeasons();
 
-        this.thumbnail = thumbnail;
+        this.thumbnail = new ImageDTO(travel.getThumbnail());
         this.member = new MemberDTO(travel.getMember());
     }
 

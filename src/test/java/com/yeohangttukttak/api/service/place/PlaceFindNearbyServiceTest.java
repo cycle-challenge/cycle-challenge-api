@@ -1,21 +1,18 @@
-package com.yeohangttukttak.api.service.visit;
+package com.yeohangttukttak.api.service.place;
 
 import com.yeohangttukttak.api.domain.file.dto.ImageDTO;
 import com.yeohangttukttak.api.domain.file.entity.Image;
 import com.yeohangttukttak.api.domain.member.entity.AgeGroup;
 import com.yeohangttukttak.api.domain.member.entity.Member;
+import com.yeohangttukttak.api.domain.place.dao.PlaceRepository;
+import com.yeohangttukttak.api.domain.place.dto.PlaceFindNearbyQueryDTO;
 import com.yeohangttukttak.api.domain.place.dto.PlaceDTO;
 import com.yeohangttukttak.api.domain.place.entity.Location;
 import com.yeohangttukttak.api.domain.place.entity.Place;
+import com.yeohangttukttak.api.domain.place.service.PlaceFindNearbyService;
 import com.yeohangttukttak.api.domain.travel.dto.TravelDTO;
 import com.yeohangttukttak.api.domain.travel.entity.*;
-import com.yeohangttukttak.api.domain.visit.dao.VisitRepository;
-import com.yeohangttukttak.api.domain.visit.dao.VisitSearchResult;
-import com.yeohangttukttak.api.domain.visit.dto.VisitSearch;
-import com.yeohangttukttak.api.domain.visit.dto.VisitSearchDTO;
 import com.yeohangttukttak.api.domain.visit.entity.Visit;
-import com.yeohangttukttak.api.domain.visit.service.VisitSearchService;
-import com.yeohangttukttak.api.global.common.Reference;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,19 +30,22 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class VisitSearchServiceTest {
+public class PlaceFindNearbyServiceTest {
 
     @InjectMocks
-    private VisitSearchService visitSearchService;
+    private PlaceFindNearbyService placeFindNearbyService;
 
     @Mock
-    private VisitRepository visitRepository;
+    private PlaceRepository placeRepository;
 
     Member memberA, memberB;
     Travel travelA, travelB;
     Place placeA, placeB;
-    Visit visitA, visitB, visitA2, visitB2;
+    Visit visitA, visitB, visitB2;
     List<Image> images;
+
+    Location location = new Location(36.6600, 127.4900);
+    int radius = 3000;
 
     @BeforeEach
     public void init() {
@@ -70,6 +70,7 @@ public class VisitSearchServiceTest {
                         LocalDate.parse("2022-03-19"),
                         LocalDate.parse("2022-03-21")
                 ))
+                .thumbnail(Image.builder().build())
                 .build();
 
         travelB = Travel.builder()
@@ -83,6 +84,7 @@ public class VisitSearchServiceTest {
                         LocalDate.parse("2022-08-17")
                 ))
                 .accompanyType(AccompanyType.FRIENDS)
+                .thumbnail(Image.builder().build())
                 .build();
 
         placeA = Place.builder()
@@ -101,16 +103,12 @@ public class VisitSearchServiceTest {
                 .id(1L).place(placeA).travel(travelA)
                 .build();
 
-        visitA2 = Visit.builder()
-                .id(2L).place(placeB).travel(travelA)
-                .build();
-
         visitB = Visit.builder()
-                .id(3L).place(placeA).travel(travelB)
+                .id(3L).place(placeB).travel(travelB)
                 .build();
 
         visitB2 = Visit.builder()
-                .id(4L).place(placeB).travel(travelB)
+                .id(2L).place(placeB).travel(travelA)
                 .build();
 
         images = new ArrayList<>(LongStream.range(1, 11)
@@ -118,54 +116,45 @@ public class VisitSearchServiceTest {
                 .toList());
 
         Collections.shuffle(images);
+        images.forEach(file -> placeA.getImages().add(file));
 
-        images.forEach(file -> visitA.getImages().add(file));
+        Collections.shuffle(images);
+        images.forEach(file -> placeB.getImages().add(file));
+
     }
 
-
-    private VisitSearchResult createResult(Visit visit) {
-        return new VisitSearchResult(visit, visit.getTravel(), visit.getPlace(), 0.0);
-    }
-
-    private VisitSearchDTO performSearch() {
-        VisitSearch search = new VisitSearch();
-        List<VisitSearchResult> results = List.of(
-                createResult(visitA2),
-                createResult(visitB2),
-                createResult(visitB),
-                createResult(visitA)
-        );
-
-        when(visitRepository.search(search)).thenReturn(results);
-
-        return visitSearchService.search(search);
-    }
 
     @Test
-    public void 장소_중복() {
-        VisitSearchDTO visitSearchDTO = performSearch();
+    public void 장소_인기순_정렬() {
+        // given
+        when(placeRepository.findNearby(location, radius)).thenReturn(List.of(
+                new PlaceFindNearbyQueryDTO(placeA, 826.0),
+                new PlaceFindNearbyQueryDTO(placeB, 2997.0)
+        ));
 
-        assertThat(visitSearchDTO.getPlaces())
-                .as("장소는 ID 기준으로 중복되지 않아야 한다.")
-                .hasSize(2);
-    }
+        // when
+        List<PlaceDTO> results = placeFindNearbyService.findNearby(location, radius);
 
-    @Test
-    public void 장소_정렬() {
-        VisitSearchDTO visitSearchDTO = performSearch();
-
-        assertThat(visitSearchDTO.getPlaces())
+        // then
+        assertThat(results)
                 .extracting(PlaceDTO::getId)
-                .as("반환된 장소는 ID 오름차순으로 정렬되어야 한다.")
-                .containsExactly(1L, 2L);
+                .as("장소 목록은 관련된 여행의 개수가 큰 순으로 정렬되어야 한다.")
+                .containsExactly(2L, 1L);
     }
 
     @Test
     public void 장소_미리보기_사진() {
-        VisitSearchDTO visitSearchDTO = performSearch();
+        // given
+        when(placeRepository.findNearby(location, radius)).thenReturn(List.of(
+                new PlaceFindNearbyQueryDTO(placeA, 826.0)
+        ));
 
-        assertThat(visitSearchDTO.getPlaces().get(0).getImages())
-                .as("장소는 상위 5개의 미리보기 사진을 반환해야 한다.")
+        // when
+        List<PlaceDTO> results = placeFindNearbyService.findNearby(location, radius);
+
+        // then
+        assertThat(results.get(0).getImages())
+                .as("장소는 5개의 미리보기 사진을 반환해야 한다.")
                 .hasSize(5)
                 .extracting(ImageDTO::getId)
                 .as("미리보기 사진은 ID 기준으로 오름차순으로 정렬되어야 한다.")
@@ -173,37 +162,22 @@ public class VisitSearchServiceTest {
     }
 
     @Test
-    public void 여행_참조_정렬() {
-        VisitSearchDTO visitSearchDTO = performSearch();
-        List<Reference> travelRefs = List.of(
-                new Reference(1L, "travel"),
-                new Reference(2L, "travel"));
+    public void 여행_정렬() {
+        // given
+        when(placeRepository.findNearby(location, radius)).thenReturn(List.of(
+                new PlaceFindNearbyQueryDTO(placeB, 2997.0)
+        ));
 
-        assertThat(visitSearchDTO.getPlaces())
-                .extracting(PlaceDTO::getTravels)
-                .as("장소는 연관된 여행의 참조 데이터를 반환해야 한다.")
+        // when
+        List<PlaceDTO> results = placeFindNearbyService.findNearby(location, radius);
+
+        // then
+        assertThat(results.get(0).getTravels())
+                .as("장소는 연관된 여행 목록을 모두 반환해야 한다.")
                 .hasSize(2)
-                .containsExactly(travelRefs, travelRefs);
-    }
-
-    @Test
-    public void 장소_중복_검증() {
-        VisitSearchDTO visitSearchDTO = performSearch();
-
-        assertThat(visitSearchDTO.getTravels())
-                .as("여행은 ID 기준으로 중복되지 않아야 한다.")
-                .hasSize(2);
-    }
-
-    @Test
-    public void 여행_정렬_검증() {
-        VisitSearchDTO visitSearchDTO = performSearch();
-
-        assertThat(visitSearchDTO.getTravels())
                 .extracting(TravelDTO::getId)
-                .as("반환된 여행은 ID 오름차순으로 정렬되어야 한다.")
+                .as("장소는 ID 오름차순 기준으로 정렬되어야 한다.")
                 .containsExactly(1L, 2L);
     }
-
 
 }
