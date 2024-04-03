@@ -1,5 +1,6 @@
 package com.yeohangttukttak.api.domain.place.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.yeohangttukttak.api.domain.place.entity.Location;
 import com.yeohangttukttak.api.global.config.validator.ValidLatitude;
 import com.yeohangttukttak.api.global.config.validator.ValidLongitude;
@@ -8,6 +9,7 @@ import lombok.Data;
 import java.text.DecimalFormat;
 
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class LocationDTO {
 
     @ValidLatitude

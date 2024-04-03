@@ -8,7 +8,8 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum ApiErrorCode {
 
-    INVALID_ARGUMENT(HttpStatus.BAD_REQUEST.value());
+    INVALID_ARGUMENT(HttpStatus.BAD_REQUEST.value()),
+    ENTITY_NOT_FOUND(HttpStatus.NOT_FOUND.value());
 
     private final int status;
 
