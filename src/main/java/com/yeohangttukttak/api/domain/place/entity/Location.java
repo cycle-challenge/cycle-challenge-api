@@ -4,10 +4,9 @@ import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.geolatte.geom.Point;
-import org.geolatte.geom.jts.JTS;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.PrecisionModel;
 
 @Getter
@@ -28,13 +27,13 @@ public class Location {
     public Location (Double latitude, Double longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
-        this.point = JTS.from(factory.createPoint(new Coordinate(longitude, latitude)));
+        this.point = factory.createPoint(new Coordinate(longitude, latitude));
     }
 
     public Location (Point point) {
         this.point = point;
-        this.longitude = point.getPosition().getCoordinate(0);
-        this.latitude = point.getPosition().getCoordinate(1);
+        this.latitude = point.getY();
+        this.longitude = point.getX();
     }
 
 }
