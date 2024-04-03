@@ -56,8 +56,9 @@ public class TravelFindVisitsService {
             Envelope partialEnvelope = new Envelope();
 
             points.stream()
-                    .filter(nextPoint -> nextPoint.buffer(0.01).getEnvelopeInternal().intersects(bufferEnvelope))
-                    .forEach(nextPoint -> partialEnvelope.expandToInclude(nextPoint.getEnvelopeInternal()));
+                    .map(nextPoint -> nextPoint.buffer(0.01).getEnvelopeInternal())
+                    .filter(nextEnvelop -> nextEnvelop.intersects(bufferEnvelope))
+                    .forEach(partialEnvelope::expandToInclude);
 
             partialEnvelopes.add(partialEnvelope);
         });
