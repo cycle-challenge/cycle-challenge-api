@@ -4,13 +4,9 @@ import com.yeohangttukttak.api.domain.file.dto.ImageDTO;
 import com.yeohangttukttak.api.domain.place.entity.Place;
 import com.yeohangttukttak.api.domain.place.entity.PlaceType;
 import com.yeohangttukttak.api.domain.travel.dto.TravelDTO;
-import com.yeohangttukttak.api.domain.visit.entity.Visit;
-import com.yeohangttukttak.api.global.common.Reference;
 import lombok.Data;
 
 import java.util.*;
-
-import static java.util.Comparator.comparing;
 
 
 @Data
