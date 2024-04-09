@@ -1,4 +1,4 @@
-package com.yeohangttukttak.api.repository;
+package com.yeohangttukttak.api.domain.place.dao;
 
 import com.yeohangttukttak.api.domain.place.dao.PlaceRepository;
 import com.yeohangttukttak.api.domain.place.dto.PlaceFindNearbyQueryDTO;
