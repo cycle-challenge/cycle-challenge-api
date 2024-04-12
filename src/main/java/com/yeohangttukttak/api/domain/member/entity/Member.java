@@ -13,11 +13,20 @@ import static lombok.AccessLevel.PROTECTED;
 @NoArgsConstructor(access = PROTECTED)
 public class Member extends BaseEntity {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "member_id")
     private Long id;
 
+    @Column(unique = true)
+    private String email;
+
+    @Embedded
+    private Password password;
+
     private String nickname;
+
+    @Enumerated(EnumType.STRING)
+    private AuthType authType;
 
     @Enumerated(EnumType.STRING)
     private AgeGroup ageGroup;
@@ -26,9 +35,14 @@ public class Member extends BaseEntity {
     private Gender gender;
 
     @Builder
-    public Member(Long id, String nickname, AgeGroup ageGroup, Gender gender) {
+    public Member(Long id, String email, Password password,
+                  String nickname, AuthType authType,
+                  AgeGroup ageGroup, Gender gender) {
         this.id = id;
+        this.email = email;
+        this.password = password;
         this.nickname = nickname;
+        this.authType = authType;
         this.ageGroup = ageGroup;
         this.gender = gender;
     }

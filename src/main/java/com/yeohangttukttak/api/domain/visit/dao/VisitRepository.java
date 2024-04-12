@@ -1,4 +1,4 @@
-package com.yeohangttukttak.api.domain.visit.repository;
+package com.yeohangttukttak.api.domain.visit.dao;
 
 import com.yeohangttukttak.api.domain.visit.entity.Visit;
 import jakarta.persistence.EntityManager;

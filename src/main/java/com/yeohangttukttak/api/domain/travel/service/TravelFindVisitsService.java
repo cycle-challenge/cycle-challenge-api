@@ -3,7 +3,7 @@ package com.yeohangttukttak.api.domain.travel.service;
 import com.yeohangttukttak.api.domain.travel.dto.TravelDayBoundDTO;
 import com.yeohangttukttak.api.domain.travel.dto.TravelDaySummaryDTO;
 import com.yeohangttukttak.api.domain.visit.entity.Visit;
-import com.yeohangttukttak.api.domain.visit.repository.VisitRepository;
+import com.yeohangttukttak.api.domain.visit.dao.VisitRepository;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Envelope;
 import org.locationtech.jts.geom.Point;
