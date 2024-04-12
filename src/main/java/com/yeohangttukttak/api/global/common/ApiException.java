@@ -9,5 +9,6 @@ public class ApiException extends RuntimeException {
 
     public ApiException(ApiErrorCode errorCode) {
         super(errorCode.name());
+        this.errorCode = errorCode;
     }
 }

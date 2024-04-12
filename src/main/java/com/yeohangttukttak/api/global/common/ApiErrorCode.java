@@ -14,7 +14,11 @@ public enum ApiErrorCode {
     PASSWORD_NOT_VALID(HttpStatus.BAD_REQUEST, "password"),
     MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, null),
     SIGN_IN_FAILED(HttpStatus.UNAUTHORIZED, null),
-    ENTITY_NOT_FOUND(HttpStatus.NOT_FOUND, null);
+    ENTITY_NOT_FOUND(HttpStatus.NOT_FOUND, null),
+    AUTHORIZATION_REQUIRED(HttpStatus.UNAUTHORIZED, null),
+    AUTHORIZATION_EXPIRED(HttpStatus.UNAUTHORIZED, null),
+    INVALIDED_AUTHORIZATION(HttpStatus.UNAUTHORIZED, null),
+    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, null);
 
     private final HttpStatus status;
     private final String target;
