@@ -36,7 +36,7 @@ public class MemberSignInService {
         String accessToken = tokenService.issue(email, now, 1800L);
         String refreshToken = tokenService.issue(email, now, refreshTokenTTL);
 
-        refreshTokenRepository.save(new RefreshToken(member.getId().toString(), refreshToken, refreshTokenTTL));
+        refreshTokenRepository.save(new RefreshToken(member.getId(), refreshToken, refreshTokenTTL));
 
         return new SignInDTO(accessToken, refreshToken);
 

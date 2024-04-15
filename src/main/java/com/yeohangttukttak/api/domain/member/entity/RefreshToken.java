@@ -1,6 +1,5 @@
 package com.yeohangttukttak.api.domain.member.entity;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,14 +10,13 @@ import org.springframework.data.redis.core.index.Indexed;
 
 @Getter
 @RedisHash(value = "RT")
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @AllArgsConstructor
 public class RefreshToken {
 
     @Id
-    private String userID;
+    private Long id;
 
-    @Indexed
     private String token;
 
     @TimeToLive
