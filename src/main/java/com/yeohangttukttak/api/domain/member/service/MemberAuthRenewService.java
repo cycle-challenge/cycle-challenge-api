@@ -23,7 +23,7 @@ public class MemberAuthRenewService {
     public MemberAuthDTO renew (String refreshToken, String email) {
         // 1. 토큰의 Email로 Member ID(Seq)를 조회
         Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new ApiException(ApiErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new ApiException(ApiErrorCode.INVALIDED_AUTHORIZATION));
 
         // 2. 서버 저장소에 Refresh Token이 존재하는지 확인
         RefreshToken existToken = refreshTokenRepository.findById(member.getId())
