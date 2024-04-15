@@ -3,6 +3,7 @@ package com.yeohangttukttak.api.domain.member.service;
 import com.yeohangttukttak.api.domain.member.dao.MemberRepository;
 import com.yeohangttukttak.api.domain.member.dao.RefreshTokenRepository;
 import com.yeohangttukttak.api.domain.member.dto.MemberAuthDTO;
+import com.yeohangttukttak.api.domain.member.entity.JwtToken;
 import com.yeohangttukttak.api.domain.member.entity.Member;
 import com.yeohangttukttak.api.domain.member.entity.RefreshToken;
 import com.yeohangttukttak.api.global.common.ApiErrorCode;
@@ -16,7 +17,6 @@ import java.time.Instant;
 @RequiredArgsConstructor
 public class MemberAuthRenewService {
 
-    private final TokenService tokenService;
     private final MemberRepository memberRepository;
     private final RefreshTokenRepository refreshTokenRepository;
 
@@ -34,13 +34,12 @@ public class MemberAuthRenewService {
             throw new ApiException(ApiErrorCode.INVALIDED_AUTHORIZATION);
 
         Instant now = Instant.now();
-        Long accessTokenTTL = 1800L;
-        Long refreshTokenTTL = 3600 * 24 * 14L;
 
-        String newAccessToken = tokenService.issue(email, now, accessTokenTTL);
-        String newRefreshToken = tokenService.issue(email, now, refreshTokenTTL);
+        JwtToken newAccessToken = JwtToken.issueAccessToken(email, now);
+        JwtToken newRefreshToken = JwtToken.issueRefreshToken(email, now);
 
-        refreshTokenRepository.save(new RefreshToken(member.getId(), newRefreshToken, refreshTokenTTL));
+        refreshTokenRepository.save(
+                new RefreshToken(member.getId(), newRefreshToken.getToken(), JwtToken.refreshTokenTTL));
 
         return new MemberAuthDTO(newAccessToken, newRefreshToken);
     }

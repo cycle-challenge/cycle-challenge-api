@@ -1,7 +1,7 @@
 package com.yeohangttukttak.api.global.config.filter;
 
 import com.yeohangttukttak.api.domain.member.dto.TokenPayload;
-import com.yeohangttukttak.api.domain.member.service.TokenService;
+import com.yeohangttukttak.api.domain.member.entity.JwtToken;
 import com.yeohangttukttak.api.global.common.ApiErrorCode;
 import com.yeohangttukttak.api.global.common.ApiException;
 import com.yeohangttukttak.api.global.util.ApiExceptionHandler;
@@ -19,10 +19,10 @@ import java.io.IOException;
 public class JwtAuthFilter implements Filter {
 
     private final String[] whitelist = {
-            "/api/v1/members/sign-in", "/api/v1/members/sign-up", "/api/v1/members/renew"
+            "/api/v1/members/sign-in", "/api/v1/members/sign-up", "/api/v1/members/auth/renew",
+            "/api/v1/places/nearby", "/api/v1/places/*/images", "/api/v1/travels/*/visits"
     };
 
-    private final TokenService tokenService;
     private final ApiExceptionHandler exHandler;
 
     @Override
@@ -57,10 +57,11 @@ public class JwtAuthFilter implements Filter {
             if (token == null)
                 throw new ApiException(ApiErrorCode.AUTHORIZATION_REQUIRED);
 
-            TokenPayload payload = tokenService.decode(token);
-            httpRequest.setAttribute("payload", payload);
+            JwtToken accessToken = JwtToken.decode(token);
+            httpRequest.setAttribute("accessToken", accessToken);
 
             chain.doFilter(request, response);
+
         } catch (RuntimeException e) {
             exHandler.handle(e, httpRequest, httpResponse);
         }

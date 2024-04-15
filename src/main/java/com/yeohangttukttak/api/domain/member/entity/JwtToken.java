@@ -1,14 +1,17 @@
-package com.yeohangttukttak.api.domain.member.service;
+package com.yeohangttukttak.api.domain.member.entity;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yeohangttukttak.api.domain.member.dto.TokenPayload;
 import com.yeohangttukttak.api.global.common.ApiErrorCode;
 import com.yeohangttukttak.api.global.common.ApiException;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -17,62 +20,81 @@ import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
 import java.util.Base64;
 
-@Service
+@Component
 @Slf4j
-public class TokenService {
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+public class JwtToken {
 
-    private final String SECRET;
-    private final ObjectMapper objectMapper;
+    private String token;
 
-    public TokenService(
-            @Value("${secret.token}") String secret,
-            ObjectMapper objectMapper) {
-        this.SECRET = secret;
-        this.objectMapper = objectMapper;
+    private String email;
+
+    private Long iat;
+
+    private Long exp;
+
+    protected static String SECRET;
+
+    public static final Long accessTokenTTL = 60 * 30L,
+                                refreshTokenTTL = (60 * 60) * 24 * 14L;;
+
+    private static final ObjectMapper objectMapper = new ObjectMapper();
+
+    public static JwtToken issueAccessToken(String email, Instant now) {
+        return JwtToken.create(email, now, accessTokenTTL);
     }
 
-    public String issue(String email, Instant now, Long expSeconds){
+    public static JwtToken issueRefreshToken(String email, Instant now) {
+        return JwtToken.create(email, now, refreshTokenTTL);
+    }
+
+    private static JwtToken create(String email, Instant now, Long expSeconds) {
         try {
 
-            String header = serialize(new Header());
-            String payload = serialize(new TokenPayload(email, now, expSeconds));
+            TokenPayload payload = new TokenPayload(email, now, expSeconds);
 
-            String content = String.format("%s.%s", header, payload);
+            String content = String.format("%s.%s", serialize(new Header()), serialize(payload));
             String signature = signatureToken(content);
 
-            return String.format("%s.%s", content, signature);
+            String token = String.format("%s.%s", content, signature);
+
+            return new JwtToken(token, payload.getEmail(), payload.getIat(), payload.getExp());
 
         } catch (NoSuchAlgorithmException | InvalidKeyException | JsonProcessingException e) {
+
             log.error("Decode Token:", e);
             throw new ApiException(ApiErrorCode.INTERNAL_SERVER_ERROR);
+
         }
     }
 
-    public TokenPayload decode(String token) {
+    public static JwtToken decode(String token) {
         try {
-            String[] tokens = token.split("\\.");
+            String[] parts = token.split("\\.");
 
             // 1. 토큰의 형식을 검사
-            if (tokens.length != 3)
+            if (parts.length != 3)
                 throw new ApiException(ApiErrorCode.INVALIDED_AUTHORIZATION);
 
-            String content = tokens[0] + "." + tokens[1];
-            String signature = tokens[2];
+            String content = parts[0] + "." + parts[1];
+            String signature = parts[2];
 
             // 2. 토큰 내용이 위조되었는지 서명을 대조
             if (!signatureToken(content).equals(signature))
                 throw new ApiException(ApiErrorCode.INVALIDED_AUTHORIZATION);
 
-            TokenPayload tokenPayload = deserialize(tokens[1], TokenPayload.class);
+            TokenPayload payload = deserialize(parts[1], TokenPayload.class);
 
             // 3. 토큰의 유효 기간을 검사
             Instant now = Instant.now();
-            Instant expiration = Instant.ofEpochSecond(tokenPayload.getExp());
+            Instant expiration = Instant.ofEpochSecond(payload.getExp());
 
             if (now.isAfter(expiration))
                 throw new ApiException(ApiErrorCode.AUTHORIZATION_EXPIRED);
 
-            return tokenPayload;
+            return new JwtToken(token, payload.getEmail(), payload.getIat(), payload.getExp());
 
         } catch (NoSuchAlgorithmException | InvalidKeyException | JsonProcessingException e) {
             log.error("Decode Token:", e);
@@ -80,7 +102,8 @@ public class TokenService {
         }
     }
 
-    private String signatureToken(String content) throws NoSuchAlgorithmException, InvalidKeyException {
+
+    private static String signatureToken(String content) throws NoSuchAlgorithmException, InvalidKeyException {
         // Hmac SHA-256 알고리즘 가져오기
         Mac hmacSha256 = Mac.getInstance("HmacSHA256");
 
@@ -93,23 +116,28 @@ public class TokenService {
         return toBase64Url(hash);
     }
 
-    private String serialize(Object object) throws JsonProcessingException {
+    private static String serialize(Object object) throws JsonProcessingException {
         String json = objectMapper.writeValueAsString(object);
         return toBase64Url(json.getBytes());
     }
 
-    private <T> T deserialize(String hash, Class<T> type) throws JsonProcessingException {
+    private static <T> T deserialize(String hash, Class<T> type) throws JsonProcessingException {
         String json = fromBase64Url(hash);
         return objectMapper.readValue(json, type);
     }
 
-    private String toBase64Url(byte[] bytes) {
+    private static String toBase64Url(byte[] bytes) {
         return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
     }
 
-    private String fromBase64Url(String hash) {
+    private static String fromBase64Url(String hash) {
 
         return new String(Base64.getUrlDecoder().decode(hash));
+    }
+
+    @Value("${secret.token}")
+    public void setSECRET(String SECRET) {
+        JwtToken.SECRET = SECRET;
     }
 
     @Getter
@@ -120,5 +148,4 @@ public class TokenService {
         String type = "JWT";
 
     }
-
 }

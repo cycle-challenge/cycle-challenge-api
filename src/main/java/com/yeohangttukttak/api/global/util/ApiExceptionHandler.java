@@ -44,7 +44,6 @@ public class ApiExceptionHandler {
             }
 
             message = messageSource.getMessage(errorCode.name(), null, httpRequest.getLocale());
-
         }
 
         serialize(httpResponse, errorCode.getStatus().value(), new ApiError(

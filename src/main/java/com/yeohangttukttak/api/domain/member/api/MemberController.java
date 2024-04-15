@@ -5,6 +5,7 @@ import com.yeohangttukttak.api.domain.member.service.MemberSignInService;
 import com.yeohangttukttak.api.domain.member.service.MemberSignUpService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,13 +23,19 @@ public class MemberController {
     }
 
     @PostMapping("/sign-in")
-    public MemberAuthDTO signIn(@Valid @RequestBody MemberSignInRequest body) {
-        return signInService.local(body.getEmail(), body.getPassword());
+    public ResponseEntity<MemberAuthDTO> signIn(@Valid @RequestBody MemberSignInRequest body) {
+        return ResponseEntity.ok()
+                .header("Cache-Control", "no-store")
+                .header("Pragma", "no-cache")
+                .body(signInService.local(body.getEmail(), body.getPassword()));
     }
 
     @PostMapping("/auth/renew")
-    public MemberAuthDTO renew(@RequestBody MemberAuthRenewRequest body) {
-        return memberAuthRenewService.renew(body.getRefreshToken(), body.getEmail());
+    public ResponseEntity<MemberAuthDTO> renew(@RequestBody MemberAuthRenewRequest body) {
+        return ResponseEntity.ok()
+                .header("Cache-Control", "no-store")
+                .header("Pragma", "no-cache")
+                .body(memberAuthRenewService.renew(body.getRefreshToken(), body.getEmail()));
     }
 
 }
