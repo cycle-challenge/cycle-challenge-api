@@ -10,7 +10,7 @@ import com.yeohangttukttak.api.domain.travel.dto.TravelDaySummaryDTO;
 import com.yeohangttukttak.api.domain.travel.entity.*;
 import com.yeohangttukttak.api.domain.visit.dto.VisitDTO;
 import com.yeohangttukttak.api.domain.visit.entity.Visit;
-import com.yeohangttukttak.api.domain.visit.repository.VisitRepository;
+import com.yeohangttukttak.api.domain.visit.dao.VisitRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -33,3 +33,6 @@ logging.level:
 host:
   storage:
     local: ${LOCAL_STORAGE_PATH}
+
+secret:
+  token: ${TOKEN_SECRET}

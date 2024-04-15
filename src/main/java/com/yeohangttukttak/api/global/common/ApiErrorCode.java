@@ -8,9 +8,19 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum ApiErrorCode {
 
-    INVALID_ARGUMENT(HttpStatus.BAD_REQUEST.value()),
-    ENTITY_NOT_FOUND(HttpStatus.NOT_FOUND.value());
+    INVALID_ARGUMENT(HttpStatus.BAD_REQUEST, null),
+    DUPLICATED_EMAIL(HttpStatus.CONFLICT, "email"),
+    DUPLICATED_NICKNAME(HttpStatus.CONFLICT, "nickname"),
+    PASSWORD_NOT_VALID(HttpStatus.BAD_REQUEST, "password"),
+    MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, null),
+    SIGN_IN_FAILED(HttpStatus.UNAUTHORIZED, null),
+    ENTITY_NOT_FOUND(HttpStatus.NOT_FOUND, null),
+    AUTHORIZATION_REQUIRED(HttpStatus.UNAUTHORIZED, null),
+    AUTHORIZATION_EXPIRED(HttpStatus.UNAUTHORIZED, null),
+    INVALIDED_AUTHORIZATION(HttpStatus.UNAUTHORIZED, null),
+    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, null);
 
-    private final int status;
+    private final HttpStatus status;
+    private final String target;
 
 }

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -34,6 +35,16 @@ public class ApiControllerAdvice {
                 .toList();
 
         return new ApiErrorResponse(errors);
+    }
+
+    @ExceptionHandler(ApiException.class)
+    public ApiErrorResponse handleApiException(ApiException ex, Locale locale) {
+
+        ApiErrorCode errorCode = ex.getErrorCode();
+        String message = messageSource.getMessage(errorCode.name(), null, locale);
+
+        ApiError error = new ApiError(errorCode, message, errorCode.getTarget());
+        return new ApiErrorResponse(List.of(error));
     }
 
 
