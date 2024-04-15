@@ -32,7 +32,7 @@ public class MemberSignUpService {
         Member member = Member.builder()
                 .email(email)
                 .nickname(nickname)
-                .password(new Password(password))
+                .password(Password.create(password))
                 .authType(AuthType.LOCAL)
                 .build();
 

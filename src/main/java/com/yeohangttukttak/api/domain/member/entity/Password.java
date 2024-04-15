@@ -2,6 +2,7 @@ package com.yeohangttukttak.api.domain.member.entity;
 
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +16,7 @@ import java.util.Base64;
 @Embeddable
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Password {
 
     private static final String HASH_ALGORITHM = "SHA-256";
@@ -24,9 +26,11 @@ public class Password {
 
     private String password;
 
-    public Password(String plainText) {
+    public static Password create(String plainText) {
         String salt = generateSalt();
-        this.password = encrypt(plainText, salt, ITERATIONS);
+        String password = encrypt(plainText, salt, ITERATIONS);
+
+        return new Password(password);
     }
 
     public boolean validate(String plainText) {
@@ -45,7 +49,7 @@ public class Password {
         return Base64.getEncoder().encodeToString(salt);
     }
 
-    private String encrypt(String plainText, String salt, int iterations) {
+    private static String encrypt(String plainText, String salt, int iterations) {
         try {
             MessageDigest md = MessageDigest.getInstance(HASH_ALGORITHM);
             byte[] bytes = (plainText + salt).getBytes();

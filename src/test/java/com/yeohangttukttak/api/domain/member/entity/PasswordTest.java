@@ -12,8 +12,8 @@ class PasswordTest {
         String plainPassword = "heebeom123";
 
         // when
-        Password passwordA = new Password(plainPassword);
-        Password passwordB = new Password(plainPassword);
+        Password passwordA = Password.create(plainPassword);
+        Password passwordB = Password.create(plainPassword);
 
         // then
         assertThat(passwordA.getPassword())
@@ -26,7 +26,7 @@ class PasswordTest {
         // given
         String plainPassword = "heebeom123";
         String wrongPassword = "heejin123";
-        Password password = new Password(plainPassword);
+        Password password = Password.create(plainPassword);
 
         // when
         boolean shouldValid = password.validate(plainPassword);
