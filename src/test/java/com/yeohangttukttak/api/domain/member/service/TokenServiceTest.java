@@ -2,8 +2,8 @@ package com.yeohangttukttak.api.domain.member.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yeohangttukttak.api.domain.member.dto.TokenPayload;
-import com.yeohangttukttak.api.domain.member.exception.TokenExpiredException;
-import com.yeohangttukttak.api.domain.member.exception.TokenInvalidException;
+import com.yeohangttukttak.api.global.common.ApiErrorCode;
+import com.yeohangttukttak.api.global.common.ApiException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -48,7 +48,8 @@ class TokenServiceTest {
         Assertions.assertThatThrownBy(() ->
                 tokenService.decode(accessToken))
                 .as("토큰의 만료 시간이 지난 경우 예외를 발생 한다.")
-                .isInstanceOf(TokenExpiredException.class);
+                .isInstanceOf(ApiException.class)
+                .hasMessageContaining(ApiErrorCode.AUTHORIZATION_EXPIRED.name());
     }
 
     @Test
@@ -69,7 +70,8 @@ class TokenServiceTest {
         Assertions.assertThatThrownBy(() ->
                 tokenService.decode(fakeToken))
                 .as("임의로 토큰 내용을 조작한 경우 예외를 발생한다.")
-                .isInstanceOf(TokenInvalidException.class);
+                .isInstanceOf(ApiException.class)
+                .hasMessageContaining(ApiErrorCode.INVALIDED_AUTHORIZATION.name());
     }
 
     @Test
@@ -81,7 +83,8 @@ class TokenServiceTest {
         Assertions.assertThatThrownBy(() ->
                         tokenService.decode(weirdToken))
                 .as("토큰 형식이 맞지 않은 경우 예외를 발생한다.")
-                .isInstanceOf(TokenInvalidException.class);
+                .isInstanceOf(ApiException.class)
+                .hasMessageContaining(ApiErrorCode.INVALIDED_AUTHORIZATION.name());
 
     }
 

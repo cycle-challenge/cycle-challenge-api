@@ -3,8 +3,6 @@ package com.yeohangttukttak.api.domain.member.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yeohangttukttak.api.domain.member.dto.TokenPayload;
-import com.yeohangttukttak.api.domain.member.exception.TokenExpiredException;
-import com.yeohangttukttak.api.domain.member.exception.TokenInvalidException;
 import com.yeohangttukttak.api.global.common.ApiErrorCode;
 import com.yeohangttukttak.api.global.common.ApiException;
 import lombok.Getter;
@@ -56,14 +54,14 @@ public class TokenService {
 
             // 1. 토큰의 형식을 검사
             if (tokens.length != 3)
-                throw new TokenInvalidException();
+                throw new ApiException(ApiErrorCode.INVALIDED_AUTHORIZATION);
 
             String content = tokens[0] + "." + tokens[1];
             String signature = tokens[2];
 
             // 2. 토큰 내용이 위조되었는지 서명을 대조
             if (!signatureToken(content).equals(signature))
-                throw new TokenInvalidException();
+                throw new ApiException(ApiErrorCode.INVALIDED_AUTHORIZATION);
 
             TokenPayload tokenPayload = deserialize(tokens[1], TokenPayload.class);
 
@@ -72,7 +70,7 @@ public class TokenService {
             Instant expiration = Instant.ofEpochSecond(tokenPayload.getExp());
 
             if (now.isAfter(expiration))
-                throw new TokenExpiredException();
+                throw new ApiException(ApiErrorCode.AUTHORIZATION_EXPIRED);
 
             return tokenPayload;
 

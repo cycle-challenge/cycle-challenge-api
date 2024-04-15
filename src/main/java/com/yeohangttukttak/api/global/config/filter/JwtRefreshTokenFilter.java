@@ -4,11 +4,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yeohangttukttak.api.domain.member.dto.AuthRenewRequest;
 import com.yeohangttukttak.api.domain.member.dto.TokenPayload;
 import com.yeohangttukttak.api.domain.member.service.TokenService;
+import com.yeohangttukttak.api.global.common.ApiErrorCode;
+import com.yeohangttukttak.api.global.common.ApiException;
 import com.yeohangttukttak.api.global.common.ModifiableHttpServletRequest;
-import com.yeohangttukttak.api.global.util.DecodeTokenExceptionHandler;
+import com.yeohangttukttak.api.global.util.ApiExceptionHandler;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -16,14 +19,12 @@ import java.io.IOException;
 import static com.yeohangttukttak.api.global.util.HttpMessageReader.readBody;
 
 @Slf4j
+@RequiredArgsConstructor
 public class JwtRefreshTokenFilter implements Filter {
 
     private final TokenService tokenService;
+    private final ApiExceptionHandler exHandler;
     private final ObjectMapper objectMapper = new ObjectMapper();
-
-    public JwtRefreshTokenFilter(TokenService tokenService) {
-        this.tokenService = tokenService;
-    }
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -44,7 +45,7 @@ public class JwtRefreshTokenFilter implements Filter {
         String contentType = httpRequest.getHeader("Content-Type");
 
         if (contentType == null || !contentType.contains("application/json")) {
-            chain.doFilter(request,response);
+            throw new ApiException(ApiErrorCode.AUTHORIZATION_REQUIRED);
         }
 
         String body = readBody(httpRequest);
@@ -58,8 +59,7 @@ public class JwtRefreshTokenFilter implements Filter {
                     httpRequest, objectMapper.writeValueAsString(authRenewRequest)), response);
 
         } catch(RuntimeException e) {
-            DecodeTokenExceptionHandler
-                    .handle(e, httpRequest, httpResponse);
+            exHandler.handle(e, httpRequest, httpResponse);
         }
 
     }
