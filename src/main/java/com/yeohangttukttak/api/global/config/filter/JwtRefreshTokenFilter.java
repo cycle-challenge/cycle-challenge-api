@@ -1,7 +1,7 @@
 package com.yeohangttukttak.api.global.config.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.yeohangttukttak.api.domain.member.dto.AuthRenewRequest;
+import com.yeohangttukttak.api.domain.member.dto.MemberAuthRenewRequest;
 import com.yeohangttukttak.api.domain.member.dto.TokenPayload;
 import com.yeohangttukttak.api.domain.member.service.TokenService;
 import com.yeohangttukttak.api.global.common.ApiErrorCode;
@@ -49,14 +49,14 @@ public class JwtRefreshTokenFilter implements Filter {
         }
 
         String body = readBody(httpRequest);
-        AuthRenewRequest authRenewRequest = objectMapper.readValue(body, AuthRenewRequest.class);
+        MemberAuthRenewRequest memberAuthRenewRequest = objectMapper.readValue(body, MemberAuthRenewRequest.class);
 
         try {
-            TokenPayload payload = tokenService.decode(authRenewRequest.getRefreshToken());
-            authRenewRequest.setEmail(payload.getEmail());
+            TokenPayload payload = tokenService.decode(memberAuthRenewRequest.getRefreshToken());
+            memberAuthRenewRequest.setEmail(payload.getEmail());
 
             chain.doFilter(new ModifiableHttpServletRequest(
-                    httpRequest, objectMapper.writeValueAsString(authRenewRequest)), response);
+                    httpRequest, objectMapper.writeValueAsString(memberAuthRenewRequest)), response);
 
         } catch(RuntimeException e) {
             exHandler.handle(e, httpRequest, httpResponse);

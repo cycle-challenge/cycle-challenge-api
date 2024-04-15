@@ -2,7 +2,7 @@ package com.yeohangttukttak.api.domain.member.service;
 
 import com.yeohangttukttak.api.domain.member.dao.MemberRepository;
 import com.yeohangttukttak.api.domain.member.dao.RefreshTokenRepository;
-import com.yeohangttukttak.api.domain.member.dto.SignInDTO;
+import com.yeohangttukttak.api.domain.member.dto.MemberAuthDTO;
 import com.yeohangttukttak.api.domain.member.entity.Member;
 import com.yeohangttukttak.api.domain.member.entity.RefreshToken;
 import com.yeohangttukttak.api.global.common.ApiErrorCode;
@@ -22,7 +22,7 @@ public class MemberSignInService {
     private final TokenService tokenService;
     private final RefreshTokenRepository refreshTokenRepository;
 
-    public SignInDTO local(String email, String password) {
+    public MemberAuthDTO local(String email, String password) {
 
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new ApiException(ApiErrorCode.SIGN_IN_FAILED));
@@ -38,7 +38,7 @@ public class MemberSignInService {
 
         refreshTokenRepository.save(new RefreshToken(member.getId(), refreshToken, refreshTokenTTL));
 
-        return new SignInDTO(accessToken, refreshToken);
+        return new MemberAuthDTO(accessToken, refreshToken);
 
     }
 

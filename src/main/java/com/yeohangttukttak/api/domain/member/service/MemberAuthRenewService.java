@@ -2,7 +2,7 @@ package com.yeohangttukttak.api.domain.member.service;
 
 import com.yeohangttukttak.api.domain.member.dao.MemberRepository;
 import com.yeohangttukttak.api.domain.member.dao.RefreshTokenRepository;
-import com.yeohangttukttak.api.domain.member.dto.SignInDTO;
+import com.yeohangttukttak.api.domain.member.dto.MemberAuthDTO;
 import com.yeohangttukttak.api.domain.member.entity.Member;
 import com.yeohangttukttak.api.domain.member.entity.RefreshToken;
 import com.yeohangttukttak.api.global.common.ApiErrorCode;
@@ -14,13 +14,13 @@ import java.time.Instant;
 
 @Service
 @RequiredArgsConstructor
-public class AuthRenewService {
+public class MemberAuthRenewService {
 
     private final TokenService tokenService;
     private final MemberRepository memberRepository;
     private final RefreshTokenRepository refreshTokenRepository;
 
-    public SignInDTO renew (String refreshToken, String email) {
+    public MemberAuthDTO renew (String refreshToken, String email) {
         // 1. 토큰의 Email로 Member ID(Seq)를 조회
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new ApiException(ApiErrorCode.MEMBER_NOT_FOUND));
@@ -42,7 +42,7 @@ public class AuthRenewService {
 
         refreshTokenRepository.save(new RefreshToken(member.getId(), newRefreshToken, refreshTokenTTL));
 
-        return new SignInDTO(newAccessToken, newRefreshToken);
+        return new MemberAuthDTO(newAccessToken, newRefreshToken);
     }
 
 }
