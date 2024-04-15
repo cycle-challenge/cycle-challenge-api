@@ -28,4 +28,4 @@ host:
     local: test
 
 secret:
-  token: ${TOKEN_SECRET}
+  token: test
