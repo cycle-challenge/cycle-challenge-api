@@ -2,14 +2,17 @@ package com.yeohangttukttak.api.global.util;
 
 import com.yeohangttukttak.api.global.common.ApiError;
 import com.yeohangttukttak.api.global.common.ApiErrorCode;
+import com.yeohangttukttak.api.global.common.ApiErrorResponse;
 import com.yeohangttukttak.api.global.common.ApiException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Locale;
 
 import static com.yeohangttukttak.api.global.util.HttpMessageSerializer.serialize;
@@ -29,6 +32,7 @@ public class ApiExceptionHandler {
 
         if (e instanceof ApiException) {
             errorCode = ((ApiException) e).getErrorCode();
+            message = messageSource.getMessage(errorCode.name(), null, locale);
 
             if (ApiErrorCode.INVALIDED_AUTHORIZATION.equals(errorCode)) {
 
@@ -42,12 +46,11 @@ public class ApiExceptionHandler {
                         httpResponse.getHeader("User-Agent"));
 
             }
-
-            message = messageSource.getMessage(errorCode.name(), null, httpRequest.getLocale());
         }
 
-        serialize(httpResponse, errorCode.getStatus().value(), new ApiError(
-                errorCode, message, null));
+        ApiError error = new ApiError(errorCode, message, null);
+        serialize(httpResponse, HttpStatus.OK.value(), new ApiErrorResponse(List.of(error)));
+
     }
 
 }

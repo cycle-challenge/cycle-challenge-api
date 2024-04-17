@@ -1,9 +1,11 @@
 package com.yeohangttukttak.api.domain.member.dto;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.yeohangttukttak.api.domain.member.entity.AgeGroup;
 import com.yeohangttukttak.api.domain.member.entity.Member;
 import lombok.Data;
 
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class MemberDTO {
 
     private String nickname;

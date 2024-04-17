@@ -1,6 +1,8 @@
 package com.yeohangttukttak.api.domain.member.service;
 
 import com.yeohangttukttak.api.domain.member.dao.MemberRepository;
+import com.yeohangttukttak.api.domain.member.dto.MemberDTO;
+import com.yeohangttukttak.api.domain.member.entity.AgeGroup;
 import com.yeohangttukttak.api.domain.member.entity.AuthType;
 import com.yeohangttukttak.api.domain.member.entity.Member;
 import com.yeohangttukttak.api.domain.member.entity.Password;
@@ -10,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -17,7 +21,7 @@ public class MemberSignUpService {
 
     private final MemberRepository memberRepository;
 
-    public void local(String email, String password, String nickname) {
+    public MemberDTO local(String email, String password, String nickname) {
 
         memberRepository.findByEmail(email)
                 .ifPresent(member -> {
@@ -36,7 +40,12 @@ public class MemberSignUpService {
                 .authType(AuthType.LOCAL)
                 .build();
 
-        memberRepository.save(member);
+        Long memberID = memberRepository.save(member);
+
+        Member createdMember = memberRepository.find(memberID)
+                .orElseThrow(() -> new ApiException(ApiErrorCode.INTERNAL_SERVER_ERROR));
+
+        return new MemberDTO(createdMember);
 
     }
 

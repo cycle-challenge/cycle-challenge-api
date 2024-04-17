@@ -32,4 +32,9 @@ public class MemberRepository {
         return member.getId();
     }
 
+    public Optional<Member> find(Long id) {
+        Member member = em.find(Member.class, id);
+        return Optional.of(member);
+    }
+
 }

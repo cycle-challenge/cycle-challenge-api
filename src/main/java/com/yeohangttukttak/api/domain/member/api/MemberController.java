@@ -5,6 +5,7 @@ import com.yeohangttukttak.api.domain.member.service.MemberSignInService;
 import com.yeohangttukttak.api.domain.member.service.MemberSignUpService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,8 +19,13 @@ public class MemberController {
     private final MemberAuthRenewService memberAuthRenewService;
 
     @PostMapping("/sign-up")
-    public void signUp(@Valid @RequestBody MemberSignUpRequest body) {
-        signUpService.local(body.getEmail(), body.getPassword(), body.getNickname());
+    public ResponseEntity<MemberDTO> signUp(@Valid @RequestBody MemberSignUpRequest body) {
+        MemberDTO member = signUpService.local(
+                body.getEmail(), body.getPassword(), body.getNickname());
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(member);
     }
 
     @PostMapping("/sign-in")
