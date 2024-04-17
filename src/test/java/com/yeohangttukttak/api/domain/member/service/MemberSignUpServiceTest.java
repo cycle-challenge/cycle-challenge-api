@@ -5,6 +5,7 @@ import com.yeohangttukttak.api.domain.member.entity.Member;
 import com.yeohangttukttak.api.domain.member.entity.Password;
 import com.yeohangttukttak.api.global.common.ApiErrorCode;
 import com.yeohangttukttak.api.global.common.ApiException;
+import org.geolatte.geom.M;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -33,16 +34,23 @@ class MemberSignUpServiceTest {
     public void 회원가입_성공_케이스() throws Exception {
 
         try (MockedStatic<Password> mocked = mockStatic(Password.class)) {
-
             // given
             String email = "test@example.com";
             String plainText = "test1234";
             String nickname = "test-user";
 
+            Member member = Member.builder()
+                    .id(1L)
+                    .email(email)
+                    .password(mockPassword)
+                    .nickname(nickname)
+                    .build();
+
             mocked.when(() -> Password.create(plainText)).thenReturn(mockPassword);
 
             given(memberRepository.findByEmail(email)).willReturn(Optional.empty());
             given(memberRepository.findByNickname(nickname)).willReturn(Optional.empty());
+            given(memberRepository.find(any())).willReturn(Optional.of(member));
 
             // when
             memberSignUpService.local(email, plainText, nickname);
