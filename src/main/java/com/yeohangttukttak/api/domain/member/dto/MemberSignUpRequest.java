@@ -21,4 +21,7 @@ public class MemberSignUpRequest {
     @ValidNickname
     private String nickname;
 
+    @NotBlank
+    private String verificationCode;
+
 }

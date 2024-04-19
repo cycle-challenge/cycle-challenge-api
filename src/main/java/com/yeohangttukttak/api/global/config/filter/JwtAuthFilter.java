@@ -20,7 +20,8 @@ public class JwtAuthFilter implements Filter {
 
     private final String[] whitelist = {
             "/api/v1/members/sign-in", "/api/v1/members/sign-up", "/api/v1/members/auth/renew",
-            "/api/v1/places/nearby", "/api/v1/places/*/images", "/api/v1/travels/*/visits"
+            "/api/v1/places/nearby", "/api/v1/places/*/images", "/api/v1/travels/*/visits",
+            "/api/v1/members/email/verify/send"
     };
 
     private final ApiExceptionHandler exHandler;

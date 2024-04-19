@@ -12,6 +12,7 @@ public enum ApiErrorCode {
     DUPLICATED_EMAIL(HttpStatus.CONFLICT, "email"),
     DUPLICATED_NICKNAME(HttpStatus.CONFLICT, "nickname"),
     PASSWORD_NOT_VALID(HttpStatus.BAD_REQUEST, "password"),
+    INVALID_VERIFICATION_CODE(HttpStatus.UNAUTHORIZED, "verificationCode"),
     MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, null),
     SIGN_IN_FAILED(HttpStatus.UNAUTHORIZED, null),
     ENTITY_NOT_FOUND(HttpStatus.NOT_FOUND, null),
