@@ -1,5 +1,6 @@
 package com.yeohangttukttak.api.domain.member.service;
 
+import com.yeohangttukttak.api.domain.member.dao.EmailVerificationCodeRepository;
 import com.yeohangttukttak.api.domain.member.dao.MemberRepository;
 import com.yeohangttukttak.api.domain.member.entity.Member;
 import com.yeohangttukttak.api.domain.member.entity.Password;
@@ -30,6 +31,9 @@ class MemberSignUpServiceTest {
     @Mock
     private Password mockPassword;
 
+    @Mock
+    private EmailVerificationCodeRepository verificationCodeRepository;
+
     @Test
     public void 회원가입_성공_케이스() throws Exception {
 
@@ -51,9 +55,10 @@ class MemberSignUpServiceTest {
             given(memberRepository.findByEmail(email)).willReturn(Optional.empty());
             given(memberRepository.findByNickname(nickname)).willReturn(Optional.empty());
             given(memberRepository.find(any())).willReturn(Optional.of(member));
+            given(verificationCodeRepository.findByEmail(email)).willReturn(Optional.of(""));
 
             // when
-            memberSignUpService.local(email, plainText, nickname);
+            memberSignUpService.local(email, plainText, nickname, "");
 
             // then
             then(memberRepository).should(times(1)).save(any(Member.class));
@@ -76,7 +81,7 @@ class MemberSignUpServiceTest {
             mocked.when(() -> Password.create(plainText)).thenReturn(mockPassword);
 
             // when + then
-            assertThatThrownBy(() -> memberSignUpService.local(email, plainText, nickname))
+            assertThatThrownBy(() -> memberSignUpService.local(email, plainText, nickname, ""))
                     .as("Should throw ApiException when email is duplicated")
                     .isInstanceOf(ApiException.class)
                     .hasMessageContaining(ApiErrorCode.DUPLICATED_EMAIL.name());
@@ -102,7 +107,7 @@ class MemberSignUpServiceTest {
             given(memberRepository.findByNickname(nickname)).willReturn(Optional.of(Member.builder().build()));
 
             // when + then
-            assertThatThrownBy(() -> memberSignUpService.local(email, plainText, nickname))
+            assertThatThrownBy(() -> memberSignUpService.local(email, plainText, nickname, ""))
                     .as("Should throw ApiException when nickname is duplicated")
                     .isInstanceOf(ApiException.class)
                     .hasMessageContaining(ApiErrorCode.DUPLICATED_NICKNAME.name());
