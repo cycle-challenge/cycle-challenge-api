@@ -2,6 +2,8 @@ package com.yeohangttukttak.api.domain.place.dao;
 
 import com.yeohangttukttak.api.domain.place.dto.PlaceFindNearbyQueryDTO;
 import com.yeohangttukttak.api.domain.place.entity.Location;
+import com.yeohangttukttak.api.domain.place.entity.Place;
+import com.yeohangttukttak.api.global.interfaces.BaseRepository;
 import jakarta.persistence.EntityManager;
 import com.yeohangttukttak.api.domain.file.entity.Image;
 import com.yeohangttukttak.api.global.common.PageResult;
@@ -10,10 +12,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
-public class PlaceRepository {
+public class PlaceRepository implements BaseRepository<Place, Long> {
 
     private final EntityManager em;
 
@@ -37,5 +40,21 @@ public class PlaceRepository {
                 .setFirstResult(search.getOffset())
                 .setMaxResults(search.getPageSize() + 1)
                 .getResultList(), search);
+    }
+
+    @Override
+    public Long save(Place entity) {
+        em.persist(entity);
+        return entity.getId();
+    }
+
+    @Override
+    public Optional<Place> find(Long id) {
+        return Optional.ofNullable(em.find(Place.class, id));
+    }
+
+    @Override
+    public void delete(Place entity) {
+        em.remove(entity);
     }
 }

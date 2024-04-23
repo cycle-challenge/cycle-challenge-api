@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -50,6 +51,9 @@ public class ApiControllerAdvice {
 
     @ExceptionHandler
     public ResponseEntity<ApiResponse<ApiError>> handleUnhandledException(Exception ex, Locale locale) {
+
+        log.error(ex.getMessage());
+        ex.printStackTrace();
 
         ApiErrorCode errorCode = ApiErrorCode.INTERNAL_SERVER_ERROR;
         String message = messageSource.getMessage(errorCode.name(), null, locale);
