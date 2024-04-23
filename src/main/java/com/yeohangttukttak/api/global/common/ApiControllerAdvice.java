@@ -22,30 +22,42 @@ public class ApiControllerAdvice {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ApiErrorResponse handleMethodArgumentNotValid(
+    public ApiResponse<List<ApiError>> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex, Locale locale) {
 
         List<ApiError> errors = ex.getFieldErrors()
                 .stream().map(fieldError ->
                         new ApiError(
-                                ApiErrorCode.INVALID_ARGUMENT,
                                 messageSource.getMessage(fieldError, locale),
                                 fieldError.getField()
                         ))
                 .toList();
 
-        return new ApiErrorResponse(errors);
+        return new ApiResponse<>(ApiErrorCode.INVALID_ARGUMENT, errors);
     }
 
     @ExceptionHandler(ApiException.class)
-    public ApiErrorResponse handleApiException(ApiException ex, Locale locale) {
+    public ResponseEntity<ApiResponse<ApiError>> handleApiException(ApiException ex, Locale locale) {
 
         ApiErrorCode errorCode = ex.getErrorCode();
         String message = messageSource.getMessage(errorCode.name(), null, locale);
 
-        ApiError error = new ApiError(errorCode, message, errorCode.getTarget());
-        return new ApiErrorResponse(List.of(error));
+        ApiError error = new ApiError(message, errorCode.getTarget());
+
+        return new ResponseEntity<>(new ApiResponse<>(errorCode, error), errorCode.getStatus());
+
     }
 
+    @ExceptionHandler
+    public ResponseEntity<ApiResponse<ApiError>> handleUnhandledException(Exception ex, Locale locale) {
+
+        ApiErrorCode errorCode = ApiErrorCode.INTERNAL_SERVER_ERROR;
+        String message = messageSource.getMessage(errorCode.name(), null, locale);
+
+        ApiError error = new ApiError(message, null);
+
+        return new ResponseEntity<>(new ApiResponse<>(errorCode, error), errorCode.getStatus());
+
+    }
 
 }

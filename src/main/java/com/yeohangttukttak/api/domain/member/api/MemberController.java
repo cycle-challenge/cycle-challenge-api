@@ -48,13 +48,11 @@ public class MemberController {
     }
 
     @PostMapping("/sign-up")
-    public ResponseEntity<ApiResponse<MemberDTO>> signUp(@Valid @RequestBody MemberSignUpRequest body) {
+    public ApiResponse<MemberDTO> signUp(@Valid @RequestBody MemberSignUpRequest body) {
         MemberDTO member = signUpService.local(
                 body.getEmail(), body.getPassword(), body.getNickname(), body.getVerificationCode());
 
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(new ApiResponse<>(member));
+        return new ApiResponse<>(member);
     }
 
     @PostMapping("/sign-in")

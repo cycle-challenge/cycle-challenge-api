@@ -90,7 +90,7 @@ class MemberAuthRenewServiceTest {
             // when, then
             assertThatThrownBy(() -> authRenewService.renew(refreshToken, email))
                     .isInstanceOf(ApiException.class)
-                    .hasMessageContaining(ApiErrorCode.INVALIDED_AUTHORIZATION.name());
+                    .hasMessageContaining(ApiErrorCode.INVALID_AUTHORIZATION.name());
 
             then(refreshTokenRepository).should(never()).findById(any());
             then(refreshTokenRepository).should(never()).save(any());
@@ -126,7 +126,7 @@ class MemberAuthRenewServiceTest {
             // when, then
             assertThatThrownBy(() -> authRenewService.renew(refreshToken, email))
                     .isInstanceOf(ApiException.class)
-                    .hasMessageContaining(ApiErrorCode.INVALIDED_AUTHORIZATION.name());
+                    .hasMessageContaining(ApiErrorCode.INVALID_AUTHORIZATION.name());
 
             then(refreshTokenRepository).should(times(1)).findById(member.getId());
             then(refreshTokenRepository).should(never()).save(any());
@@ -162,7 +162,7 @@ class MemberAuthRenewServiceTest {
             // when, then
             assertThatThrownBy(() -> authRenewService.renew(refreshToken, email))
                     .isInstanceOf(ApiException.class)
-                    .hasMessageContaining(ApiErrorCode.INVALIDED_AUTHORIZATION.name());
+                    .hasMessageContaining(ApiErrorCode.INVALID_AUTHORIZATION.name());
 
             then(refreshTokenRepository).should(times(1)).findById(member.getId());
             then(refreshTokenRepository).should(never()).save(any());

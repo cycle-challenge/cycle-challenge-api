@@ -19,7 +19,6 @@ import java.security.NoSuchAlgorithmException;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 @Slf4j
 public class MemberSendVerifyEmailService {
 

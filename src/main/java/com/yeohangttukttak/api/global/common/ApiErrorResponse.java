@@ -9,7 +9,8 @@ import java.util.List;
 @AllArgsConstructor
 public class ApiErrorResponse {
 
-    private List<ApiError> errors;
+    private ApiErrorCode code;
 
+    private List<ApiError> errors;
 
 }

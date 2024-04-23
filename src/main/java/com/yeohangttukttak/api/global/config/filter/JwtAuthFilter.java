@@ -56,7 +56,7 @@ public class JwtAuthFilter implements Filter {
             String token = parseToken(httpRequest);
 
             if (token == null)
-                throw new ApiException(ApiErrorCode.AUTHORIZATION_REQUIRED);
+                throw new ApiException(ApiErrorCode.INVALID_AUTHORIZATION);
 
             JwtToken accessToken = JwtToken.decode(token);
             httpRequest.setAttribute("accessToken", accessToken);
