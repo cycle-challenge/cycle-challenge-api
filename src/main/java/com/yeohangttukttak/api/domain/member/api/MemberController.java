@@ -26,17 +26,13 @@ public class MemberController {
 
     private final MemberSendVerifyEmailService sendVerifyEmailService;
 
-    private final MemberRepository memberRepository;
 
     @PostMapping("/email/verify/send")
-    public void sendVerificationEmail(@Valid @RequestBody MemberSendVerifyEmailRequest body) {
-
-        memberRepository.findByEmail(body.getEmail())
-                .ifPresent(member -> {
-                    throw new ApiException(ApiErrorCode.DUPLICATED_EMAIL);
-                });
+    public ApiResponse<Void> sendVerificationEmail(@Valid @RequestBody MemberSendVerifyEmailRequest body) {
 
         sendVerifyEmailService.send(body.getEmail());
+
+        return new ApiResponse<>(null);
     }
 
     @GetMapping("/profile")
