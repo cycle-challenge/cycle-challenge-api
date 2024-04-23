@@ -18,6 +18,15 @@ spring:
       host: ${REDIS_HOST}
       port: ${REDIS_PORT}
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: yeohaeng.ttukttak@gmail.com
+    password: ${SMTP_PASSWORD}
+    properties.mail.smtp:
+      starttls.enable: true
+      auth: true
+
 management:
   endpoints:
     enabled-by-default: false

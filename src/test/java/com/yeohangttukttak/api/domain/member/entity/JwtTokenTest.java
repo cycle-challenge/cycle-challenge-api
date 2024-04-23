@@ -50,7 +50,7 @@ class JwtTokenTest {
                         JwtToken.decode(accessToken.getToken()))
                 .as("토큰의 만료 시간이 지난 경우 예외를 발생 한다.")
                 .isInstanceOf(ApiException.class)
-                .hasMessageContaining(ApiErrorCode.AUTHORIZATION_EXPIRED.name());
+                .hasMessageContaining(ApiErrorCode.INVALID_AUTHORIZATION.name());
     }
 
     @Test
@@ -71,7 +71,7 @@ class JwtTokenTest {
                         JwtToken.decode(fakeToken))
                 .as("임의로 토큰 내용을 조작한 경우 예외를 발생한다.")
                 .isInstanceOf(ApiException.class)
-                .hasMessageContaining(ApiErrorCode.INVALIDED_AUTHORIZATION.name());
+                .hasMessageContaining(ApiErrorCode.INVALID_AUTHORIZATION.name());
     }
 
     @Test
@@ -84,7 +84,7 @@ class JwtTokenTest {
                         JwtToken.decode(weirdToken))
                 .as("토큰 형식이 맞지 않은 경우 예외를 발생한다.")
                 .isInstanceOf(ApiException.class)
-                .hasMessageContaining(ApiErrorCode.INVALIDED_AUTHORIZATION.name());
+                .hasMessageContaining(ApiErrorCode.INVALID_AUTHORIZATION.name());
 
     }
 }

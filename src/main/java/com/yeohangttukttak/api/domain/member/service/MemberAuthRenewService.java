@@ -23,15 +23,15 @@ public class MemberAuthRenewService {
     public MemberAuthDTO renew (String refreshToken, String email) {
         // 1. 토큰의 Email로 Member ID(Seq)를 조회
         Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new ApiException(ApiErrorCode.INVALIDED_AUTHORIZATION));
+                .orElseThrow(() -> new ApiException(ApiErrorCode.INVALID_AUTHORIZATION));
 
         // 2. 서버 저장소에 Refresh Token이 존재하는지 확인
         RefreshToken existToken = refreshTokenRepository.findById(member.getId())
-                .orElseThrow(() -> new ApiException(ApiErrorCode.INVALIDED_AUTHORIZATION));
+                .orElseThrow(() -> new ApiException(ApiErrorCode.INVALID_AUTHORIZATION));
 
         // 3. 저장된 Refresh Token이 유효한지 확인
         if (!existToken.getToken().equals(refreshToken))
-            throw new ApiException(ApiErrorCode.INVALIDED_AUTHORIZATION);
+            throw new ApiException(ApiErrorCode.INVALID_AUTHORIZATION);
 
         Instant now = Instant.now();
 

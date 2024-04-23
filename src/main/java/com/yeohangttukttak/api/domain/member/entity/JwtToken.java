@@ -76,14 +76,14 @@ public class JwtToken {
 
             // 1. 토큰의 형식을 검사
             if (parts.length != 3)
-                throw new ApiException(ApiErrorCode.INVALIDED_AUTHORIZATION);
+                throw new ApiException(ApiErrorCode.INVALID_AUTHORIZATION);
 
             String content = parts[0] + "." + parts[1];
             String signature = parts[2];
 
             // 2. 토큰 내용이 위조되었는지 서명을 대조
             if (!signatureToken(content).equals(signature))
-                throw new ApiException(ApiErrorCode.INVALIDED_AUTHORIZATION);
+                throw new ApiException(ApiErrorCode.INVALID_AUTHORIZATION);
 
             TokenPayload payload = deserialize(parts[1], TokenPayload.class);
 
@@ -92,7 +92,7 @@ public class JwtToken {
             Instant expiration = Instant.ofEpochSecond(payload.getExp());
 
             if (now.isAfter(expiration))
-                throw new ApiException(ApiErrorCode.AUTHORIZATION_EXPIRED);
+                throw new ApiException(ApiErrorCode.INVALID_AUTHORIZATION);
 
             return new JwtToken(token, payload.getEmail(), payload.getIat(), payload.getExp());
 

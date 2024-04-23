@@ -1,9 +1,6 @@
 package com.yeohangttukttak.api.global.util;
 
-import com.yeohangttukttak.api.global.common.ApiError;
-import com.yeohangttukttak.api.global.common.ApiErrorCode;
-import com.yeohangttukttak.api.global.common.ApiErrorResponse;
-import com.yeohangttukttak.api.global.common.ApiException;
+import com.yeohangttukttak.api.global.common.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +9,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Locale;
 
 import static com.yeohangttukttak.api.global.util.HttpMessageSerializer.serialize;
@@ -34,7 +30,7 @@ public class ApiExceptionHandler {
             errorCode = ((ApiException) e).getErrorCode();
             message = messageSource.getMessage(errorCode.name(), null, locale);
 
-            if (ApiErrorCode.INVALIDED_AUTHORIZATION.equals(errorCode)) {
+            if (ApiErrorCode.INVALID_AUTHORIZATION.equals(errorCode)) {
 
                 log.error("""
                             [JWT_AUTH_FILTER] Caught! Credentials has been forged
@@ -48,8 +44,8 @@ public class ApiExceptionHandler {
             }
         }
 
-        ApiError error = new ApiError(errorCode, message, null);
-        serialize(httpResponse, HttpStatus.OK.value(), new ApiErrorResponse(List.of(error)));
+        ApiError error = new ApiError(message, null);
+        serialize(httpResponse, errorCode.getStatus().value(), new ApiResponse<>(errorCode, error));
 
     }
 

@@ -1,8 +1,13 @@
 package com.yeohangttukttak.api.domain.member.api;
+import com.yeohangttukttak.api.domain.member.dao.MemberRepository;
 import com.yeohangttukttak.api.domain.member.dto.*;
-import com.yeohangttukttak.api.domain.member.service.MemberAuthRenewService;
-import com.yeohangttukttak.api.domain.member.service.MemberSignInService;
-import com.yeohangttukttak.api.domain.member.service.MemberSignUpService;
+import com.yeohangttukttak.api.domain.member.entity.JwtToken;
+import com.yeohangttukttak.api.domain.member.service.*;
+import com.yeohangttukttak.api.global.common.ApiErrorCode;
+import com.yeohangttukttak.api.global.common.ApiException;
+import com.yeohangttukttak.api.global.common.ApiResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,32 +21,50 @@ public class MemberController {
 
     private final MemberSignInService signInService;
     private final MemberSignUpService signUpService;
-    private final MemberAuthRenewService memberAuthRenewService;
+    private final MemberAuthRenewService authRenewService;
+    private final MemberFindProfileService findProfileService;
+
+    private final MemberSendVerifyEmailService sendVerifyEmailService;
+
+
+    @PostMapping("/email/verify/send")
+    public ApiResponse<Void> sendVerificationEmail(@Valid @RequestBody MemberSendVerifyEmailRequest body) {
+
+        sendVerifyEmailService.send(body.getEmail());
+
+        return new ApiResponse<>(null);
+    }
+
+    @GetMapping("/profile")
+    public ApiResponse<MemberProfileDTO> findProfile(
+            HttpServletRequest request, HttpServletResponse response
+    ) {
+        JwtToken accessToken = (JwtToken) request.getAttribute("accessToken");
+        return new ApiResponse<>(findProfileService.findByEmail(accessToken.getEmail()));
+    }
 
     @PostMapping("/sign-up")
-    public ResponseEntity<MemberDTO> signUp(@Valid @RequestBody MemberSignUpRequest body) {
+    public ApiResponse<MemberDTO> signUp(@Valid @RequestBody MemberSignUpRequest body) {
         MemberDTO member = signUpService.local(
-                body.getEmail(), body.getPassword(), body.getNickname());
+                body.getEmail(), body.getPassword(), body.getNickname(), body.getVerificationCode());
 
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(member);
+        return new ApiResponse<>(member);
     }
 
     @PostMapping("/sign-in")
-    public ResponseEntity<MemberAuthDTO> signIn(@Valid @RequestBody MemberSignInRequest body) {
+    public ResponseEntity<ApiResponse<MemberAuthDTO>> signIn(@Valid @RequestBody MemberSignInRequest body) {
         return ResponseEntity.ok()
                 .header("Cache-Control", "no-store")
                 .header("Pragma", "no-cache")
-                .body(signInService.local(body.getEmail(), body.getPassword()));
+                .body(new ApiResponse<>(signInService.local(body.getEmail(), body.getPassword())));
     }
 
     @PostMapping("/auth/renew")
-    public ResponseEntity<MemberAuthDTO> renew(@RequestBody MemberAuthRenewRequest body) {
+    public ResponseEntity<ApiResponse<MemberAuthDTO>> renew(@RequestBody MemberAuthRenewRequest body) {
         return ResponseEntity.ok()
                 .header("Cache-Control", "no-store")
                 .header("Pragma", "no-cache")
-                .body(memberAuthRenewService.renew(body.getRefreshToken(), body.getEmail()));
+                .body(new ApiResponse<>(authRenewService.renew(body.getRefreshToken(), body.getEmail())));
     }
 
 }
