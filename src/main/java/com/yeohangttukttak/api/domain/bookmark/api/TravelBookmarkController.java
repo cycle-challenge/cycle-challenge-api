@@ -1,9 +1,7 @@
 package com.yeohangttukttak.api.domain.bookmark.api;
 
 import com.yeohangttukttak.api.domain.bookmark.dto.BookmarkDTO;
-import com.yeohangttukttak.api.domain.bookmark.service.PlaceBookmarkCreateService;
-import com.yeohangttukttak.api.domain.bookmark.service.PlaceBookmarkDeleteService;
-import com.yeohangttukttak.api.domain.bookmark.service.PlaceBookmarkFindService;
+import com.yeohangttukttak.api.domain.bookmark.service.*;
 import com.yeohangttukttak.api.domain.member.entity.JwtToken;
 import com.yeohangttukttak.api.global.common.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,13 +15,13 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/bookmarks")
 @RequiredArgsConstructor
-public class PlaceBookmarkController {
+public class TravelBookmarkController {
 
-    private final PlaceBookmarkCreateService bookmarkCreateService;
-    private final PlaceBookmarkDeleteService bookmarkDeleteService;
-    private final PlaceBookmarkFindService bookmarkFindService;
+    private final TravelBookmarkCreateService bookmarkCreateService;
+    private final TravelBookmarkDeleteService bookmarkDeleteService;
+    private final TravelBookmarkFindService bookmarkFindService;
 
-    @PostMapping("/places/{id}")
+    @PostMapping("/travels/{id}")
     public ResponseEntity<ApiResponse<BookmarkDTO>> createPlaceBookmark(
             @PathVariable("id") Long id, HttpServletRequest request) {
         JwtToken accessToken = (JwtToken) request.getAttribute("accessToken");
@@ -33,7 +31,7 @@ public class PlaceBookmarkController {
                 .body(new ApiResponse<>(dto));
     }
 
-    @DeleteMapping("/places/{id}")
+    @DeleteMapping("/travels/{id}")
     public ApiResponse<BookmarkDTO> deletePlaceBookmark(
             @PathVariable("id") Long id, HttpServletRequest request) {
         JwtToken accessToken = (JwtToken) request.getAttribute("accessToken");
@@ -42,7 +40,7 @@ public class PlaceBookmarkController {
         return new ApiResponse<>(dto);
     }
 
-    @GetMapping("/places")
+    @GetMapping("/travels")
     public ApiResponse<List<BookmarkDTO>> findPlaceBookmarks(HttpServletRequest request) {
         JwtToken accessToken = (JwtToken) request.getAttribute("accessToken");
         List<BookmarkDTO> dtos = bookmarkFindService.call(accessToken.getEmail());
