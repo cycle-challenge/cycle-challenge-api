@@ -38,7 +38,7 @@ public class JwtToken {
     protected static String SECRET;
 
     public static final Long accessTokenTTL = 60 * 30L,
-                                refreshTokenTTL = (60 * 60) * 24 * 14L;;
+            refreshTokenTTL = (60 * 60) * 24 * 14L;
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -90,6 +90,9 @@ public class JwtToken {
             // 3. 토큰의 유효 기간을 검사
             Instant now = Instant.now();
             Instant expiration = Instant.ofEpochSecond(payload.getExp());
+
+            System.out.println("expiration = " + Instant.ofEpochSecond(payload.getIat()));
+            System.out.println("expiration = " + expiration);
 
             if (now.isAfter(expiration))
                 throw new ApiException(ApiErrorCode.INVALID_AUTHORIZATION);
