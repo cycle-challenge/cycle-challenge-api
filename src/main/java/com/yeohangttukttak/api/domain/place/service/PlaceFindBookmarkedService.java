@@ -16,13 +16,13 @@ import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
-public class PlaceBookmarkFindService {
+public class PlaceFindBookmarkedService {
 
     private final BookmarkRepository<PlaceBookmark> bookmarkRepository;
     private final MemberRepository memberRepository;
     private final PlaceGetPreviewImageService getPreviewImageService;
 
-    public PlaceBookmarkFindService (
+    public PlaceFindBookmarkedService(
             PlaceBookmarkRepository bookmarkRepository,
             MemberRepository memberRepository,
             PlaceGetPreviewImageService getPreviewImageService) {

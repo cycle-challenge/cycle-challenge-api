@@ -3,6 +3,7 @@ package com.yeohangttukttak.api.domain.bookmark.api;
 import com.yeohangttukttak.api.domain.bookmark.dto.BookmarkDTO;
 import com.yeohangttukttak.api.domain.bookmark.service.PlaceBookmarkCreateService;
 import com.yeohangttukttak.api.domain.bookmark.service.PlaceBookmarkDeleteService;
+import com.yeohangttukttak.api.domain.bookmark.service.PlaceBookmarkFindService;
 import com.yeohangttukttak.api.domain.member.entity.JwtToken;
 import com.yeohangttukttak.api.global.common.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/bookmarks")
@@ -19,6 +21,7 @@ public class PlaceBookmarkController {
 
     private final PlaceBookmarkCreateService placeBookmarkCreateService;
     private final PlaceBookmarkDeleteService placeBookmarkDeleteService;
+    private final PlaceBookmarkFindService placeBookmarkFindService;
 
     @PostMapping("/places/{id}")
     public ResponseEntity<ApiResponse<BookmarkDTO>> createPlaceBookmark(
@@ -37,6 +40,14 @@ public class PlaceBookmarkController {
         BookmarkDTO dto = placeBookmarkDeleteService.call(accessToken.getEmail(), id);
 
         return new ApiResponse<>(dto);
+    }
+
+    @GetMapping("/places")
+    public ApiResponse<List<BookmarkDTO>> findPlaceBookmarks(HttpServletRequest request) {
+        JwtToken accessToken = (JwtToken) request.getAttribute("accessToken");
+        List<BookmarkDTO> dtos = placeBookmarkFindService.call(accessToken.getEmail());
+
+        return new ApiResponse<>(dtos);
     }
 
 }

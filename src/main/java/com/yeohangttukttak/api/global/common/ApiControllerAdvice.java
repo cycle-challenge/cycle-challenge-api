@@ -49,19 +49,4 @@ public class ApiControllerAdvice {
 
     }
 
-    @ExceptionHandler
-    public ResponseEntity<ApiResponse<ApiError>> handleUnhandledException(Exception ex, Locale locale) {
-
-        log.error(ex.getMessage());
-        ex.printStackTrace();
-
-        ApiErrorCode errorCode = ApiErrorCode.INTERNAL_SERVER_ERROR;
-        String message = messageSource.getMessage(errorCode.name(), null, locale);
-
-        ApiError error = new ApiError(message, null);
-
-        return new ResponseEntity<>(new ApiResponse<>(errorCode, error), errorCode.getStatus());
-
-    }
-
 }
