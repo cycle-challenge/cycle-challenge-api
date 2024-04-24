@@ -25,11 +25,4 @@ public class PlaceGetPreviewImageService {
         return places.stream().map((place) -> new PlaceDTO(place, imageMap.get(place.getId()))).toList();
     }
 
-    private Map<Long, List<ImageDTO>> createPreviewImageMap(List<Place> places) {
-        return places.stream().collect(toMap(Place::getId,
-                place -> place.getImages().stream()
-                        .sorted(comparingDouble(Image::getId))
-                        .limit(5)
-                        .map(ImageDTO::new).toList()));
-    }
 }
