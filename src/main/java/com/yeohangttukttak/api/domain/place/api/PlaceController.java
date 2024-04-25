@@ -1,10 +1,13 @@
 package com.yeohangttukttak.api.domain.place.api;
 
-import com.yeohangttukttak.api.domain.member.dto.TokenPayload;
+import com.yeohangttukttak.api.domain.member.entity.JwtToken;
 import com.yeohangttukttak.api.domain.place.dao.PlaceRepository;
 import com.yeohangttukttak.api.domain.place.dto.PlaceDTO;
 import com.yeohangttukttak.api.domain.place.dto.PlaceFindNearbyParams;
+import com.yeohangttukttak.api.domain.place.entity.Place;
+import com.yeohangttukttak.api.domain.place.service.PlaceFindBookmarkedService;
 import com.yeohangttukttak.api.domain.place.service.PlaceFindNearbyService;
+import com.yeohangttukttak.api.domain.place.service.PlaceGetPreviewImageService;
 import com.yeohangttukttak.api.global.common.ApiResponse;
 import com.yeohangttukttak.api.domain.place.entity.Location;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,8 +21,6 @@ import com.yeohangttukttak.api.domain.file.dto.ImageDTO;
 import com.yeohangttukttak.api.domain.file.entity.Image;
 import com.yeohangttukttak.api.global.common.PageResult;
 import com.yeohangttukttak.api.global.common.PageSearch;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 
 @RestController
@@ -29,6 +30,8 @@ public class PlaceController {
 
     private final PlaceFindNearbyService placeFindNearbyService;
     private final PlaceRepository placeRepository;
+    private final PlaceFindBookmarkedService placeBookmarkFindService;
+    private final PlaceGetPreviewImageService getPreviewImageService;
 
     @GetMapping("/nearby")
     public ApiResponse<List<PlaceDTO>> findNearby(
@@ -51,6 +54,13 @@ public class PlaceController {
 
         PageResult<Image> images = placeRepository.getImage(id, search);
         return new ApiResponse<>(images.convertEntities(ImageDTO::new));
+    }
+
+    @GetMapping("/bookmarked")
+    public ApiResponse<List<PlaceDTO>> findBookmarkedPlace(HttpServletRequest request) {
+        JwtToken accessToken = (JwtToken) request.getAttribute("accessToken");
+        List<Place> places = placeBookmarkFindService.call(accessToken.getEmail());
+        return new ApiResponse<>(getPreviewImageService.call(places));
     }
 
 }

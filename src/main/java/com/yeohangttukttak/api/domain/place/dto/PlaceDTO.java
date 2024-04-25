@@ -35,11 +35,19 @@ public class PlaceDTO {
         this.location = new LocationDTO(place.getLocation());
     }
 
-    public PlaceDTO(Place place, List<TravelDTO> travels, List<ImageDTO> images, Double distance) {
+    public PlaceDTO(Place place, List<ImageDTO> images) {
         this(place);
-        this.location = new LocationDTO(place.getLocation(), distance);
-        this.travels = travels;
         this.images = images;
+    }
+
+    public PlaceDTO(Place place, List<ImageDTO> images, List<TravelDTO> travels) {
+        this(place, images);
+        this.travels = travels;
+    }
+
+    public PlaceDTO(Place place, List<TravelDTO> travels, List<ImageDTO> images, Double distance) {
+        this(place, images, travels);
+        this.location = new LocationDTO(place.getLocation(), distance);
     }
 
 }

@@ -52,23 +52,24 @@ class MemberSignInServiceTest {
             mocked.when(() -> JwtToken.issueRefreshToken(any(), any())).thenReturn(mockToken);
 
             Member member = Member.builder()
+                    .id(1L)
                     .email(email)
                     .password(password)
                     .build();
 
             given(memberRepository.findByEmail(email))
                     .willReturn(Optional.of(member));
+
             given(password.validate(plainPassword)).willReturn(true);
 
             // when
             memberSignInService.local(email, plainPassword);
 
             // then
-            then(refreshTokenRepository).should(times(1)).save(any());
+            then(refreshTokenRepository).should(times(1)).save(any(), any(), any());
 
             mocked.verify(() -> JwtToken.issueAccessToken(any(), any()), times(1));
             mocked.verify(() -> JwtToken.issueRefreshToken(any(), any()), times(1));
-
         }
 
     }
@@ -92,7 +93,7 @@ class MemberSignInServiceTest {
                     .hasMessageContaining(ApiErrorCode.SIGN_IN_FAILED.name());
 
             then(password).should(never()).validate(plainPassword);
-            then(refreshTokenRepository).should(never()).save(any());
+            then(refreshTokenRepository).should(never()).save(any(), any(), any());
 
             mocked.verify(() -> JwtToken.issueAccessToken(any(), any()), never());
             mocked.verify(() -> JwtToken.issueRefreshToken(any(), any()), never());
@@ -125,7 +126,7 @@ class MemberSignInServiceTest {
                     .isInstanceOf(ApiException.class)
                     .hasMessageContaining(ApiErrorCode.SIGN_IN_FAILED.name());
 
-            then(refreshTokenRepository).should(never()).save(any());
+            then(refreshTokenRepository).should(never()).save(any(), any(), any());
 
             mocked.verify(() -> JwtToken.issueAccessToken(any(), any()), never());
             mocked.verify(() -> JwtToken.issueRefreshToken(any(), any()), never());

@@ -4,7 +4,6 @@ import com.yeohangttukttak.api.domain.member.dao.MemberRepository;
 import com.yeohangttukttak.api.domain.member.dao.RefreshTokenRepository;
 import com.yeohangttukttak.api.domain.member.entity.JwtToken;
 import com.yeohangttukttak.api.domain.member.entity.Member;
-import com.yeohangttukttak.api.domain.member.entity.RefreshToken;
 import com.yeohangttukttak.api.global.common.ApiErrorCode;
 import com.yeohangttukttak.api.global.common.ApiException;
 import org.junit.jupiter.api.Test;
@@ -56,20 +55,18 @@ class MemberAuthRenewServiceTest {
                     .email(email)
                     .build();
 
-            RefreshToken existToken = new RefreshToken(member.getId(), refreshToken,1L);
-
             given(memberRepository.findByEmail(email))
                     .willReturn(Optional.of(member));
 
             given(refreshTokenRepository.findById(member.getId()))
-                    .willReturn(Optional.of(existToken));
+                    .willReturn(Optional.of(refreshToken));
 
             // when
             authRenewService.renew(refreshToken, email);
 
             // then
             then(refreshTokenRepository).should(times(1)).findById(member.getId());
-            then(refreshTokenRepository).should(times(1)).save(any());
+            then(refreshTokenRepository).should(times(1)).save(anyLong(), anyString(), anyLong());
 
             mocked.verify(() -> JwtToken.issueAccessToken(any(), any()), times(1));
             mocked.verify(() -> JwtToken.issueRefreshToken(any(), any()), times(1));
@@ -93,7 +90,7 @@ class MemberAuthRenewServiceTest {
                     .hasMessageContaining(ApiErrorCode.INVALID_AUTHORIZATION.name());
 
             then(refreshTokenRepository).should(never()).findById(any());
-            then(refreshTokenRepository).should(never()).save(any());
+            then(refreshTokenRepository).should(never()).save(anyLong(), anyString(), anyLong());
 
             mocked.verify(() -> JwtToken.issueAccessToken(any(), any()), never());
             mocked.verify(() -> JwtToken.issueRefreshToken(any(), any()), never());
@@ -129,7 +126,7 @@ class MemberAuthRenewServiceTest {
                     .hasMessageContaining(ApiErrorCode.INVALID_AUTHORIZATION.name());
 
             then(refreshTokenRepository).should(times(1)).findById(member.getId());
-            then(refreshTokenRepository).should(never()).save(any());
+            then(refreshTokenRepository).should(never()).save(anyLong(), anyString(), anyLong());
 
             mocked.verify(() -> JwtToken.issueAccessToken(any(), any()), never());
             mocked.verify(() -> JwtToken.issueRefreshToken(any(), any()), never());
@@ -154,7 +151,7 @@ class MemberAuthRenewServiceTest {
             given(memberRepository.findByEmail(email))
                     .willReturn(Optional.of(member));
 
-            RefreshToken existToken = new RefreshToken(member.getId(), "fake.refresh.token",1L);
+            String existToken = "fake.refresh.token";
 
             given(refreshTokenRepository.findById(member.getId()))
                     .willReturn(Optional.of(existToken));
@@ -165,7 +162,7 @@ class MemberAuthRenewServiceTest {
                     .hasMessageContaining(ApiErrorCode.INVALID_AUTHORIZATION.name());
 
             then(refreshTokenRepository).should(times(1)).findById(member.getId());
-            then(refreshTokenRepository).should(never()).save(any());
+            then(refreshTokenRepository).should(never()).save(anyLong(), anyString(), anyLong());
 
             mocked.verify(() -> JwtToken.issueAccessToken(any(), any()), never());
             mocked.verify(() -> JwtToken.issueRefreshToken(any(), any()), never());
