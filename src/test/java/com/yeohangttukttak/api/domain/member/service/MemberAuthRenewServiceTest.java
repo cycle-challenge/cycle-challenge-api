@@ -1,10 +1,8 @@
 package com.yeohangttukttak.api.domain.member.service;
 
 import com.yeohangttukttak.api.domain.member.dao.MemberRepository;
-import com.yeohangttukttak.api.domain.member.dao.RefreshTokenRepository;
 import com.yeohangttukttak.api.domain.member.entity.JwtToken;
 import com.yeohangttukttak.api.domain.member.entity.Member;
-import com.yeohangttukttak.api.domain.member.entity.RefreshToken;
 import com.yeohangttukttak.api.global.common.ApiErrorCode;
 import com.yeohangttukttak.api.global.common.ApiException;
 import org.junit.jupiter.api.Test;

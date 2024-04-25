@@ -5,7 +5,6 @@ import com.yeohangttukttak.api.domain.member.dao.RefreshTokenRepository;
 import com.yeohangttukttak.api.domain.member.dto.MemberAuthDTO;
 import com.yeohangttukttak.api.domain.member.entity.JwtToken;
 import com.yeohangttukttak.api.domain.member.entity.Member;
-import com.yeohangttukttak.api.domain.member.entity.RefreshToken;
 import com.yeohangttukttak.api.global.common.ApiErrorCode;
 import com.yeohangttukttak.api.global.common.ApiException;
 import lombok.RequiredArgsConstructor;
@@ -31,12 +30,11 @@ public class MemberSignInService {
             throw new ApiException(ApiErrorCode.SIGN_IN_FAILED);
 
         Instant now = Instant.now();
-        Long refreshTokenTTL = 3600 * 24 * 14L;
 
         JwtToken accessToken = JwtToken.issueAccessToken(email, now);
         JwtToken refreshToken = JwtToken.issueRefreshToken(email, now);
 
-        refreshTokenRepository.save(new RefreshToken(member.getId(), refreshToken.getToken(), refreshTokenTTL));
+        refreshTokenRepository.save(member.getId(), refreshToken.getToken(), JwtToken.refreshTokenTTL);
 
         return new MemberAuthDTO(accessToken, refreshToken);
 

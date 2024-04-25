@@ -5,7 +5,6 @@ import com.yeohangttukttak.api.domain.member.dao.RefreshTokenRepository;
 import com.yeohangttukttak.api.domain.member.dto.MemberAuthDTO;
 import com.yeohangttukttak.api.domain.member.entity.JwtToken;
 import com.yeohangttukttak.api.domain.member.entity.Member;
-import com.yeohangttukttak.api.domain.member.entity.RefreshToken;
 import com.yeohangttukttak.api.global.common.ApiErrorCode;
 import com.yeohangttukttak.api.global.common.ApiException;
 import lombok.RequiredArgsConstructor;
@@ -26,11 +25,11 @@ public class MemberAuthRenewService {
                 .orElseThrow(() -> new ApiException(ApiErrorCode.INVALID_AUTHORIZATION));
 
         // 2. 서버 저장소에 Refresh Token이 존재하는지 확인
-        RefreshToken existToken = refreshTokenRepository.findById(member.getId())
+        String existToken = refreshTokenRepository.findById(member.getId())
                 .orElseThrow(() -> new ApiException(ApiErrorCode.INVALID_AUTHORIZATION));
 
         // 3. 저장된 Refresh Token이 유효한지 확인
-        if (!existToken.getToken().equals(refreshToken))
+        if (!existToken.equals(refreshToken))
             throw new ApiException(ApiErrorCode.INVALID_AUTHORIZATION);
 
         Instant now = Instant.now();
@@ -38,8 +37,7 @@ public class MemberAuthRenewService {
         JwtToken newAccessToken = JwtToken.issueAccessToken(email, now);
         JwtToken newRefreshToken = JwtToken.issueRefreshToken(email, now);
 
-        refreshTokenRepository.save(
-                new RefreshToken(member.getId(), newRefreshToken.getToken(), JwtToken.refreshTokenTTL));
+        refreshTokenRepository.save(member.getId(), newRefreshToken.getToken(), JwtToken.refreshTokenTTL);
 
         return new MemberAuthDTO(newAccessToken, newRefreshToken);
     }
