@@ -4,8 +4,10 @@ import com.yeohangttukttak.api.domain.member.entity.JwtToken;
 import com.yeohangttukttak.api.domain.place.dao.PlaceRepository;
 import com.yeohangttukttak.api.domain.place.dto.PlaceDTO;
 import com.yeohangttukttak.api.domain.place.dto.PlaceFindNearbyParams;
+import com.yeohangttukttak.api.domain.place.entity.Place;
 import com.yeohangttukttak.api.domain.place.service.PlaceFindBookmarkedService;
 import com.yeohangttukttak.api.domain.place.service.PlaceFindNearbyService;
+import com.yeohangttukttak.api.domain.place.service.PlaceGetPreviewImageService;
 import com.yeohangttukttak.api.global.common.ApiResponse;
 import com.yeohangttukttak.api.domain.place.entity.Location;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,6 +31,7 @@ public class PlaceController {
     private final PlaceFindNearbyService placeFindNearbyService;
     private final PlaceRepository placeRepository;
     private final PlaceFindBookmarkedService placeBookmarkFindService;
+    private final PlaceGetPreviewImageService getPreviewImageService;
 
     @GetMapping("/nearby")
     public ApiResponse<List<PlaceDTO>> findNearby(
@@ -56,8 +59,8 @@ public class PlaceController {
     @GetMapping("/bookmarked")
     public ApiResponse<List<PlaceDTO>> findBookmarkedPlace(HttpServletRequest request) {
         JwtToken accessToken = (JwtToken) request.getAttribute("accessToken");
-
-        return new ApiResponse<>(placeBookmarkFindService.call(accessToken.getEmail()));
+        List<Place> places = placeBookmarkFindService.call(accessToken.getEmail());
+        return new ApiResponse<>(getPreviewImageService.call(places));
     }
 
 }

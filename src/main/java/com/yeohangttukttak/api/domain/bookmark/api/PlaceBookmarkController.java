@@ -3,7 +3,6 @@ package com.yeohangttukttak.api.domain.bookmark.api;
 import com.yeohangttukttak.api.domain.bookmark.dto.BookmarkDTO;
 import com.yeohangttukttak.api.domain.bookmark.service.PlaceBookmarkCreateService;
 import com.yeohangttukttak.api.domain.bookmark.service.PlaceBookmarkDeleteService;
-import com.yeohangttukttak.api.domain.bookmark.service.PlaceBookmarkFindService;
 import com.yeohangttukttak.api.domain.member.entity.JwtToken;
 import com.yeohangttukttak.api.global.common.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,7 +20,6 @@ public class PlaceBookmarkController {
 
     private final PlaceBookmarkCreateService bookmarkCreateService;
     private final PlaceBookmarkDeleteService bookmarkDeleteService;
-    private final PlaceBookmarkFindService bookmarkFindService;
 
     @PostMapping("/places/{id}")
     public ResponseEntity<ApiResponse<BookmarkDTO>> createPlaceBookmark(
@@ -40,14 +38,6 @@ public class PlaceBookmarkController {
         BookmarkDTO dto = bookmarkDeleteService.call(accessToken.getEmail(), id);
 
         return new ApiResponse<>(dto);
-    }
-
-    @GetMapping("/places")
-    public ApiResponse<List<BookmarkDTO>> findPlaceBookmarks(HttpServletRequest request) {
-        JwtToken accessToken = (JwtToken) request.getAttribute("accessToken");
-        List<BookmarkDTO> dtos = bookmarkFindService.call(accessToken.getEmail());
-
-        return new ApiResponse<>(dtos);
     }
 
 }

@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class TravelBookmark extends Bookmark {
+public class TravelBookmark extends Bookmark<Travel> {
 
     @MapsId("targetId")
     @ManyToOne(fetch = FetchType.LAZY)

@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/bookmarks")
@@ -19,7 +18,6 @@ public class TravelBookmarkController {
 
     private final TravelBookmarkCreateService bookmarkCreateService;
     private final TravelBookmarkDeleteService bookmarkDeleteService;
-    private final TravelBookmarkFindService bookmarkFindService;
 
     @PostMapping("/travels/{id}")
     public ResponseEntity<ApiResponse<BookmarkDTO>> createPlaceBookmark(
@@ -38,14 +36,6 @@ public class TravelBookmarkController {
         BookmarkDTO dto = bookmarkDeleteService.call(accessToken.getEmail(), id);
 
         return new ApiResponse<>(dto);
-    }
-
-    @GetMapping("/travels")
-    public ApiResponse<List<BookmarkDTO>> findPlaceBookmarks(HttpServletRequest request) {
-        JwtToken accessToken = (JwtToken) request.getAttribute("accessToken");
-        List<BookmarkDTO> dtos = bookmarkFindService.call(accessToken.getEmail());
-
-        return new ApiResponse<>(dtos);
     }
 
 }
