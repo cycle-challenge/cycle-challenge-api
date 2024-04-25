@@ -42,6 +42,7 @@ class MemberSignUpServiceTest {
             String email = "test@example.com";
             String plainText = "test1234";
             String nickname = "test-user";
+            String verificationCode = "test-code";
 
             Member member = Member.builder()
                     .id(1L)
@@ -55,10 +56,10 @@ class MemberSignUpServiceTest {
             given(memberRepository.findByEmail(email)).willReturn(Optional.empty());
             given(memberRepository.findByNickname(nickname)).willReturn(Optional.empty());
             given(memberRepository.find(any())).willReturn(Optional.of(member));
-            given(verificationCodeRepository.findByEmail(email)).willReturn(Optional.of(""));
+            given(verificationCodeRepository.findByEmail(email)).willReturn(Optional.of(verificationCode));
 
             // when
-            memberSignUpService.local(email, plainText, nickname, "");
+            memberSignUpService.local(email, plainText, nickname, verificationCode);
 
             // then
             then(memberRepository).should(times(1)).save(any(Member.class));
