@@ -44,8 +44,11 @@ public class JwtAuthFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
+
+
         try {
             String uri = httpRequest.getRequestURI();
+            log.info(uri);
 
             // 1. Auth Filter 화이트 리스트 검사
             if (PatternMatchUtils.simpleMatch(whitelist, uri)) {

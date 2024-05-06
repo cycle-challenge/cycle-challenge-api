@@ -6,7 +6,7 @@ import com.yeohangttukttak.api.domain.place.dto.PlaceDTO;
 import com.yeohangttukttak.api.domain.place.dto.PlaceFindNearbyParams;
 import com.yeohangttukttak.api.domain.place.entity.Place;
 import com.yeohangttukttak.api.domain.place.service.PlaceFindBookmarkedService;
-import com.yeohangttukttak.api.domain.place.service.PlaceFindNearbyService;
+import com.yeohangttukttak.api.domain.place.service.PlaceFindByGooglePlaceIdService;
 import com.yeohangttukttak.api.domain.place.service.PlaceGetPreviewImageService;
 import com.yeohangttukttak.api.global.common.ApiResponse;
 import com.yeohangttukttak.api.domain.place.entity.Location;
@@ -28,24 +28,10 @@ import com.yeohangttukttak.api.global.common.PageSearch;
 @RequestMapping("/api/v1/places")
 public class PlaceController {
 
-    private final PlaceFindNearbyService placeFindNearbyService;
     private final PlaceRepository placeRepository;
     private final PlaceFindBookmarkedService placeBookmarkFindService;
+    private final PlaceFindByGooglePlaceIdService findByGooglePlaceIdService;
     private final PlaceGetPreviewImageService getPreviewImageService;
-
-    @GetMapping("/nearby")
-    public ApiResponse<List<PlaceDTO>> findNearby(
-            @Valid @ModelAttribute PlaceFindNearbyParams params
-    ) {
-        Location location = new Location(
-                params.getLocation().getLatitude(),
-                params.getLocation().getLongitude());
-        int radius = params.getRadius();
-
-        List<PlaceDTO> placeDTOS = placeFindNearbyService.findNearby(location, radius);
-        return new ApiResponse<>(placeDTOS);
-    }
-
 
     @GetMapping("/{id}/images")
     public ApiResponse<PageResult<ImageDTO>> getPlaceImages(
@@ -61,6 +47,13 @@ public class PlaceController {
         JwtToken accessToken = (JwtToken) request.getAttribute("accessToken");
         List<Place> places = placeBookmarkFindService.call(accessToken.getEmail());
         return new ApiResponse<>(getPreviewImageService.call(places));
+    }
+
+    @GetMapping("/")
+    public ApiResponse<PlaceDTO> findByGooglePlaceId(
+            @RequestParam("googlePlaceId") String googlePlaceId) {
+        Place place = findByGooglePlaceIdService.call(googlePlaceId);
+        return new ApiResponse<>(getPreviewImageService.call(List.of(place)).get(0));
     }
 
 }

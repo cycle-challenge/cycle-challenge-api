@@ -12,9 +12,9 @@ public class VisitDTO {
 
     private Long id;
 
-    private int dayOfTravel;
+    private Integer dayOfTravel;
 
-    private int orderOfVisit;
+    private Integer orderOfVisit;
 
     private PlaceDTO place;
 
@@ -27,6 +27,11 @@ public class VisitDTO {
         place = new PlaceDTO(visit.getPlace());
         images = visit.getImages().stream()
                 .map(ImageDTO::new).toList();
+    }
+
+    public VisitDTO(Visit visit, PlaceDTO place) {
+        this(visit);
+        this.place = place;
     }
 
 }
