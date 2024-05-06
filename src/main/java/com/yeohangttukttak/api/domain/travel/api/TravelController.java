@@ -66,12 +66,12 @@ public class TravelController {
     }
 
     @PostMapping("/{id}/visits")
-    ResponseEntity<Void> createVisits(@PathVariable("id") Long id,
+    ResponseEntity<Void> createVisits(HttpServletRequest request,
+                                      @PathVariable("id") Long id,
                                       @RequestBody List<VisitCreateDto> body) {
 
-//        HttpServletRequest request = (HttpServletRequest) RequestContextHolder.currentRequestAttributes();
-//        JwtToken accessToken = (JwtToken) request.getAttribute("accessToken");
-        createVisitsService.call(id, "takeny1998@gmail.com", body);
+        JwtToken accessToken = (JwtToken) request.getAttribute("accessToken");
+        createVisitsService.call(id, accessToken.getEmail(), body);
 
         return ResponseEntity.created(URI.create("/api/vi/travels/" + id + "/visits"))
                 .build();
