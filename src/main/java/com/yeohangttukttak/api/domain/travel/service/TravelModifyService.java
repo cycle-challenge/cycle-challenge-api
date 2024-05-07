@@ -58,7 +58,7 @@ public class TravelModifyService {
                     }
 
                     visit.setOrderOfVisit(visitModifyDto.getOrderOfVisit());
-                    visit.setDayOfTravel(visit.getDayOfTravel());
+                    visit.setDayOfTravel(visitModifyDto.getDayOfTravel());
 
                     return visit;
                 }).toList();
