@@ -83,7 +83,7 @@ public class TravelController {
     }
 
     @GetMapping("/member/my")
-    ApiResponse<List<TravelDTO>> findAllByMember(HttpServletRequest request) {
+    ApiResponse<List<TravelDTO>> findMy(HttpServletRequest request) {
         JwtToken accessToken = (JwtToken) request.getAttribute("accessToken");
         return new ApiResponse<>(findMyService.call(accessToken.getEmail()));
     }

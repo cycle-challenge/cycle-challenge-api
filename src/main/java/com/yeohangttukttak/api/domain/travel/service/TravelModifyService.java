@@ -39,7 +39,11 @@ public class TravelModifyService {
         }
 
         travel.setName(modifyDto.getName());
-        travel.setPeriod(new TravelPeriod(modifyDto.getStartedOn(), modifyDto.getEndedOn()));
+
+        if (modifyDto.getStartedOn() != null && modifyDto.getEndedOn() != null) {
+            travel.setPeriod(new TravelPeriod(modifyDto.getStartedOn(), modifyDto.getEndedOn()));
+        }
+
         travel.setVisibility(modifyDto.getVisibility());
 
         Map<Long, Visit> visitMap = travel.getVisits().stream()

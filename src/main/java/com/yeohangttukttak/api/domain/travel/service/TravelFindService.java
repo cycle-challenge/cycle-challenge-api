@@ -27,10 +27,6 @@ public class TravelFindService {
         Travel travel = travelRepository.find(id)
                 .orElseThrow(() -> new ApiException(ApiErrorCode.TRAVEL_NOT_FOUND));
 
-        List<VisitDTO> visits = visitRepository.findByTravel(id)
-                .stream().map(VisitDTO::new)
-                .toList();
-
         return new TravelDTO(travel);
     }
 

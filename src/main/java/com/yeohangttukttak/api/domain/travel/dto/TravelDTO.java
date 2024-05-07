@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.yeohangttukttak.api.domain.file.dto.ImageDTO;
 import com.yeohangttukttak.api.domain.member.dto.MemberDTO;
 import com.yeohangttukttak.api.domain.place.dto.PlaceDTO;
+import com.yeohangttukttak.api.domain.place.entity.Place;
 import com.yeohangttukttak.api.domain.travel.entity.*;
 import com.yeohangttukttak.api.domain.visit.dto.VisitDTO;
 import jakarta.validation.constraints.NotBlank;
@@ -62,8 +63,8 @@ public class TravelDTO {
         this.member = new MemberDTO(travel.getMember());
     }
 
-    public TravelDTO(Travel travel, List<PlaceDTO> places) {
+    public TravelDTO(Travel travel, List<Place> places) {
         this(travel);
-        this.places = places;
+        this.places = places.stream().map(PlaceDTO::new).toList();
     }
 }

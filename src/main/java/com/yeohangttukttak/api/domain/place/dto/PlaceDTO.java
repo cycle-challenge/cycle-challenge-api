@@ -33,21 +33,7 @@ public class PlaceDTO {
         this.type = place.getType();
         this.googlePlaceId = place.getGooglePlaceId();
         this.location = new LocationDTO(place.getLocation());
-    }
-
-    public PlaceDTO(Place place, List<ImageDTO> images) {
-        this(place);
-        this.images = images;
-    }
-
-    public PlaceDTO(Place place, List<ImageDTO> images, List<TravelDTO> travels) {
-        this(place, images);
-        this.travels = travels;
-    }
-
-    public PlaceDTO(Place place, List<TravelDTO> travels, List<ImageDTO> images, Double distance) {
-        this(place, images, travels);
-        this.location = new LocationDTO(place.getLocation(), distance);
+        this.images = place.getPreviewImages().stream().map(ImageDTO::new).toList();
     }
 
 }

@@ -14,10 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.Comparator.*;
@@ -36,31 +33,12 @@ public class TravelFindNearbyService {
 
         Map<Travel, List<Place>> travelMap = visits.stream()
                 .collect(groupingBy(Visit::getTravel,
-                        mapping(Visit::getPlace, toList())));
-
-        Map<Long, List<ImageDTO>> imageMap = new HashMap<>();
+                        mapping(Visit::getPlace, collectingAndThen(toSet(), ArrayList::new))));
 
         return travelMap.entrySet()
-                .stream().map((entry) -> {
-                    List<PlaceDTO> placeDTOS = entry.getValue().stream().map((place) -> {
-                        if (!imageMap.containsKey(place.getId())) {
-                            imageMap.put(place.getId(), getPreviewImage(place));
-                        }
-                        return new PlaceDTO(place, imageMap.get(place.getId()));
-                    }).toList();
-
-                    return new TravelDTO(entry.getKey(), placeDTOS);
-                })
+                .stream().map((entry) -> new TravelDTO(entry.getKey(), entry.getValue()))
                 .sorted(comparingLong(TravelDTO::getId))
                 .toList();
-    }
-
-
-    private List<ImageDTO> getPreviewImage(Place place) {
-        return place.getImages().stream()
-                .sorted(comparingDouble(Image::getId))
-                .limit(5)
-                .map(ImageDTO::new).toList();
     }
 
 

@@ -2,6 +2,7 @@ package com.yeohangttukttak.api.domain.visit.dto;
 
 import com.yeohangttukttak.api.domain.file.dto.ImageDTO;
 import com.yeohangttukttak.api.domain.place.dto.PlaceDTO;
+import com.yeohangttukttak.api.domain.place.entity.Place;
 import com.yeohangttukttak.api.domain.visit.entity.Visit;
 import lombok.Data;
 
@@ -27,11 +28,6 @@ public class VisitDTO {
         place = new PlaceDTO(visit.getPlace());
         images = visit.getImages().stream()
                 .map(ImageDTO::new).toList();
-    }
-
-    public VisitDTO(Visit visit, PlaceDTO place) {
-        this(visit);
-        this.place = place;
     }
 
 }

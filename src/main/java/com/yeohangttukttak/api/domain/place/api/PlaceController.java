@@ -3,15 +3,11 @@ package com.yeohangttukttak.api.domain.place.api;
 import com.yeohangttukttak.api.domain.member.entity.JwtToken;
 import com.yeohangttukttak.api.domain.place.dao.PlaceRepository;
 import com.yeohangttukttak.api.domain.place.dto.PlaceDTO;
-import com.yeohangttukttak.api.domain.place.dto.PlaceFindNearbyParams;
 import com.yeohangttukttak.api.domain.place.entity.Place;
 import com.yeohangttukttak.api.domain.place.service.PlaceFindBookmarkedService;
 import com.yeohangttukttak.api.domain.place.service.PlaceFindByGooglePlaceIdService;
-import com.yeohangttukttak.api.domain.place.service.PlaceGetPreviewImageService;
 import com.yeohangttukttak.api.global.common.ApiResponse;
-import com.yeohangttukttak.api.domain.place.entity.Location;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,7 +27,6 @@ public class PlaceController {
     private final PlaceRepository placeRepository;
     private final PlaceFindBookmarkedService placeBookmarkFindService;
     private final PlaceFindByGooglePlaceIdService findByGooglePlaceIdService;
-    private final PlaceGetPreviewImageService getPreviewImageService;
 
     @GetMapping("/{id}/images")
     public ApiResponse<PageResult<ImageDTO>> getPlaceImages(
@@ -46,14 +41,14 @@ public class PlaceController {
     public ApiResponse<List<PlaceDTO>> findBookmarkedPlace(HttpServletRequest request) {
         JwtToken accessToken = (JwtToken) request.getAttribute("accessToken");
         List<Place> places = placeBookmarkFindService.call(accessToken.getEmail());
-        return new ApiResponse<>(getPreviewImageService.call(places));
+        return new ApiResponse<>(places.stream().map(PlaceDTO::new).toList());
     }
 
     @GetMapping("/")
     public ApiResponse<PlaceDTO> findByGooglePlaceId(
             @RequestParam("googlePlaceId") String googlePlaceId) {
         Place place = findByGooglePlaceIdService.call(googlePlaceId);
-        return new ApiResponse<>(getPreviewImageService.call(List.of(place)).get(0));
+        return new ApiResponse<>(new PlaceDTO(place));
     }
 
 }
