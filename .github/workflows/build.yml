@@ -7,6 +7,10 @@ on:
         required: false
         type: boolean
         default: true
+      run_tests: # 테스트 실행 여부를 결정하는 입력 변수 추가
+        required: false
+        type: boolean
+        default: false # 기본값은 false로 설정
 
 jobs:
   build:
@@ -40,8 +44,13 @@ jobs:
       - name: Grant Execution Permission to gradlew
         run: chmod +x gradlew # gradlew 실행 권한 부여
 
-      - name: Build with Gradle
-        run: ./gradlew build # Gradle을 사용한 프로젝트 빌드
+      - name: Conditionally Build with or without Tests
+        run: |
+          if [ "${{ inputs.run_tests }}" = "true" ]; then
+            ./gradlew build
+          else
+            ./gradlew build -x test
+          fi
         env:
           DB_HOST: localhost
           DB_PORT: 5432

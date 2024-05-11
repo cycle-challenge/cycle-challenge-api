@@ -10,3 +10,4 @@ jobs:
     uses: ./.github/workflows/build.yml
     with:
       upload_artifact: false
+      run_tests: true
