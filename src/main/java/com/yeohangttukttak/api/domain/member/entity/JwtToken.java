@@ -91,9 +91,6 @@ public class JwtToken {
             Instant now = Instant.now();
             Instant expiration = Instant.ofEpochSecond(payload.getExp());
 
-            System.out.println("expiration = " + Instant.ofEpochSecond(payload.getIat()));
-            System.out.println("expiration = " + expiration);
-
             if (now.isAfter(expiration))
                 throw new ApiException(ApiErrorCode.INVALID_AUTHORIZATION);
 

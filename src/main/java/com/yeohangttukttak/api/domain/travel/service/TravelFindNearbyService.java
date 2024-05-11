@@ -2,8 +2,11 @@ package com.yeohangttukttak.api.domain.travel.service;
 
 import com.yeohangttukttak.api.domain.file.dto.ImageDTO;
 import com.yeohangttukttak.api.domain.file.entity.Image;
+import com.yeohangttukttak.api.domain.place.dao.PlaceReviewRepository;
 import com.yeohangttukttak.api.domain.place.dto.PlaceDTO;
 import com.yeohangttukttak.api.domain.place.dto.PlaceFindNearbyQueryDTO;
+import com.yeohangttukttak.api.domain.place.dto.PlaceReviewDto;
+import com.yeohangttukttak.api.domain.place.dto.PlaceReviewReportDto;
 import com.yeohangttukttak.api.domain.place.entity.Location;
 import com.yeohangttukttak.api.domain.place.entity.Place;
 import com.yeohangttukttak.api.domain.travel.dto.TravelDTO;
@@ -26,6 +29,7 @@ import static java.util.stream.Collectors.*;
 public class TravelFindNearbyService {
 
     private final VisitRepository visitRepository;
+    private final PlaceReviewRepository placeReviewRepository;
 
     public List<TravelDTO> findNearby(Location location, int radius) {
 
