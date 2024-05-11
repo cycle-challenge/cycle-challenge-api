@@ -3,7 +3,12 @@ package com.yeohangttukttak.api.domain.travel.entity;
 import com.yeohangttukttak.api.domain.BaseEntity;
 import com.yeohangttukttak.api.domain.file.entity.Image;
 import com.yeohangttukttak.api.domain.member.entity.Member;
+import com.yeohangttukttak.api.domain.place.entity.Place;
+import com.yeohangttukttak.api.domain.travel.dto.TravelCreateDto;
+import com.yeohangttukttak.api.domain.travel.dto.TravelModifyDto;
 import com.yeohangttukttak.api.domain.visit.entity.Visit;
+import com.yeohangttukttak.api.global.common.ApiErrorCode;
+import com.yeohangttukttak.api.global.common.ApiException;
 import com.yeohangttukttak.api.global.interfaces.Bookmarkable;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -12,6 +17,9 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static jakarta.persistence.FetchType.LAZY;
 import static lombok.AccessLevel.PROTECTED;
@@ -20,7 +28,7 @@ import static lombok.AccessLevel.PROTECTED;
 @NoArgsConstructor(access = PROTECTED)
 public class Travel extends BaseEntity implements Bookmarkable {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "travel_id")
     private Long id;
 
@@ -38,11 +46,14 @@ public class Travel extends BaseEntity implements Bookmarkable {
     @Enumerated(EnumType.STRING)
     private Motivation motivation;
 
+    @Enumerated(EnumType.STRING)
+    private Visibility visibility;
+
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @OneToMany(mappedBy = "travel")
+    @OneToMany(mappedBy = "travel", cascade = CascadeType.ALL)
     private List<Visit> visits = new ArrayList<>();
 
     @ManyToOne(fetch = LAZY)
@@ -56,6 +67,7 @@ public class Travel extends BaseEntity implements Bookmarkable {
                   TransportType transportType,
                   Motivation motivation,
                   Member member,
+                  Visibility visibility,
                   Image thumbnail) {
         this.id = id;
         this.name = name;
@@ -64,7 +76,40 @@ public class Travel extends BaseEntity implements Bookmarkable {
         this.transportType = transportType;
         this.motivation = motivation;
         this.member = member;
+        this.visibility = visibility;
         this.thumbnail = thumbnail;
     }
+
+    public void setThumbnail(Image thumbnail) {
+        this.thumbnail = thumbnail;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setVisibility(Visibility visibility) {
+        this.visibility = visibility;
+    }
+
+    public void setPeriod(TravelPeriod period) {
+        this.period = period;
+    }
+
+    public void setVisits(List<Visit> visits) {
+        Image previewImage = null;
+
+        for (Visit visit : visits) {
+            visit.setTravel(this);  // 각 Visit에 대한 Travel 참조 설정
+            Place place = visit.getPlace();
+            if (previewImage == null && !place.getImages().isEmpty()) {
+                previewImage = place.getImages().get(0);
+            }
+        }
+
+        this.visits = visits;
+        this.setThumbnail(previewImage);
+    }
+
 
 }

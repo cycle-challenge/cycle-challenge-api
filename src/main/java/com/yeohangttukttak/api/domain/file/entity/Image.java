@@ -48,4 +48,9 @@ public class Image extends BaseEntity {
         this.mimeType = mimeType;
         this.place = place;
     }
+
+    public void setPlace(Place place) {
+        this.place = place;
+    }
+
 }

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 @RequiredArgsConstructor
@@ -42,6 +43,14 @@ public class PlaceRepository implements BaseRepository<Place, Long> {
                 .getResultList(), search);
     }
 
+    public List<Place> findAllById(Set<Long> ids) {
+        return em.createQuery(
+                "SELECT p FROM Place as p " +
+                        "WHERE p.id IN :ids", Place.class)
+                .setParameter("ids", ids)
+                .getResultList();
+    }
+
     @Override
     public Long save(Place entity) {
         em.persist(entity);
@@ -56,5 +65,16 @@ public class PlaceRepository implements BaseRepository<Place, Long> {
     @Override
     public void delete(Place entity) {
         em.remove(entity);
+    }
+
+    public Optional<Place> findByGooglePlaceId(String googlePlaceId) {
+
+        List<Place> places = em.createQuery(
+                "SELECT p FROM Place as p " +
+                "WHERE p.googlePlaceId = :googlePlaceId", Place.class)
+                .setParameter("googlePlaceId", googlePlaceId)
+                .getResultList();
+
+        return places.stream().findFirst();
     }
 }

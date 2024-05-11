@@ -25,7 +25,7 @@ public class PlaceDTO {
 
     private String googlePlaceId;
 
-    private List<TravelDTO> travels;
+    private PlaceReviewReportDto review;
 
     public PlaceDTO(Place place) {
         this.id = place.getId();
@@ -33,21 +33,12 @@ public class PlaceDTO {
         this.type = place.getType();
         this.googlePlaceId = place.getGooglePlaceId();
         this.location = new LocationDTO(place.getLocation());
+        this.images = place.getPreviewImages().stream().map(ImageDTO::new).toList();
     }
 
-    public PlaceDTO(Place place, List<ImageDTO> images) {
+    public PlaceDTO(Place place, PlaceReviewReportDto review) {
         this(place);
-        this.images = images;
-    }
-
-    public PlaceDTO(Place place, List<ImageDTO> images, List<TravelDTO> travels) {
-        this(place, images);
-        this.travels = travels;
-    }
-
-    public PlaceDTO(Place place, List<TravelDTO> travels, List<ImageDTO> images, Double distance) {
-        this(place, images, travels);
-        this.location = new LocationDTO(place.getLocation(), distance);
+        this.review = review;
     }
 
 }

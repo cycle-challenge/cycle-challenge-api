@@ -6,6 +6,7 @@ import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -29,4 +30,13 @@ public class TravelRepository implements BaseRepository<Travel, Long> {
     public void delete(Travel entity) {
         em.remove(entity);
     }
+
+    public List<Travel> findAllByMember(Long memberId) {
+        return em.createQuery(
+          "SELECT t FROM Travel as t " +
+                  "WHERE t.member.id = :memberId", Travel.class)
+                .setParameter("memberId", memberId)
+                .getResultList();
+    }
+
 }
