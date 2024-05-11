@@ -1,16 +1,21 @@
 package com.yeohangttukttak.api.domain.travel.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.yeohangttukttak.api.domain.file.dto.ImageDTO;
 import com.yeohangttukttak.api.domain.member.dto.MemberDTO;
 import com.yeohangttukttak.api.domain.place.dto.PlaceDTO;
+import com.yeohangttukttak.api.domain.place.entity.Place;
 import com.yeohangttukttak.api.domain.travel.entity.*;
-import lombok.Data;
+import com.yeohangttukttak.api.domain.visit.dto.VisitDTO;
+import jakarta.validation.constraints.NotBlank;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class TravelDTO {
 
     private Long id;
@@ -33,18 +38,33 @@ public class TravelDTO {
 
     private MemberDTO member;
 
+    @JsonInclude(value = JsonInclude.Include.NON_NULL)
+    private List<PlaceDTO> places;
+    
+    @JsonInclude(value = JsonInclude.Include.NON_NULL)
+    private List<VisitDTO> visits;
+
     public TravelDTO(Travel travel) {
         this.id = travel.getId();
         this.name = travel.getName();
         this.motivation = travel.getMotivation();
         this.accompanyType = travel.getAccompanyType();
         this.transportType = travel.getTransportType();
-        this.startedOn = travel.getPeriod().getStartedOn();
-        this.endedOn = travel.getPeriod().getEndedOn();
-        this.seasons = travel.getPeriod().getSeasons();
 
-        this.thumbnail = new ImageDTO(travel.getThumbnail());
+        if (travel.getPeriod() != null) {
+            this.startedOn = travel.getPeriod().getStartedOn();
+            this.endedOn = travel.getPeriod().getEndedOn();
+            this.seasons = travel.getPeriod().getSeasons();
+        }
+
+        if (travel.getThumbnail() != null) {
+            this.thumbnail = new ImageDTO(travel.getThumbnail());
+        }
         this.member = new MemberDTO(travel.getMember());
     }
 
+    public TravelDTO(Travel travel, List<Place> places) {
+        this(travel);
+        this.places = places.stream().map(PlaceDTO::new).toList();
+    }
 }

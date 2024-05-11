@@ -16,13 +16,18 @@ public enum ApiErrorCode {
     DUPLICATED_BOOKMARK(HttpStatus.CONFLICT, null),
 
     MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, null),
+    PLACE_NOT_FOUND(HttpStatus.NOT_FOUND, null),
+    TRAVEL_NOT_FOUND(HttpStatus.NOT_FOUND, null),
+    VISIT_NOT_FOUND(HttpStatus.NOT_FOUND, null),
     BOOKMARK_TARGET_NOT_FOUND(HttpStatus.NOT_FOUND, null),
     BOOKMARK_NOT_FOUND(HttpStatus.NOT_FOUND, null),
 
     SIGN_IN_FAILED(HttpStatus.UNAUTHORIZED, null),
-    INVALID_VERIFICATION_CODE(HttpStatus.UNAUTHORIZED, "verificationCode"),
     AUTHORIZATION_REQUIRED(HttpStatus.UNAUTHORIZED, null),
+    INVALID_VERIFICATION_CODE(HttpStatus.UNAUTHORIZED, "verificationCode"),
     INVALID_AUTHORIZATION(HttpStatus.UNAUTHORIZED, null),
+    PERMISSION_DENIED(HttpStatus.FORBIDDEN, null),
+
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, null);
 
     private final HttpStatus status;

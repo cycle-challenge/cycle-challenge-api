@@ -4,6 +4,8 @@ import com.yeohangttukttak.api.domain.BaseEntity;
 import com.yeohangttukttak.api.domain.file.entity.Image;
 import com.yeohangttukttak.api.domain.place.entity.Place;
 import com.yeohangttukttak.api.domain.travel.entity.Travel;
+import com.yeohangttukttak.api.domain.visit.dto.VisitCreateDto;
+import com.yeohangttukttak.api.domain.visit.dto.VisitModifyDto;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,13 +23,13 @@ import static lombok.AccessLevel.PROTECTED;
 @NoArgsConstructor(access = PROTECTED)
 public class Visit extends BaseEntity {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "visit_id")
     private Long id;
 
-    private int dayOfTravel;
+    private Integer dayOfTravel;
 
-    private int orderOfVisit;
+    private Integer orderOfVisit;
 
     @ManyToOne(fetch = LAZY, cascade = ALL)
     @JoinColumn(name = "travel_id")
@@ -41,15 +43,27 @@ public class Visit extends BaseEntity {
     private List<Image> images = new ArrayList<>();
 
     @Builder
-    public Visit(Long id, int dayOfTravel, int orderOfVisit, Place place, Travel travel) {
+    public Visit(Long id, Integer dayOfTravel, Integer orderOfVisit, Place place, Travel travel) {
         this.id = id;
         this.dayOfTravel = dayOfTravel;
         this.orderOfVisit = orderOfVisit;
         this.place = place;
         this.travel = travel;
-
-        place.getVisits().add(this);
-        travel.getVisits().add(this);
     }
 
+    public void setDayOfTravel(Integer dayOfTravel) {
+        this.dayOfTravel = dayOfTravel;
+    }
+
+    public void setOrderOfVisit(Integer orderOfVisit) {
+        this.orderOfVisit = orderOfVisit;
+    }
+
+    public void setTravel(Travel travel) {
+        this.travel = travel;
+    }
+
+    public void setPlace(Place place) {
+        this.place = place;
+    }
 }

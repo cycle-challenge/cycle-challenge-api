@@ -2,6 +2,7 @@ package com.yeohangttukttak.api.domain.visit.dto;
 
 import com.yeohangttukttak.api.domain.file.dto.ImageDTO;
 import com.yeohangttukttak.api.domain.place.dto.PlaceDTO;
+import com.yeohangttukttak.api.domain.place.entity.Place;
 import com.yeohangttukttak.api.domain.visit.entity.Visit;
 import lombok.Data;
 
@@ -12,9 +13,9 @@ public class VisitDTO {
 
     private Long id;
 
-    private int dayOfTravel;
+    private Integer dayOfTravel;
 
-    private int orderOfVisit;
+    private Integer orderOfVisit;
 
     private PlaceDTO place;
 
