@@ -1,10 +1,9 @@
 package com.yeohangttukttak.api.domain.place.entity;
 
-import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import com.yeohangttukttak.api.domain.BaseEntity;
+import com.yeohangttukttak.api.domain.member.entity.Member;
+import jakarta.persistence.*;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -13,30 +12,34 @@ import org.springframework.data.redis.core.index.Indexed;
 import java.time.LocalDateTime;
 
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
-@Document(collection = "place_review")
-public class PlaceReview {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Entity
+public class PlaceReview extends BaseEntity {
 
-    @Id
-    private String id;
-
-    @Indexed
-    private Long placeId;
+    @Id @GeneratedValue
+    private Long id;
 
     private Integer rating;
 
+    private Boolean wantsToRevisit;
+
     private String comment;
 
-    @CreatedDate
-    private LocalDateTime createdAt;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "place_id")
+    private Place place;
 
-    @LastModifiedDate
-    private LocalDateTime modifiedAt;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
 
-    public PlaceReview(Long placeId, Integer rating, String comment) {
-        this.placeId = placeId;
+    public PlaceReview(Integer rating, Boolean wantsToRevisit,
+                       String comment, Place place, Member member) {
         this.rating = rating;
+        this.wantsToRevisit = wantsToRevisit;
         this.comment = comment;
+        this.place = place;
+        this.member = member;
     }
+
 }

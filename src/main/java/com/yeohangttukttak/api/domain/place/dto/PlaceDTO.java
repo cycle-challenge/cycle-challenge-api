@@ -25,20 +25,21 @@ public class PlaceDTO {
 
     private String googlePlaceId;
 
-    private PlaceReviewReportDto review;
+    private String localAddress;
+
+    private String roadAddress;
+
+    private List<PlaceReviewDto> reviews;
 
     public PlaceDTO(Place place) {
         this.id = place.getId();
         this.name = place.getName();
         this.type = place.getType();
         this.googlePlaceId = place.getGooglePlaceId();
+        this.localAddress = place.getLocalAddress();
+        this.roadAddress = place.getRoadAddress();
         this.location = new LocationDTO(place.getLocation());
         this.images = place.getPreviewImages().stream().map(ImageDTO::new).toList();
-    }
-
-    public PlaceDTO(Place place, PlaceReviewReportDto review) {
-        this(place);
-        this.review = review;
     }
 
 }

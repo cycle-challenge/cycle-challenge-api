@@ -37,6 +37,10 @@ public class Place extends BaseEntity implements Bookmarkable {
 
     private String googlePlaceId;
 
+    private String localAddress;
+
+    private String roadAddress;
+
     @OneToMany(mappedBy = "place")
     private List<Visit> visits = new ArrayList<>();
 
