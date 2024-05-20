@@ -29,7 +29,7 @@ public class PlaceDTO {
 
     private String roadAddress;
 
-    private List<PlaceReviewDto> reviews;
+    private PlaceReviewReportDto reviewReport;
 
     public PlaceDTO(Place place) {
         this.id = place.getId();
@@ -40,6 +40,11 @@ public class PlaceDTO {
         this.roadAddress = place.getRoadAddress();
         this.location = new LocationDTO(place.getLocation());
         this.images = place.getPreviewImages().stream().map(ImageDTO::new).toList();
+    }
+
+    public PlaceDTO(Place place, PlaceReviewReportDto reviewReport) {
+        this(place);
+        this.reviewReport = reviewReport;
     }
 
 }

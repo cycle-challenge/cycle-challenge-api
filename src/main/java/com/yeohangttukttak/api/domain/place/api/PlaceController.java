@@ -9,6 +9,7 @@ import com.yeohangttukttak.api.domain.place.dao.PlaceSuggestionRepository;
 import com.yeohangttukttak.api.domain.place.dto.PlaceDTO;
 import com.yeohangttukttak.api.domain.place.dto.PlaceReviewCreateDto;
 import com.yeohangttukttak.api.domain.place.dto.PlaceReviewDto;
+import com.yeohangttukttak.api.domain.place.dto.PlaceReviewReportDto;
 import com.yeohangttukttak.api.domain.place.entity.Place;
 import com.yeohangttukttak.api.domain.place.entity.PlaceReview;
 import com.yeohangttukttak.api.domain.place.entity.PlaceSuggestion;
@@ -96,7 +97,10 @@ public class PlaceController {
         Place place = placeRepository.find(id)
                 .orElseThrow(() -> new ApiException(ApiErrorCode.PLACE_NOT_FOUND));
 
-        return new ApiResponse<>(new PlaceDTO(place));
+        PlaceReviewReportDto review = placeReviewRepository.createReports(List.of(id)).stream().findFirst()
+                .orElseThrow(() -> new ApiException(ApiErrorCode.PLACE_NOT_FOUND));
+
+        return new ApiResponse<>(new PlaceDTO(place, review));
     }
 
     @GetMapping("/{id}/reviews")

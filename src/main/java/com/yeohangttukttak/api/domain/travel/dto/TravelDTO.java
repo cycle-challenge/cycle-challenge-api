@@ -63,8 +63,8 @@ public class TravelDTO {
         this.member = new MemberDTO(travel.getMember());
     }
 
-    public TravelDTO(Travel travel, List<Place> places) {
+    public TravelDTO(Travel travel, List<PlaceDTO> places) {
         this(travel);
-        this.places = places.stream().map(PlaceDTO::new).toList();
+        this.places = places;
     }
 }
