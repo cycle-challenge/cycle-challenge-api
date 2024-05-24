@@ -1,6 +1,7 @@
 package com.yeohangttukttak.api.domain.member.entity;
 
 import com.yeohangttukttak.api.domain.BaseEntity;
+import com.yeohangttukttak.api.domain.member.api.MemberController;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -46,4 +47,16 @@ public class Member extends BaseEntity {
         this.ageGroup = ageGroup;
         this.gender = gender;
     }
+
+    public static Member fromProfile(MemberController.ProfileDto profileDto) {
+
+        return Member.builder()
+                .email(profileDto.getEmail())
+                .nickname(profileDto.getNickname())
+                .ageGroup(profileDto.getAgeGroup())
+                .gender(profileDto.getGender())
+                .authType(profileDto.getAuthType())
+                .build();
+    }
+
 }
