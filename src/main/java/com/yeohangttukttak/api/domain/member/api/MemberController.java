@@ -1,10 +1,5 @@
 package com.yeohangttukttak.api.domain.member.api;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.yeohangttukttak.api.domain.member.dao.MemberRepository;
 import com.yeohangttukttak.api.domain.member.dto.*;
 import com.yeohangttukttak.api.domain.member.entity.*;
@@ -12,26 +7,14 @@ import com.yeohangttukttak.api.domain.member.service.*;
 import com.yeohangttukttak.api.global.common.ApiErrorCode;
 import com.yeohangttukttak.api.global.common.ApiException;
 import com.yeohangttukttak.api.global.common.ApiResponse;
-import io.netty.handler.codec.base64.Base64Decoder;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestClient;
-import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import java.time.Instant;
-import java.util.Base64;
-import java.util.Map;
-
-import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 @RestController
 @RequestMapping("/api/v1/members")
@@ -42,6 +25,7 @@ public class MemberController {
     private final MemberFindProfileService findProfileService;
 
     private final GoogleSignInService googleSignInService;
+    private final GoogleRevokeService googleRevokeService;
 
     private final MemberRepository memberRepository;
 
@@ -87,7 +71,7 @@ public class MemberController {
         Member member = memberRepository.findByEmail(accessToken.getEmail())
                 .orElseThrow(() -> new ApiException(ApiErrorCode.MEMBER_NOT_FOUND));
 
-        memberRepository.delete(member);
+        googleRevokeService.call(member);
 
         return new ApiResponse<>(null);
 

@@ -89,7 +89,7 @@ public class GoogleSignInService {
                     Member newMember = Member.builder()
                             .email(payload.getEmail())
                             .nickname(payload.getName())
-                            .refreshToken(tokenDto.refreshToken)
+                            .refreshToken(tokenDto.getRefreshToken())
                             .build();
 
                     memberRepository.save(newMember);
@@ -107,7 +107,7 @@ public class GoogleSignInService {
         return new MemberAuthDTO(accessToken, refreshToken);
 
     }
-    
+
     @Data
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class IdTokenPayload {
