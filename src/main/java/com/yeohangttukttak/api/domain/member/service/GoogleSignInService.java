@@ -14,10 +14,12 @@ import com.yeohangttukttak.api.domain.member.dao.RefreshTokenRepository;
 import com.yeohangttukttak.api.domain.member.dto.MemberAuthDTO;
 import com.yeohangttukttak.api.domain.member.dto.SocialSignInRequestDto;
 import com.yeohangttukttak.api.domain.member.dto.TokenHeader;
+import com.yeohangttukttak.api.domain.member.entity.AuthType;
 import com.yeohangttukttak.api.domain.member.entity.JwtToken;
 import com.yeohangttukttak.api.domain.member.entity.Member;
 import com.yeohangttukttak.api.global.common.ApiErrorCode;
 import com.yeohangttukttak.api.global.common.ApiException;
+import com.yeohangttukttak.api.global.common.ApiRedirectException;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -52,6 +54,10 @@ public class GoogleSignInService {
 
     private final MemberRepository memberRepository;
 
+    private static final ObjectMapper objectMapper = new ObjectMapper();
+
+    private static final RestClient client = RestClient.create();
+
     public GoogleSignInService(@Value("${GOOGLE_CLIENT_SECRET}") String GOOGLE_CLIENT_SECRET,
             RefreshTokenRepository refreshTokenRepository,
             MemberRepository memberRepository) {
@@ -59,10 +65,6 @@ public class GoogleSignInService {
         this.refreshTokenRepository = refreshTokenRepository;
         this.memberRepository = memberRepository;
     }
-
-    private static final ObjectMapper objectMapper = new ObjectMapper();
-
-    private static final RestClient client = RestClient.create();
 
     public MemberAuthDTO call(String code) throws JsonProcessingException {
 
@@ -89,12 +91,17 @@ public class GoogleSignInService {
                     Member newMember = Member.builder()
                             .email(payload.getEmail())
                             .nickname(payload.getName())
+                            .authType(AuthType.GOOGLE)
                             .refreshToken(tokenDto.getRefreshToken())
                             .build();
 
                     memberRepository.save(newMember);
                     return newMember;
                 });
+
+        if (member.getAuthType() != AuthType.GOOGLE) {
+            throw new ApiRedirectException("com.yeohaeng.ttukttak.app:/", ApiErrorCode.DUPLICATED_EMAIL);
+        }
 
         // 5. 서비스 Token 발급하기
         Instant now = Instant.now();

@@ -19,7 +19,7 @@ import java.io.IOException;
 public class JwtAuthFilter implements Filter {
 
     private final String[] whitelist = {
-            "/api/v1/members/sign-in", "/api/v1/members/sign-in/google", "/api/v1/members/sign-in/google/callback", "/api/v1/members/sign-up", "/api/v1/members/auth/renew", "/api/v1/members/email/verify/send"
+            "/api/v1/members/sign-in/apple", "/api/v1/members/sign-in/google","/api/v1/members/auth/renew"
     };
 
     private final ApiExceptionHandler exHandler;

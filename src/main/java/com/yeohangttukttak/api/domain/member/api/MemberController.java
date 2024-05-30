@@ -27,6 +27,8 @@ public class MemberController {
     private final GoogleSignInService googleSignInService;
     private final GoogleRevokeService googleRevokeService;
 
+    private final AppleSignInService appleSignInService;
+
     private final MemberRepository memberRepository;
 
     @GetMapping("/profile")
@@ -53,6 +55,7 @@ public class MemberController {
 
         // 앱의 Custom Scheme 으로 Redirection
         String redirectUri = UriComponentsBuilder.fromUriString("com.yeohaeng.ttukttak.app:/")
+                .queryParam("status", "success")
                 .queryParam("access-token", authDTO.getAccessToken())
                 .queryParam("refresh-token", authDTO.getRefreshToken())
                 .encode().toUriString();
@@ -62,6 +65,25 @@ public class MemberController {
                 .build();
     }
 
+    @Transactional
+    @PostMapping("/sign-in/apple")
+    public ResponseEntity<Void> signInApple(@RequestParam("code") String code,
+                                            @RequestParam(value = "user", required = false) String user) throws JsonProcessingException {
+
+
+        MemberAuthDTO authDTO = appleSignInService.call(code, user);
+
+        // 앱의 Custom Scheme 으로 Redirection
+        String redirectUri = UriComponentsBuilder.fromUriString("com.yeohaeng.ttukttak.app:/")
+                .queryParam("status", "success")
+                .queryParam("access-token", authDTO.getAccessToken())
+                .queryParam("refresh-token", authDTO.getRefreshToken())
+                .encode().toUriString();
+
+        return ResponseEntity.status(HttpStatus.FOUND)
+                .header("Location", redirectUri)
+                .build();
+    }
     @Transactional
     @DeleteMapping("/")
     public ApiResponse<Void> deleteUser(HttpServletRequest request) {

@@ -9,8 +9,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -46,6 +46,24 @@ public class ApiControllerAdvice {
         ApiError error = new ApiError(message, errorCode.getTarget());
 
         return new ResponseEntity<>(new ApiResponse<>(errorCode, error), errorCode.getStatus());
+
+    }
+
+    @ExceptionHandler(ApiRedirectException.class)
+    public ResponseEntity<Void> handleApiRedirectException(ApiRedirectException ex, Locale locale) {
+
+        ApiErrorCode errorCode = ex.getErrorCode();
+        String message = messageSource.getMessage(errorCode.name(), null, locale);
+
+        String redirectUri = UriComponentsBuilder.fromUriString(ex.getRedirectUrl())
+                .queryParam("status", "fail")
+                .queryParam("code", errorCode.name())
+                .queryParam("message", message)
+                .encode().build().toString();
+
+        return ResponseEntity.status(HttpStatus.FOUND)
+                .header("Location", redirectUri)
+                .build();
 
     }
 
