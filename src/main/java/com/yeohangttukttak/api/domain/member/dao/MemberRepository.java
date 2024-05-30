@@ -37,4 +37,8 @@ public class MemberRepository {
         return Optional.of(member);
     }
 
+    public void delete(Member member) {
+        em.remove(member);
+    }
+
 }
