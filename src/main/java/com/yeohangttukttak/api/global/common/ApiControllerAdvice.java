@@ -41,9 +41,9 @@ public class ApiControllerAdvice {
     public ResponseEntity<ApiResponse<ApiError>> handleApiException(ApiException ex, Locale locale) {
 
         ApiErrorCode errorCode = ex.getErrorCode();
-        String message = messageSource.getMessage(errorCode.name(), null, locale);
+        String message = messageSource.getMessage(errorCode.name(), ex.getArgs(), locale);
 
-        ApiError error = new ApiError(message, errorCode.getTarget());
+        ApiError error = new ApiError(message, null);
 
         return new ResponseEntity<>(new ApiResponse<>(errorCode, error), errorCode.getStatus());
 
@@ -53,7 +53,7 @@ public class ApiControllerAdvice {
     public ResponseEntity<Void> handleApiRedirectException(ApiRedirectException ex, Locale locale) {
 
         ApiErrorCode errorCode = ex.getErrorCode();
-        String message = messageSource.getMessage(errorCode.name(), null, locale);
+        String message = messageSource.getMessage(errorCode.name(), ex.getArgs(), locale);
 
         String redirectUri = UriComponentsBuilder.fromUriString(ex.getRedirectUrl())
                 .queryParam("status", "fail")

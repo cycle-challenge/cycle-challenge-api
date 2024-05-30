@@ -37,16 +37,20 @@ public class AppleSignInService {
 
     private final MemberRepository memberRepository;
 
+    private final AppleRevokeService revokeService;
+
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     private static final RestClient client = RestClient.create();
 
-    public AppleSignInService(@Value("${APPLE_CLIENT_SECRET}") String GOOGLE_CLIENT_SECRET,
-                               RefreshTokenRepository refreshTokenRepository,
-                               MemberRepository memberRepository) {
-        this.CLIENT_SECRET = GOOGLE_CLIENT_SECRET;
+    public AppleSignInService(@Value("${APPLE_CLIENT_SECRET}") String CLIENT_SECRET,
+                              RefreshTokenRepository refreshTokenRepository,
+                              MemberRepository memberRepository,
+                              AppleRevokeService revokeService) {
+        this.CLIENT_SECRET = CLIENT_SECRET;
         this.refreshTokenRepository = refreshTokenRepository;
         this.memberRepository = memberRepository;
+        this.revokeService = revokeService;
     }
 
     public MemberAuthDTO call(String code, String user) throws JsonProcessingException {
@@ -99,7 +103,11 @@ public class AppleSignInService {
                 });
 
         if (member.getAuthType() != AuthType.APPLE) {
-            throw new ApiRedirectException("com.yeohaeng.ttukttak.app:/", ApiErrorCode.DUPLICATED_EMAIL);
+
+            revokeService.call(oauthDto.getRefreshToken());
+
+            throw new ApiRedirectException("com.yeohaeng.ttukttak.app:/",
+                    ApiErrorCode.DUPLICATED_SOCIAL_EMAIL, member.getAuthType().getValue());
         }
 
         // 5. 서비스 Token 발급하기

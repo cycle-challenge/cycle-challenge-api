@@ -4,43 +4,24 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.jwk.JWK;
-import com.nimbusds.jose.jwk.JWKSet;
-import com.nimbusds.jose.jwk.RSAKey;
-import com.yeohangttukttak.api.domain.member.api.MemberController;
 import com.yeohangttukttak.api.domain.member.dao.MemberRepository;
 import com.yeohangttukttak.api.domain.member.dao.RefreshTokenRepository;
 import com.yeohangttukttak.api.domain.member.dto.MemberAuthDTO;
-import com.yeohangttukttak.api.domain.member.dto.SocialSignInRequestDto;
-import com.yeohangttukttak.api.domain.member.dto.TokenHeader;
 import com.yeohangttukttak.api.domain.member.entity.AuthType;
 import com.yeohangttukttak.api.domain.member.entity.JwtToken;
 import com.yeohangttukttak.api.domain.member.entity.Member;
 import com.yeohangttukttak.api.global.common.ApiErrorCode;
-import com.yeohangttukttak.api.global.common.ApiException;
 import com.yeohangttukttak.api.global.common.ApiRedirectException;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClient;
-import org.springframework.web.util.UriComponentsBuilder;
 
-import java.io.IOException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.Signature;
-import java.security.SignatureException;
-import java.text.ParseException;
+import java.net.URI;
 import java.time.Instant;
 import java.util.Base64;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
@@ -48,22 +29,26 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 @Transactional
 public class GoogleSignInService {
 
-    private final String GOOGLE_CLIENT_SECRET;
+    private final String CLIENT_SECRET;
 
     private final RefreshTokenRepository refreshTokenRepository;
 
     private final MemberRepository memberRepository;
 
+    private final GoogleRevokeService revokeService;
+
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     private static final RestClient client = RestClient.create();
 
-    public GoogleSignInService(@Value("${GOOGLE_CLIENT_SECRET}") String GOOGLE_CLIENT_SECRET,
-            RefreshTokenRepository refreshTokenRepository,
-            MemberRepository memberRepository) {
-        this.GOOGLE_CLIENT_SECRET = GOOGLE_CLIENT_SECRET;
+    public GoogleSignInService(@Value("${GOOGLE_CLIENT_SECRET}") String CLIENT_SECRET,
+                               RefreshTokenRepository refreshTokenRepository,
+                               MemberRepository memberRepository,
+                               GoogleRevokeService revokeService) {
+        this.CLIENT_SECRET = CLIENT_SECRET;
         this.refreshTokenRepository = refreshTokenRepository;
         this.memberRepository = memberRepository;
+        this.revokeService = revokeService;
     }
 
     public MemberAuthDTO call(String code) throws JsonProcessingException {
@@ -72,7 +57,7 @@ public class GoogleSignInService {
         ResponseEntity<GoogleTokenDto> responseEntity = client.post()
                 .uri("https://oauth2.googleapis.com/token")
                 .contentType(APPLICATION_JSON)
-                .body(new GoogleTokenIssueDto(GOOGLE_CLIENT_SECRET, code))
+                .body(new GoogleTokenIssueDto(CLIENT_SECRET, code))
                 .retrieve()
                 .toEntity(GoogleTokenDto.class);
 
@@ -100,7 +85,11 @@ public class GoogleSignInService {
                 });
 
         if (member.getAuthType() != AuthType.GOOGLE) {
-            throw new ApiRedirectException("com.yeohaeng.ttukttak.app:/", ApiErrorCode.DUPLICATED_EMAIL);
+
+            revokeService.call(tokenDto.getRefreshToken());
+
+            throw new ApiRedirectException("com.yeohaeng.ttukttak.app:/",
+                    ApiErrorCode.DUPLICATED_SOCIAL_EMAIL, member.getAuthType().getValue());
         }
 
         // 5. 서비스 Token 발급하기

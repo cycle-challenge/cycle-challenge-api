@@ -28,6 +28,7 @@ public class MemberController {
     private final GoogleRevokeService googleRevokeService;
 
     private final AppleSignInService appleSignInService;
+    private final AppleRevokeService appleRevokeService;
 
     private final MemberRepository memberRepository;
 
@@ -84,6 +85,7 @@ public class MemberController {
                 .header("Location", redirectUri)
                 .build();
     }
+
     @Transactional
     @DeleteMapping("/")
     public ApiResponse<Void> deleteUser(HttpServletRequest request) {
@@ -93,7 +95,13 @@ public class MemberController {
         Member member = memberRepository.findByEmail(accessToken.getEmail())
                 .orElseThrow(() -> new ApiException(ApiErrorCode.MEMBER_NOT_FOUND));
 
-        googleRevokeService.call(member);
+        switch (member.getAuthType()) {
+            case APPLE -> appleRevokeService.call(member.getRefreshToken());
+            case GOOGLE -> googleRevokeService.call(member.getRefreshToken());
+            default -> throw new ApiException(ApiErrorCode.INTERNAL_SERVER_ERROR);
+        }
+
+        memberRepository.delete(member);
 
         return new ApiResponse<>(null);
 

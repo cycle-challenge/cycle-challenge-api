@@ -1,8 +1,22 @@
 package com.yeohangttukttak.api.domain.member.entity;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+import com.yeohangttukttak.api.global.interfaces.ValueBasedEnum;
+import lombok.AllArgsConstructor;
 
-public enum AuthType {
+@AllArgsConstructor
+public enum AuthType implements ValueBasedEnum {
 
-    LOCAL, GOOGLE, APPLE, NONE
+    LOCAL("Local"),
+    GOOGLE("Google"),
+    APPLE("Apple"),
+    NONE("None");
+
+    private final String value;
+
+    @JsonValue
+    public String getValue() {
+        return value;
+    }
 
 }
