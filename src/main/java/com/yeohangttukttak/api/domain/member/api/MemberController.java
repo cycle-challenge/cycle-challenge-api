@@ -1,59 +1,44 @@
 package com.yeohangttukttak.api.domain.member.api;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.yeohangttukttak.api.domain.member.dao.MemberRepository;
 import com.yeohangttukttak.api.domain.member.dto.*;
-import com.yeohangttukttak.api.domain.member.entity.JwtToken;
+import com.yeohangttukttak.api.domain.member.entity.*;
 import com.yeohangttukttak.api.domain.member.service.*;
+import com.yeohangttukttak.api.global.common.ApiErrorCode;
+import com.yeohangttukttak.api.global.common.ApiException;
 import com.yeohangttukttak.api.global.common.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
 @RequestMapping("/api/v1/members")
 @RequiredArgsConstructor
 public class MemberController {
 
-    private final MemberSignInService signInService;
-    private final MemberSignUpService signUpService;
     private final MemberAuthRenewService authRenewService;
     private final MemberFindProfileService findProfileService;
 
-    private final MemberSendVerifyEmailService sendVerifyEmailService;
+    private final GoogleSignInService googleSignInService;
+    private final GoogleRevokeService googleRevokeService;
 
+    private final AppleSignInService appleSignInService;
+    private final AppleRevokeService appleRevokeService;
 
-    @PostMapping("/email/verify/send")
-    public ApiResponse<Void> sendVerificationEmail(@Valid @RequestBody MemberSendVerifyEmailRequest body) {
-
-        sendVerifyEmailService.send(body.getEmail());
-
-        return new ApiResponse<>(null);
-    }
+    private final MemberRepository memberRepository;
 
     @GetMapping("/profile")
-    public ApiResponse<MemberProfileDTO> findProfile(
-            HttpServletRequest request, HttpServletResponse response
-    ) {
+    public ApiResponse<MemberProfileDTO> findProfile(HttpServletRequest request) {
+
         JwtToken accessToken = (JwtToken) request.getAttribute("accessToken");
+
         return new ApiResponse<>(findProfileService.findByEmail(accessToken.getEmail()));
-    }
 
-    @PostMapping("/sign-up")
-    public ApiResponse<MemberDTO> signUp(@Valid @RequestBody MemberSignUpRequest body) {
-        MemberDTO member = signUpService.local(
-                body.getEmail(), body.getPassword(), body.getNickname(), body.getVerificationCode());
-
-        return new ApiResponse<>(member);
-    }
-
-    @PostMapping("/sign-in")
-    public ResponseEntity<ApiResponse<MemberAuthDTO>> signIn(@Valid @RequestBody MemberSignInRequest body) {
-        return ResponseEntity.ok()
-                .header("Cache-Control", "no-store")
-                .header("Pragma", "no-cache")
-                .body(new ApiResponse<>(signInService.local(body.getEmail(), body.getPassword())));
     }
 
     @PostMapping("/auth/renew")
@@ -62,6 +47,64 @@ public class MemberController {
                 .header("Cache-Control", "no-store")
                 .header("Pragma", "no-cache")
                 .body(new ApiResponse<>(authRenewService.renew(body.getRefreshToken(), body.getEmail())));
+    }
+
+    @GetMapping("/sign-in/google")
+    public ResponseEntity<Void> signInGoogle(@RequestParam("code") String code) throws JsonProcessingException {
+
+        MemberAuthDTO authDTO = googleSignInService.call(code);
+
+        // 앱의 Custom Scheme 으로 Redirection
+        String redirectUri = UriComponentsBuilder.fromUriString("com.yeohaeng.ttukttak.app:/")
+                .queryParam("status", "success")
+                .queryParam("access-token", authDTO.getAccessToken())
+                .queryParam("refresh-token", authDTO.getRefreshToken())
+                .encode().toUriString();
+
+        return ResponseEntity.status(HttpStatus.FOUND)
+                .header("Location", redirectUri)
+                .build();
+    }
+
+    @Transactional
+    @PostMapping("/sign-in/apple")
+    public ResponseEntity<Void> signInApple(@RequestParam("code") String code,
+                                            @RequestParam(value = "user", required = false) String user) throws JsonProcessingException {
+
+
+        MemberAuthDTO authDTO = appleSignInService.call(code, user);
+
+        // 앱의 Custom Scheme 으로 Redirection
+        String redirectUri = UriComponentsBuilder.fromUriString("com.yeohaeng.ttukttak.app:/")
+                .queryParam("status", "success")
+                .queryParam("access-token", authDTO.getAccessToken())
+                .queryParam("refresh-token", authDTO.getRefreshToken())
+                .encode().toUriString();
+
+        return ResponseEntity.status(HttpStatus.FOUND)
+                .header("Location", redirectUri)
+                .build();
+    }
+
+    @Transactional
+    @DeleteMapping("/")
+    public ApiResponse<Void> deleteUser(HttpServletRequest request) {
+
+        JwtToken accessToken = (JwtToken) request.getAttribute("accessToken");
+
+        Member member = memberRepository.findByEmail(accessToken.getEmail())
+                .orElseThrow(() -> new ApiException(ApiErrorCode.MEMBER_NOT_FOUND));
+
+        switch (member.getAuthType()) {
+            case APPLE -> appleRevokeService.call(member.getRefreshToken());
+            case GOOGLE -> googleRevokeService.call(member.getRefreshToken());
+            default -> throw new ApiException(ApiErrorCode.INTERNAL_SERVER_ERROR);
+        }
+
+        memberRepository.delete(member);
+
+        return new ApiResponse<>(null);
+
     }
 
 }

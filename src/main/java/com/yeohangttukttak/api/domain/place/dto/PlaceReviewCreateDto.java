@@ -7,6 +7,8 @@ public class PlaceReviewCreateDto {
 
     private Integer rating;
 
+    private Boolean wantsToRevisit;
+
     private String comment;
 
 }

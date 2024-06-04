@@ -10,6 +10,8 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,10 +35,12 @@ public class Visit extends BaseEntity {
 
     @ManyToOne(fetch = LAZY, cascade = ALL)
     @JoinColumn(name = "travel_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Travel travel;
 
     @ManyToOne(fetch = LAZY, cascade = ALL)
     @JoinColumn(name = "place_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Place place;
 
     @OneToMany(mappedBy = "visit")

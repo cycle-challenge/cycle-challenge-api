@@ -1,10 +1,16 @@
 package com.yeohangttukttak.api.domain.member.entity;
 
 import com.yeohangttukttak.api.domain.BaseEntity;
+import com.yeohangttukttak.api.domain.bookmark.entity.PlaceBookmark;
+import com.yeohangttukttak.api.domain.member.api.MemberController;
+import com.yeohangttukttak.api.domain.member.dto.SocialSignInRequestDto;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static lombok.AccessLevel.PROTECTED;
 
@@ -20,10 +26,9 @@ public class Member extends BaseEntity {
     @Column(unique = true)
     private String email;
 
-    @Embedded
-    private Password password;
-
     private String nickname;
+
+    private String refreshToken;
 
     @Enumerated(EnumType.STRING)
     private AuthType authType;
@@ -31,19 +36,25 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private AgeGroup ageGroup;
 
-    @Enumerated(EnumType.STRING)
-    private Gender gender;
-
     @Builder
-    public Member(Long id, String email, Password password,
-                  String nickname, AuthType authType,
-                  AgeGroup ageGroup, Gender gender) {
+    public Member(Long id, String email, String nickname, AuthType authType, String refreshToken,
+                  AgeGroup ageGroup) {
         this.id = id;
         this.email = email;
-        this.password = password;
         this.nickname = nickname;
         this.authType = authType;
+        this.refreshToken = refreshToken;
         this.ageGroup = ageGroup;
-        this.gender = gender;
     }
+
+    public static Member fromProfile(SocialSignInRequestDto profileDto) {
+
+        return Member.builder()
+                .email(profileDto.getEmail())
+                .nickname(profileDto.getNickname())
+                .ageGroup(profileDto.getAgeGroup())
+                .authType(AuthType.GOOGLE)
+                .build();
+    }
+
 }

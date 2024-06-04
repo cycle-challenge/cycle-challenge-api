@@ -18,9 +18,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static java.util.Comparator.*;
+import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.*;
 
 @Service
@@ -35,15 +37,29 @@ public class TravelFindNearbyService {
 
         List<Visit> visits = visitRepository.findNearby(location, radius);
 
+        List<Long> placeIds = visits.stream()
+                .map(Visit::getPlace)
+                .distinct()
+                .map(Place::getId).toList();
+
+        Map<Long, PlaceReviewReportDto> reviewReportMap = placeReviewRepository.createReports(placeIds)
+                .stream().collect(toMap(PlaceReviewReportDto::getPlaceId, identity()));
+
         Map<Travel, List<Place>> travelMap = visits.stream()
                 .collect(groupingBy(Visit::getTravel,
                         mapping(Visit::getPlace, collectingAndThen(toSet(), ArrayList::new))));
 
         return travelMap.entrySet()
-                .stream().map((entry) -> new TravelDTO(entry.getKey(), entry.getValue()))
+                .stream().map((entry) -> {
+
+                    List<PlaceDTO> placeDTOS = entry.getValue().stream()
+                            .map(place -> new PlaceDTO(place, reviewReportMap.get(place.getId())))
+                            .toList();
+
+                    return new TravelDTO(entry.getKey(), placeDTOS);
+                })
                 .sorted(comparingLong(TravelDTO::getId))
                 .toList();
     }
-
 
 }

@@ -17,4 +17,17 @@ public enum Gender implements ValueBasedEnum {
         return value;
     }
 
+    public static Gender fromString(String value) {
+
+        String lower = value.toLowerCase();
+
+        for (Gender gender : Gender.values()) {
+
+            if (gender.value.equals(lower)) return gender;
+        }
+
+        return null;
+
+    }
+
 }

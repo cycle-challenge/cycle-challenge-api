@@ -8,29 +8,27 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum ApiErrorCode {
 
-    INVALID_ARGUMENT(HttpStatus.BAD_REQUEST, null),
-    PASSWORD_NOT_VALID(HttpStatus.BAD_REQUEST, "password"),
+    INVALID_ARGUMENT(HttpStatus.BAD_REQUEST),
 
-    DUPLICATED_EMAIL(HttpStatus.CONFLICT, "email"),
-    DUPLICATED_NICKNAME(HttpStatus.CONFLICT, "nickname"),
-    DUPLICATED_BOOKMARK(HttpStatus.CONFLICT, null),
+    DUPLICATED_EMAIL(HttpStatus.CONFLICT),
+    DUPLICATED_NICKNAME(HttpStatus.CONFLICT),
+    DUPLICATED_BOOKMARK(HttpStatus.CONFLICT),
+    DUPLICATED_SOCIAL_EMAIL(HttpStatus.CONFLICT),
 
-    MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, null),
-    PLACE_NOT_FOUND(HttpStatus.NOT_FOUND, null),
-    TRAVEL_NOT_FOUND(HttpStatus.NOT_FOUND, null),
-    VISIT_NOT_FOUND(HttpStatus.NOT_FOUND, null),
-    BOOKMARK_TARGET_NOT_FOUND(HttpStatus.NOT_FOUND, null),
-    BOOKMARK_NOT_FOUND(HttpStatus.NOT_FOUND, null),
+    MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND),
+    PLACE_NOT_FOUND(HttpStatus.NOT_FOUND),
+    TRAVEL_NOT_FOUND(HttpStatus.NOT_FOUND),
+    VISIT_NOT_FOUND(HttpStatus.NOT_FOUND),
+    BOOKMARK_TARGET_NOT_FOUND(HttpStatus.NOT_FOUND),
+    BOOKMARK_NOT_FOUND(HttpStatus.NOT_FOUND),
 
-    SIGN_IN_FAILED(HttpStatus.UNAUTHORIZED, null),
-    AUTHORIZATION_REQUIRED(HttpStatus.UNAUTHORIZED, null),
-    INVALID_VERIFICATION_CODE(HttpStatus.UNAUTHORIZED, "verificationCode"),
-    INVALID_AUTHORIZATION(HttpStatus.UNAUTHORIZED, null),
-    PERMISSION_DENIED(HttpStatus.FORBIDDEN, null),
+    SIGN_IN_FAILED(HttpStatus.UNAUTHORIZED),
+    AUTHORIZATION_REQUIRED(HttpStatus.UNAUTHORIZED),
+    INVALID_AUTHORIZATION(HttpStatus.UNAUTHORIZED),
+    PERMISSION_DENIED(HttpStatus.FORBIDDEN),
 
-    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, null);
+    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR);
 
     private final HttpStatus status;
-    private final String target;
 
 }

@@ -14,6 +14,10 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,9 +55,11 @@ public class Travel extends BaseEntity implements Bookmarkable {
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "member_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Member member;
 
-    @OneToMany(mappedBy = "travel", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "travel")
+    @Cascade(CascadeType.ALL)
     private List<Visit> visits = new ArrayList<>();
 
     @ManyToOne(fetch = LAZY)

@@ -2,56 +2,53 @@ package com.yeohangttukttak.api.domain.place.dao;
 
 import com.yeohangttukttak.api.domain.place.dto.PlaceReviewReportDto;
 import com.yeohangttukttak.api.domain.place.entity.PlaceReview;
+import com.yeohangttukttak.api.global.interfaces.BaseRepository;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
-import org.bson.Document;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.Aggregation;
-import org.springframework.data.mongodb.core.aggregation.GroupOperation;
-import org.springframework.data.mongodb.core.aggregation.MatchOperation;
-import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
-import static org.springframework.data.mongodb.core.query.Criteria.where;
-import static org.springframework.data.mongodb.core.query.Query.query;
+import java.util.Optional;
+import java.util.Set;
 
 @Repository
 @RequiredArgsConstructor
-public class PlaceReviewRepository {
+public class PlaceReviewRepository implements BaseRepository<PlaceReview, Long> {
 
-    private final MongoTemplate mongoTemplate;
+    private final EntityManager em;
 
-    public String insert(PlaceReview review) {
-        PlaceReview insertedReview = mongoTemplate.insert(review);
-
-        return insertedReview.getId();
+    public List<PlaceReviewReportDto> createReports(List<Long> placeIds) {
+        return em.createQuery(
+                "SELECT new com.yeohangttukttak.api.domain.place.dto." +
+                        "PlaceReviewReportDto(pr.place.id, COUNT(pr), AVG(pr.rating))" +
+                        "FROM PlaceReview as pr " +
+                        "WHERE pr.place.id in (:placeIds) " +
+                        "GROUP BY pr.place", PlaceReviewReportDto.class)
+                .setParameter("placeIds", placeIds)
+                .getResultList();
     }
 
     public List<PlaceReview> findByPlace(Long placeId) {
-
-        return mongoTemplate.find(query(where("placeId").is(placeId)),
-                PlaceReview.class, "place_review");
-
+        return em.createQuery(
+                "SELECT pr FROM PlaceReview as pr " +
+                        "WHERE pr.place.id = :placeId", PlaceReview.class)
+                .setParameter("placeId", placeId)
+                .getResultList();
     }
 
-    public List<PlaceReviewReportDto> report(List<Long> placeIds) {
-
-        MatchOperation matchOperation = Aggregation.match(where("placeId").in(placeIds));
-
-        GroupOperation groupOperation = Aggregation.group("placeId")
-                .count().as("count")
-                .avg("rating").as("ratingAvg");
-
-        return mongoTemplate.aggregate(newAggregation(matchOperation, groupOperation), "place_review", Document.class)
-                .getMappedResults()
-                .stream().map(PlaceReviewReportDto::new)
-                .toList();
-
+    @Override
+    public Long save(PlaceReview entity) {
+       em.persist(entity);
+       return entity.getId();
     }
 
+    @Override
+    public Optional<PlaceReview> find(Long id) {
+        return Optional.ofNullable(em.find(PlaceReview.class, id));
+    }
 
-
-
+    @Override
+    public void delete(PlaceReview entity) {
+        em.remove(entity);
+    }
 }

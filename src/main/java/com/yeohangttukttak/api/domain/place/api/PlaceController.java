@@ -1,20 +1,27 @@
 package com.yeohangttukttak.api.domain.place.api;
 
+import com.yeohangttukttak.api.domain.member.dao.MemberRepository;
 import com.yeohangttukttak.api.domain.member.entity.JwtToken;
+import com.yeohangttukttak.api.domain.member.entity.Member;
 import com.yeohangttukttak.api.domain.place.dao.PlaceRepository;
 import com.yeohangttukttak.api.domain.place.dao.PlaceReviewRepository;
 import com.yeohangttukttak.api.domain.place.dao.PlaceSuggestionRepository;
 import com.yeohangttukttak.api.domain.place.dto.PlaceDTO;
 import com.yeohangttukttak.api.domain.place.dto.PlaceReviewCreateDto;
 import com.yeohangttukttak.api.domain.place.dto.PlaceReviewDto;
+import com.yeohangttukttak.api.domain.place.dto.PlaceReviewReportDto;
 import com.yeohangttukttak.api.domain.place.entity.Place;
 import com.yeohangttukttak.api.domain.place.entity.PlaceReview;
 import com.yeohangttukttak.api.domain.place.entity.PlaceSuggestion;
 import com.yeohangttukttak.api.domain.place.service.PlaceFindBookmarkedService;
+import com.yeohangttukttak.api.domain.travel.dao.TravelRepository;
+import com.yeohangttukttak.api.domain.travel.dto.TravelDTO;
+import com.yeohangttukttak.api.domain.visit.entity.Visit;
 import com.yeohangttukttak.api.global.common.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -24,6 +31,7 @@ import com.yeohangttukttak.api.domain.file.dto.ImageDTO;
 import com.yeohangttukttak.api.domain.file.entity.Image;
 
 import static java.lang.String.format;
+import static java.util.Comparator.comparing;
 
 
 @RestController
@@ -34,36 +42,30 @@ public class PlaceController {
     private final PlaceReviewRepository placeReviewRepository;
     private final PlaceSuggestionRepository placeSuggestionRepository;
     private final PlaceRepository placeRepository;
+    private final TravelRepository travelRepository;
+    private final MemberRepository memberRepository;
     private final PlaceFindBookmarkedService placeBookmarkFindService;
 
-    @PostMapping("/{id}/comments")
-    public ResponseEntity<Void> createComment(
+    @PostMapping("/{id}/reviews")
+    @Transactional
+    public ResponseEntity<Void> createReview(
+            HttpServletRequest request,
             @PathVariable("id") Long placeId,
             @RequestBody PlaceReviewCreateDto body) {
+        JwtToken accessToken = (JwtToken) request.getAttribute("accessToken");
 
-        placeRepository.find(placeId)
+        Member member = memberRepository.findByEmail(accessToken.getEmail()).orElseThrow(() ->
+                new ApiException(ApiErrorCode.MEMBER_NOT_FOUND));
+
+        Place place = placeRepository.find(placeId)
                 .orElseThrow(() -> new ApiException(ApiErrorCode.PLACE_NOT_FOUND));
 
-        String id = placeReviewRepository.insert(
-                new PlaceReview(placeId, body.getRating(), body.getComment()));
+        Long id = placeReviewRepository.save(
+                new PlaceReview(body.getRating(), body.getWantsToRevisit(), body.getComment(), place, member));
 
-        URI entityUri = URI.create(format("/api/v1/places/%d/comments/%s", placeId, id));
+        URI entityUri = URI.create(format("/api/v1/places/%d/comments/%d", place.getId(), id));
 
         return ResponseEntity.created(entityUri).build();
-    }
-
-    @GetMapping("/{id}/comments")
-    public ApiResponse<List<PlaceReviewDto>> findComments(
-            @PathVariable("id") Long placeId) {
-
-        placeRepository.find(placeId)
-                .orElseThrow(() -> new ApiException(ApiErrorCode.PLACE_NOT_FOUND));
-
-        List<PlaceReviewDto> reviews = placeReviewRepository
-                .findByPlace(placeId).stream().map(PlaceReviewDto::new).toList();
-
-        return new ApiResponse<>(reviews);
-
     }
 
     @GetMapping("/autocomplete")
@@ -72,12 +74,15 @@ public class PlaceController {
     }
 
     @GetMapping("/{id}/images")
-    public ApiResponse<PageResult<ImageDTO>> getPlaceImages(
+    public ApiResponse<List<ImageDTO>> getPlaceImages(
             @PathVariable("id") Long id,
             @ModelAttribute PageSearch search) {
+        Place place = placeRepository.find(id)
+                .orElseThrow(() -> new ApiException(ApiErrorCode.PLACE_NOT_FOUND));
 
-        PageResult<Image> images = placeRepository.getImage(id, search);
-        return new ApiResponse<>(images.convertEntities(ImageDTO::new));
+        return new ApiResponse<>(place.getImages().stream()
+                .map(ImageDTO::new)
+                .toList());
     }
 
     @GetMapping("/bookmarked")
@@ -92,7 +97,35 @@ public class PlaceController {
         Place place = placeRepository.find(id)
                 .orElseThrow(() -> new ApiException(ApiErrorCode.PLACE_NOT_FOUND));
 
-        return new ApiResponse<>(new PlaceDTO(place));
+        PlaceReviewReportDto review = placeReviewRepository.createReports(List.of(id)).stream().findFirst()
+                .orElseThrow(() -> new ApiException(ApiErrorCode.PLACE_NOT_FOUND));
+
+        return new ApiResponse<>(new PlaceDTO(place, review));
+    }
+
+    @GetMapping("/{id}/reviews")
+    public ApiResponse<List<PlaceReviewDto>> findReviews(@PathVariable("id") Long id) {
+        Place place = placeRepository.find(id)
+                .orElseThrow(() -> new ApiException(ApiErrorCode.PLACE_NOT_FOUND));
+
+        List<PlaceReviewDto> reviews = placeReviewRepository.findByPlace(place.getId()).stream()
+                .map(PlaceReviewDto::new)
+                .sorted(comparing(PlaceReviewDto::getCreatedAt).reversed())
+                .toList();
+
+        return new ApiResponse<>(reviews);
+    }
+
+    @GetMapping("/{id}/travels")
+    public ApiResponse<List<TravelDTO>> findTravels(@PathVariable("id") Long id) {
+        Place place = placeRepository.find(id)
+                .orElseThrow(() -> new ApiException(ApiErrorCode.PLACE_NOT_FOUND));
+
+        List<TravelDTO> travels = travelRepository.findAllByPlace(place.getId()).stream()
+                .map(TravelDTO::new)
+                .toList();
+
+        return new ApiResponse<>(travels);
     }
 
 }

@@ -1,6 +1,7 @@
 package com.yeohangttukttak.api.domain.travel.dao;
 
 import com.yeohangttukttak.api.domain.travel.entity.Travel;
+import com.yeohangttukttak.api.domain.travel.entity.Visibility;
 import com.yeohangttukttak.api.global.interfaces.BaseRepository;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +38,18 @@ public class TravelRepository implements BaseRepository<Travel, Long> {
                   "WHERE t.member.id = :memberId", Travel.class)
                 .setParameter("memberId", memberId)
                 .getResultList();
+    }
+
+    public List<Travel> findAllByPlace(Long placeId) {
+        return em.createQuery(
+            "SELECT DISTINCT t FROM Travel as t " +
+                    "JOIN t.visits as v " +
+                    "WHERE t.visibility = :visibility " +
+                    "AND v.place.id = :placeId", Travel.class)
+                .setParameter("visibility", Visibility.PUBLIC)
+                .setParameter("placeId", placeId)
+                .getResultList();
+
     }
 
 }
