@@ -31,7 +31,7 @@ import java.util.Base64;
 @Transactional
 public class AppleSignInService {
 
-    private final String CLIENT_SECRET;
+    private final String CLIENT_SECRET, API_DOMAIN;
 
     private final RefreshTokenRepository refreshTokenRepository;
 
@@ -44,10 +44,12 @@ public class AppleSignInService {
     private static final RestClient client = RestClient.create();
 
     public AppleSignInService(@Value("${APPLE_CLIENT_SECRET}") String CLIENT_SECRET,
+                              @Value("${API_DOMAIN}") String API_DOMAIN,
                               RefreshTokenRepository refreshTokenRepository,
                               MemberRepository memberRepository,
                               AppleRevokeService revokeService) {
         this.CLIENT_SECRET = CLIENT_SECRET;
+        this.API_DOMAIN = API_DOMAIN;
         this.refreshTokenRepository = refreshTokenRepository;
         this.memberRepository = memberRepository;
         this.revokeService = revokeService;
@@ -59,7 +61,7 @@ public class AppleSignInService {
 
         body.add("code", code);
         body.add("grant_type", "authorization_code");
-        body.add("redirect_uri", "https://50e6-222-116-206-156.ngrok-free.app/api/v1/members/sign-in/apple");
+        body.add("redirect_uri", API_DOMAIN + "/api/v1/members/sign-in/apple");
         body.add("client_id", "app.yeohaeng.ttukttak.com");
         body.add("client_secret", CLIENT_SECRET);
 
@@ -71,6 +73,8 @@ public class AppleSignInService {
                 .toEntity(OAuthDto.class);
 
         OAuthDto oauthDto = response.getBody();
+
+        System.out.println(oauthDto.idToken);
 
         // 3. ID 토큰 Payload Parsing
         String[] split = oauthDto.idToken.split("\\.");

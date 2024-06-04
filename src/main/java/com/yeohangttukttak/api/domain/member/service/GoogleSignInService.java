@@ -29,7 +29,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 @Transactional
 public class GoogleSignInService {
 
-    private final String CLIENT_SECRET;
+    private final String CLIENT_SECRET, API_DOMAIN;
 
     private final RefreshTokenRepository refreshTokenRepository;
 
@@ -42,10 +42,12 @@ public class GoogleSignInService {
     private static final RestClient client = RestClient.create();
 
     public GoogleSignInService(@Value("${GOOGLE_CLIENT_SECRET}") String CLIENT_SECRET,
+                               @Value("${API_DOMAIN}") String API_DOMAIN,
                                RefreshTokenRepository refreshTokenRepository,
                                MemberRepository memberRepository,
                                GoogleRevokeService revokeService) {
         this.CLIENT_SECRET = CLIENT_SECRET;
+        this.API_DOMAIN = API_DOMAIN;
         this.refreshTokenRepository = refreshTokenRepository;
         this.memberRepository = memberRepository;
         this.revokeService = revokeService;
@@ -57,7 +59,7 @@ public class GoogleSignInService {
         ResponseEntity<GoogleTokenDto> responseEntity = client.post()
                 .uri("https://oauth2.googleapis.com/token")
                 .contentType(APPLICATION_JSON)
-                .body(new GoogleTokenIssueDto(CLIENT_SECRET, code))
+                .body(new GoogleTokenIssueDto(CLIENT_SECRET, API_DOMAIN, code))
                 .retrieve()
                 .toEntity(GoogleTokenDto.class);
 
@@ -125,16 +127,17 @@ public class GoogleSignInService {
         String clientSecret;
 
         @JsonProperty("redirect_uri")
-        String redirectUri = "http://172.30.1.25.nip.io:8080/api/v1/members/sign-in/google";
+        String redirectUri;
 
         @JsonProperty("grant_type")
         String grantType = "authorization_code";
 
         String code;
 
-        public GoogleTokenIssueDto(String clientSecret, String code) {
+        public GoogleTokenIssueDto(String clientSecret, String apiDomain, String code) {
             this.clientSecret = clientSecret;
             this.code = code;
+            this.redirectUri = apiDomain + "/api/v1/members/sign-in/google";
         }
     }
 
