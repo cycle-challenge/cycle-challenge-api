@@ -68,11 +68,10 @@ public class MemberController {
 
     @Transactional
     @PostMapping("/sign-in/apple")
-    public ResponseEntity<Void> signInApple(@RequestParam("code") String code,
-                                            @RequestParam(value = "user", required = false) String user) throws JsonProcessingException {
+    public ResponseEntity<Void> signInApple(@RequestParam("code") String code) throws JsonProcessingException {
 
 
-        MemberAuthDTO authDTO = appleSignInService.call(code, user);
+        MemberAuthDTO authDTO = appleSignInService.call(code);
 
         // 앱의 Custom Scheme 으로 Redirection
         String redirectUri = UriComponentsBuilder.fromUriString("com.yeohaeng.ttukttak.app:/")

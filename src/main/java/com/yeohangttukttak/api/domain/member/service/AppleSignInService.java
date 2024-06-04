@@ -11,6 +11,7 @@ import com.yeohangttukttak.api.domain.member.dto.MemberAuthDTO;
 import com.yeohangttukttak.api.domain.member.entity.AuthType;
 import com.yeohangttukttak.api.domain.member.entity.JwtToken;
 import com.yeohangttukttak.api.domain.member.entity.Member;
+import com.yeohangttukttak.api.domain.member.entity.NicknameGenerator;
 import com.yeohangttukttak.api.global.common.ApiErrorCode;
 import com.yeohangttukttak.api.global.common.ApiRedirectException;
 import lombok.Data;
@@ -55,7 +56,7 @@ public class AppleSignInService {
         this.revokeService = revokeService;
     }
 
-    public MemberAuthDTO call(String code, String user) throws JsonProcessingException {
+    public MemberAuthDTO call(String code) throws JsonProcessingException {
 
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
 
@@ -74,8 +75,6 @@ public class AppleSignInService {
 
         OAuthDto oauthDto = response.getBody();
 
-        System.out.println(oauthDto.idToken);
-
         // 3. ID 토큰 Payload Parsing
         String[] split = oauthDto.idToken.split("\\.");
 
@@ -85,25 +84,15 @@ public class AppleSignInService {
         // 4. ID 토큰의 정보로 회원가입 / 로그인
         Member member = memberRepository.findByEmail(payload.getEmail())
                 .orElseGet(() -> {
-                    try {
-                        JsonNode jsonNode = objectMapper.readTree(user);
+                    Member newMember = Member.builder()
+                            .email(payload.getEmail())
+                            .nickname(NicknameGenerator.random())
+                            .refreshToken(oauthDto.getRefreshToken())
+                            .authType(AuthType.APPLE)
+                            .build();
 
-                        String firstName = jsonNode.get("name").get("firstName").asText();
-                        String lastName = jsonNode.get("name").get("lastName").asText();
-
-                        Member newMember = Member.builder()
-                                .email(payload.getEmail())
-                                .nickname(lastName + firstName)
-                                .refreshToken(oauthDto.getRefreshToken())
-                                .authType(AuthType.APPLE)
-                                .build();
-
-                        memberRepository.save(newMember);
-                        return newMember;
-
-                    } catch (JsonProcessingException e) {
-                        throw new RuntimeException(e);
-                    }
+                    memberRepository.save(newMember);
+                    return newMember;
                 });
 
         if (member.getAuthType() != AuthType.APPLE) {

@@ -47,14 +47,4 @@ public class Member extends BaseEntity {
         this.ageGroup = ageGroup;
     }
 
-    public static Member fromProfile(SocialSignInRequestDto profileDto) {
-
-        return Member.builder()
-                .email(profileDto.getEmail())
-                .nickname(profileDto.getNickname())
-                .ageGroup(profileDto.getAgeGroup())
-                .authType(AuthType.GOOGLE)
-                .build();
-    }
-
 }

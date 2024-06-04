@@ -10,6 +10,7 @@ import com.yeohangttukttak.api.domain.member.dto.MemberAuthDTO;
 import com.yeohangttukttak.api.domain.member.entity.AuthType;
 import com.yeohangttukttak.api.domain.member.entity.JwtToken;
 import com.yeohangttukttak.api.domain.member.entity.Member;
+import com.yeohangttukttak.api.domain.member.entity.NicknameGenerator;
 import com.yeohangttukttak.api.global.common.ApiErrorCode;
 import com.yeohangttukttak.api.global.common.ApiRedirectException;
 import lombok.*;
@@ -77,7 +78,7 @@ public class GoogleSignInService {
                 .orElseGet(() -> {
                     Member newMember = Member.builder()
                             .email(payload.getEmail())
-                            .nickname(payload.getName())
+                            .nickname(NicknameGenerator.random())
                             .authType(AuthType.GOOGLE)
                             .refreshToken(tokenDto.getRefreshToken())
                             .build();
