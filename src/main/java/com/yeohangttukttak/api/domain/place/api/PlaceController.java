@@ -125,6 +125,43 @@ public class PlaceController {
         return new ApiResponse<>(reviews);
     }
 
+    @GetMapping("/reviews/my")
+    public ApiResponse<List<PlaceReviewDto>> findMyReviews(HttpServletRequest request) {
+
+        JwtToken accessToken = (JwtToken) request.getAttribute("accessToken");
+
+        Member member = memberRepository.findByEmail(accessToken.getEmail())
+                .orElseThrow(() -> new ApiException(ApiErrorCode.MEMBER_NOT_FOUND));
+
+        List<PlaceReviewDto> reviews = placeReviewRepository.findByMember(member.getId())
+                .stream()
+                .map(PlaceReviewDto::new)
+                .sorted(comparing(PlaceReviewDto::getCreatedAt).reversed())
+                .toList();
+
+        return new ApiResponse<>(reviews);
+    }
+
+    @Transactional
+    @DeleteMapping("/reviews/{id}")
+    public ApiResponse<Void> deleteReviews(HttpServletRequest request, @PathVariable("id") Long id) {
+
+        JwtToken accessToken = (JwtToken) request.getAttribute("accessToken");
+
+        Member member = memberRepository.findByEmail(accessToken.getEmail())
+                .orElseThrow(() -> new ApiException(ApiErrorCode.MEMBER_NOT_FOUND));
+
+        PlaceReview review = placeReviewRepository.find(id)
+                .orElseThrow(() -> new ApiException(ApiErrorCode.PLACE_NOT_FOUND));
+
+        if (!member.equals(review.getMember())) {
+            throw new ApiException(ApiErrorCode.PERMISSION_DENIED);
+        }
+
+        placeReviewRepository.delete(review);
+
+        return new ApiResponse<>(null);
+    }
     @GetMapping("/{id}/travels")
     public ApiResponse<List<TravelDTO>> findTravels(@PathVariable("id") Long id) {
         Place place = placeRepository.find(id)

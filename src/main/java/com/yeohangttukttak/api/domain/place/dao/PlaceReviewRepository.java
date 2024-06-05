@@ -1,5 +1,6 @@
 package com.yeohangttukttak.api.domain.place.dao;
 
+import com.yeohangttukttak.api.domain.member.entity.Member;
 import com.yeohangttukttak.api.domain.place.dto.PlaceReviewReportDto;
 import com.yeohangttukttak.api.domain.place.entity.PlaceReview;
 import com.yeohangttukttak.api.global.interfaces.BaseRepository;
@@ -33,6 +34,14 @@ public class PlaceReviewRepository implements BaseRepository<PlaceReview, Long> 
                 "SELECT pr FROM PlaceReview as pr " +
                         "WHERE pr.place.id = :placeId", PlaceReview.class)
                 .setParameter("placeId", placeId)
+                .getResultList();
+    }
+
+    public List<PlaceReview> findByMember(Long memberId) {
+        return em.createQuery(
+                "SELECT pr FROM PlaceReview as pr " +
+                        "WHERE pr.member.id = :memberId", PlaceReview.class)
+                .setParameter("memberId", memberId)
                 .getResultList();
     }
 

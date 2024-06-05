@@ -9,6 +9,8 @@ import java.time.LocalDateTime;
 @Data
 public class PlaceReviewDto {
 
+    private Long id;
+
     private Integer rating;
 
     private Boolean wantsToRevisit;
@@ -20,6 +22,7 @@ public class PlaceReviewDto {
     private LocalDateTime createdAt;
 
     public PlaceReviewDto(PlaceReview review) {
+        id = review.getId();
         rating = review.getRating();
         wantsToRevisit = review.getWantsToRevisit();
         comment = review.getComment();

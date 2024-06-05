@@ -147,4 +147,24 @@ public class TravelController {
         return new ApiResponse<>(dtos);
     }
 
+    @Transactional
+    @DeleteMapping("/{id}")
+    public ApiResponse<Void> deleteTravel(HttpServletRequest request, @PathVariable("id") Long id) {
+
+        JwtToken accessToken = (JwtToken) request.getAttribute("accessToken");
+
+        Travel travel = travelRepository.find(id)
+                .orElseThrow(() -> new ApiException(ApiErrorCode.TRAVEL_NOT_FOUND));
+
+        String email = accessToken.getEmail();
+
+        if (!email.equals(travel.getMember().getEmail())) {
+            throw new ApiException(ApiErrorCode.PERMISSION_DENIED);
+        }
+
+        travelRepository.delete(travel);
+
+        return new ApiResponse<>(null);
+    }
+
 }

@@ -19,6 +19,7 @@ public enum ApiErrorCode {
 
     MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND),
     PLACE_NOT_FOUND(HttpStatus.NOT_FOUND),
+    PLACE_REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND),
     TRAVEL_NOT_FOUND(HttpStatus.NOT_FOUND),
     VISIT_NOT_FOUND(HttpStatus.NOT_FOUND),
     BOOKMARK_TARGET_NOT_FOUND(HttpStatus.NOT_FOUND),

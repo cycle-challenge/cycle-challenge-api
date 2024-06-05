@@ -80,7 +80,6 @@ public class JwtToken {
 
             String content = parts[0] + "." + parts[1];
             String signature = parts[2];
-
             // 2. 토큰 내용이 위조되었는지 서명을 대조
             if (!signatureToken(content).equals(signature))
                 throw new ApiException(ApiErrorCode.INVALID_AUTHORIZATION);
