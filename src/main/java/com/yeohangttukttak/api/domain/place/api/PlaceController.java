@@ -5,6 +5,7 @@ import com.yeohangttukttak.api.domain.member.entity.Block;
 import com.yeohangttukttak.api.domain.member.entity.JwtToken;
 import com.yeohangttukttak.api.domain.member.entity.Member;
 import com.yeohangttukttak.api.domain.place.dao.PlaceRepository;
+import com.yeohangttukttak.api.domain.place.dao.PlaceReviewReportRepository;
 import com.yeohangttukttak.api.domain.place.dao.PlaceReviewRepository;
 import com.yeohangttukttak.api.domain.place.dao.PlaceSuggestionRepository;
 import com.yeohangttukttak.api.domain.place.dto.PlaceDTO;
@@ -13,10 +14,14 @@ import com.yeohangttukttak.api.domain.place.dto.PlaceReviewDto;
 import com.yeohangttukttak.api.domain.place.dto.PlaceReviewReportDto;
 import com.yeohangttukttak.api.domain.place.entity.Place;
 import com.yeohangttukttak.api.domain.place.entity.PlaceReview;
+import com.yeohangttukttak.api.domain.place.entity.PlaceReviewReport;
 import com.yeohangttukttak.api.domain.place.entity.PlaceSuggestion;
 import com.yeohangttukttak.api.domain.place.service.PlaceFindBookmarkedService;
 import com.yeohangttukttak.api.domain.travel.dao.TravelRepository;
+import com.yeohangttukttak.api.domain.travel.dto.ReportCreateDto;
 import com.yeohangttukttak.api.domain.travel.dto.TravelDTO;
+import com.yeohangttukttak.api.domain.travel.entity.Travel;
+import com.yeohangttukttak.api.domain.travel.entity.TravelReport;
 import com.yeohangttukttak.api.domain.visit.entity.Visit;
 import com.yeohangttukttak.api.global.common.*;
 import jakarta.servlet.http.HttpServletRequest;
@@ -46,6 +51,7 @@ public class PlaceController {
     private final TravelRepository travelRepository;
     private final MemberRepository memberRepository;
     private final PlaceFindBookmarkedService placeBookmarkFindService;
+    private final PlaceReviewReportRepository placeReviewReportRepository;
 
     @PostMapping("/{id}/reviews")
     @Transactional
@@ -174,4 +180,24 @@ public class PlaceController {
         return new ApiResponse<>(travels);
     }
 
+    @Transactional
+    @PostMapping("/reviews/{id}/reports")
+    public ResponseEntity<ApiResponse<Void>> reportReview(HttpServletRequest request,
+                                                          @PathVariable("id") Long id,
+                                                          @RequestBody ReportCreateDto body) {
+
+        JwtToken accessToken = (JwtToken) request.getAttribute("accessToken");
+
+        Member member = memberRepository.findByEmail(accessToken.getEmail())
+                .orElseThrow(() -> new ApiException(ApiErrorCode.MEMBER_NOT_FOUND));
+
+        PlaceReview review = placeReviewRepository.find(id)
+                .orElseThrow(() -> new ApiException(ApiErrorCode.PLACE_REVIEW_NOT_FOUND));
+
+        Long savedId = placeReviewReportRepository.save(
+                new PlaceReviewReport(member, review, body.getReason(), body.getDescription()));
+
+        return ResponseEntity.created(URI.create("/api/v1/places/reviews/" + id + "/reports/" + savedId))
+                .body(null);
+    }
 }

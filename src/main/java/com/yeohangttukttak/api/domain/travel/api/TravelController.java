@@ -1,10 +1,15 @@
 package com.yeohangttukttak.api.domain.travel.api;
 
+import com.yeohangttukttak.api.domain.member.dao.MemberRepository;
 import com.yeohangttukttak.api.domain.member.entity.JwtToken;
+import com.yeohangttukttak.api.domain.member.entity.Member;
 import com.yeohangttukttak.api.domain.place.entity.Location;
+import com.yeohangttukttak.api.domain.travel.dao.TravelReportRepository;
 import com.yeohangttukttak.api.domain.travel.dao.TravelRepository;
 import com.yeohangttukttak.api.domain.travel.dto.*;
+import com.yeohangttukttak.api.domain.travel.entity.ReportReason;
 import com.yeohangttukttak.api.domain.travel.entity.Travel;
+import com.yeohangttukttak.api.domain.travel.entity.TravelReport;
 import com.yeohangttukttak.api.domain.travel.service.*;
 import com.yeohangttukttak.api.domain.visit.dao.VisitRepository;
 import com.yeohangttukttak.api.domain.visit.dto.VisitCreateDto;
@@ -16,6 +21,7 @@ import com.yeohangttukttak.api.global.common.ApiException;
 import com.yeohangttukttak.api.global.common.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,6 +45,8 @@ public class TravelController {
 
     private final TravelRepository travelRepository;
     private final VisitRepository visitRepository;
+    private final MemberRepository memberRepository;
+    private final TravelReportRepository travelReportRepository;
 
     private final TravelModifyService modifyService;
 
@@ -165,6 +173,28 @@ public class TravelController {
         travelRepository.delete(travel);
 
         return new ApiResponse<>(null);
+    }
+
+
+    @Transactional
+    @PostMapping("/{id}/reports")
+    public ResponseEntity<ApiResponse<Void>> reportTravel(HttpServletRequest request,
+                                                          @PathVariable("id") Long id,
+                                                          @RequestBody ReportCreateDto body) {
+
+        JwtToken accessToken = (JwtToken) request.getAttribute("accessToken");
+
+        Member member = memberRepository.findByEmail(accessToken.getEmail())
+                .orElseThrow(() -> new ApiException(ApiErrorCode.MEMBER_NOT_FOUND));
+
+        Travel travel = travelRepository.find(id)
+                .orElseThrow(() -> new ApiException(ApiErrorCode.TRAVEL_NOT_FOUND));
+
+        Long savedId = travelReportRepository.save(
+                new TravelReport(member, travel, body.getReason(), body.getDescription()));
+
+        return ResponseEntity.created(URI.create("/api/v1/travels/" + id + "/reports/" + savedId))
+                .body(null);
     }
 
 }
