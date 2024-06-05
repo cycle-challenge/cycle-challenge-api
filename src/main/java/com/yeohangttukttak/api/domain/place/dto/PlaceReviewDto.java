@@ -1,5 +1,6 @@
 package com.yeohangttukttak.api.domain.place.dto;
 
+import com.yeohangttukttak.api.domain.member.dto.MemberDTO;
 import com.yeohangttukttak.api.domain.place.entity.PlaceReview;
 import lombok.Data;
 
@@ -14,7 +15,7 @@ public class PlaceReviewDto {
 
     private String comment;
 
-    private String nickname;
+    private MemberDTO member;
 
     private LocalDateTime createdAt;
 
@@ -22,7 +23,7 @@ public class PlaceReviewDto {
         rating = review.getRating();
         wantsToRevisit = review.getWantsToRevisit();
         comment = review.getComment();
-        nickname = review.getMember().getNickname();
+        member = new MemberDTO(review.getMember());
         createdAt = review.getCreatedAt();
     }
 }

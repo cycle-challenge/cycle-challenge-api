@@ -8,11 +8,14 @@ import lombok.Data;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class MemberDTO {
 
+    private Long id;
+
     private String nickname;
 
     private AgeGroup ageGroup;
 
     public MemberDTO (Member member) {
+        this.id = member.getId();
         this.nickname = member.getNickname();
         this.ageGroup = member.getAgeGroup();
     }

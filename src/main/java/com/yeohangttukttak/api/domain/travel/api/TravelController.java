@@ -2,19 +2,24 @@ package com.yeohangttukttak.api.domain.travel.api;
 
 import com.yeohangttukttak.api.domain.member.entity.JwtToken;
 import com.yeohangttukttak.api.domain.place.entity.Location;
+import com.yeohangttukttak.api.domain.travel.dao.TravelRepository;
 import com.yeohangttukttak.api.domain.travel.dto.*;
 import com.yeohangttukttak.api.domain.travel.entity.Travel;
 import com.yeohangttukttak.api.domain.travel.service.*;
+import com.yeohangttukttak.api.domain.visit.dao.VisitRepository;
 import com.yeohangttukttak.api.domain.visit.dto.VisitCreateDto;
 import com.yeohangttukttak.api.domain.visit.dto.VisitDTO;
+import com.yeohangttukttak.api.domain.visit.entity.Visit;
 import com.yeohangttukttak.api.global.common.ApiCreatedResponse;
+import com.yeohangttukttak.api.global.common.ApiErrorCode;
+import com.yeohangttukttak.api.global.common.ApiException;
 import com.yeohangttukttak.api.global.common.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.RequestContextHolder;
 
 import java.net.URI;
 import java.util.List;
@@ -31,6 +36,9 @@ public class TravelController {
 
     private final TravelCreateService createService;
     private final TravelCreateVisitsService createVisitsService;
+
+    private final TravelRepository travelRepository;
+    private final VisitRepository visitRepository;
 
     private final TravelModifyService modifyService;
 
@@ -49,14 +57,17 @@ public class TravelController {
 
     @GetMapping("/nearby")
     public ApiResponse<List<TravelDTO>> findNearby(
+            HttpServletRequest request,
             @Valid @ModelAttribute TravelFindNearbyRequest params) {
+
+        JwtToken accessToken = (JwtToken) request.getAttribute("accessToken");
 
         Location location = new Location(
                 params.getLocation().getLatitude(),
                 params.getLocation().getLongitude());
         int radius = params.getRadius();
 
-        List<TravelDTO> travelDTOS = findNearbyService.findNearby(location, radius);
+        List<TravelDTO> travelDTOS = findNearbyService.findNearby(location, radius, accessToken.getEmail());
         return new ApiResponse<>(travelDTOS);
     }
 
@@ -75,6 +86,32 @@ public class TravelController {
 
         return ResponseEntity.created(URI.create("/api/vi/travels/" + id + "/visits"))
                 .build();
+    }
+
+
+    @DeleteMapping("/{id}/visits/{visitId}")
+    @Transactional
+    public ApiResponse<Void> deleteVisit(
+            HttpServletRequest request,
+            @PathVariable("id") Long id,
+            @PathVariable("visitId") Long visitId) {
+        JwtToken accessToken = (JwtToken) request.getAttribute("accessToken");
+
+        Travel travel = travelRepository.find(id).orElseThrow(
+                () -> new ApiException(ApiErrorCode.TRAVEL_NOT_FOUND));
+
+        String email = travel.getMember().getEmail();
+
+        if (!email.equals(accessToken.getEmail())) {
+            throw new ApiException(ApiErrorCode.PERMISSION_DENIED);
+        }
+
+        Visit visit = visitRepository.find(visitId).orElseThrow(
+                () -> new ApiException(ApiErrorCode.VISIT_NOT_FOUND));
+
+        visitRepository.delete(visit);
+
+        return new ApiResponse<>(null);
     }
 
     @GetMapping("/{id}/visits")

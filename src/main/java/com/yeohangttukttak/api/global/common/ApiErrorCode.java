@@ -9,11 +9,13 @@ import org.springframework.http.HttpStatus;
 public enum ApiErrorCode {
 
     INVALID_ARGUMENT(HttpStatus.BAD_REQUEST),
+    INVALID_BLOCK_MEMBER(HttpStatus.BAD_REQUEST),
 
     DUPLICATED_EMAIL(HttpStatus.CONFLICT),
     DUPLICATED_NICKNAME(HttpStatus.CONFLICT),
     DUPLICATED_BOOKMARK(HttpStatus.CONFLICT),
     DUPLICATED_SOCIAL_EMAIL(HttpStatus.CONFLICT),
+    MEMBER_ALREADY_BLOCKED(HttpStatus.CONFLICT),
 
     MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND),
     PLACE_NOT_FOUND(HttpStatus.NOT_FOUND),

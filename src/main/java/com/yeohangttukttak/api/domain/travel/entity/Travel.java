@@ -4,27 +4,17 @@ import com.yeohangttukttak.api.domain.BaseEntity;
 import com.yeohangttukttak.api.domain.file.entity.Image;
 import com.yeohangttukttak.api.domain.member.entity.Member;
 import com.yeohangttukttak.api.domain.place.entity.Place;
-import com.yeohangttukttak.api.domain.travel.dto.TravelCreateDto;
-import com.yeohangttukttak.api.domain.travel.dto.TravelModifyDto;
 import com.yeohangttukttak.api.domain.visit.entity.Visit;
-import com.yeohangttukttak.api.global.common.ApiErrorCode;
-import com.yeohangttukttak.api.global.common.ApiException;
 import com.yeohangttukttak.api.global.interfaces.Bookmarkable;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
 import static jakarta.persistence.FetchType.LAZY;
 import static lombok.AccessLevel.PROTECTED;
 
@@ -58,8 +48,7 @@ public class Travel extends BaseEntity implements Bookmarkable {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Member member;
 
-    @OneToMany(mappedBy = "travel")
-    @Cascade(CascadeType.ALL)
+    @OneToMany(mappedBy = "travel", cascade = CascadeType.ALL)
     private List<Visit> visits = new ArrayList<>();
 
     @ManyToOne(fetch = LAZY)
@@ -111,10 +100,16 @@ public class Travel extends BaseEntity implements Bookmarkable {
             if (previewImage == null && !place.getImages().isEmpty()) {
                 previewImage = place.getImages().get(0);
             }
+            this.visits.add(visit);
         }
 
-        this.visits = visits;
         this.setThumbnail(previewImage);
+    }
+
+    public void deleteVisit(Visit visit) {
+        boolean isRemoved = this.visits.remove(visit);
+
+        System.out.println(isRemoved);
     }
 
 

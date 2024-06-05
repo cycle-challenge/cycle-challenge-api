@@ -1,9 +1,6 @@
 package com.yeohangttukttak.api.domain.member.entity;
 
 import com.yeohangttukttak.api.domain.BaseEntity;
-import com.yeohangttukttak.api.domain.bookmark.entity.PlaceBookmark;
-import com.yeohangttukttak.api.domain.member.api.MemberController;
-import com.yeohangttukttak.api.domain.member.dto.SocialSignInRequestDto;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -35,6 +32,9 @@ public class Member extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private AgeGroup ageGroup;
+
+    @OneToMany(mappedBy = "blocker")
+    private List<Block> blocks = new ArrayList<>();
 
     @Builder
     public Member(Long id, String email, String nickname, AuthType authType, String refreshToken,

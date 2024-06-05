@@ -33,12 +33,12 @@ public class Visit extends BaseEntity {
 
     private Integer orderOfVisit;
 
-    @ManyToOne(fetch = LAZY, cascade = ALL)
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "travel_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Travel travel;
 
-    @ManyToOne(fetch = LAZY, cascade = ALL)
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "place_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Place place;

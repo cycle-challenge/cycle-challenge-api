@@ -1,11 +1,10 @@
 package com.yeohangttukttak.api.domain.travel.service;
 
-import com.yeohangttukttak.api.domain.file.dto.ImageDTO;
-import com.yeohangttukttak.api.domain.file.entity.Image;
+import com.yeohangttukttak.api.domain.member.dao.MemberRepository;
+import com.yeohangttukttak.api.domain.member.entity.Block;
+import com.yeohangttukttak.api.domain.member.entity.Member;
 import com.yeohangttukttak.api.domain.place.dao.PlaceReviewRepository;
 import com.yeohangttukttak.api.domain.place.dto.PlaceDTO;
-import com.yeohangttukttak.api.domain.place.dto.PlaceFindNearbyQueryDTO;
-import com.yeohangttukttak.api.domain.place.dto.PlaceReviewDto;
 import com.yeohangttukttak.api.domain.place.dto.PlaceReviewReportDto;
 import com.yeohangttukttak.api.domain.place.entity.Location;
 import com.yeohangttukttak.api.domain.place.entity.Place;
@@ -13,13 +12,13 @@ import com.yeohangttukttak.api.domain.travel.dto.TravelDTO;
 import com.yeohangttukttak.api.domain.travel.entity.Travel;
 import com.yeohangttukttak.api.domain.visit.dao.VisitRepository;
 import com.yeohangttukttak.api.domain.visit.entity.Visit;
+import com.yeohangttukttak.api.global.common.ApiErrorCode;
+import com.yeohangttukttak.api.global.common.ApiException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static java.util.Comparator.*;
 import static java.util.function.Function.identity;
@@ -32,10 +31,18 @@ public class TravelFindNearbyService {
 
     private final VisitRepository visitRepository;
     private final PlaceReviewRepository placeReviewRepository;
+    private final MemberRepository memberRepository;
 
-    public List<TravelDTO> findNearby(Location location, int radius) {
+    public List<TravelDTO> findNearby(Location location, int radius, String email) {
 
-        List<Visit> visits = visitRepository.findNearby(location, radius);
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new ApiException(ApiErrorCode.MEMBER_NOT_FOUND));
+
+        List<Member> blocks = member.getBlocks().stream().map(Block::getBlocked).toList();
+
+        List<Visit> visits = visitRepository.findNearby(location, radius)
+                .stream().filter((visit) -> !blocks.contains(visit.getTravel().getMember()))
+                .toList();
 
         List<Long> placeIds = visits.stream()
                 .map(Visit::getPlace)

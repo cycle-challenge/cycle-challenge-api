@@ -1,5 +1,6 @@
 package com.yeohangttukttak.api.domain.visit.dao;
 
+import com.yeohangttukttak.api.domain.member.entity.Member;
 import com.yeohangttukttak.api.domain.place.entity.Location;
 import com.yeohangttukttak.api.domain.travel.entity.Visibility;
 import com.yeohangttukttak.api.domain.visit.entity.Visit;
@@ -8,6 +9,7 @@ import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,17 +26,10 @@ public class VisitRepository implements BaseRepository<Visit, Long> {
                         "JOIN FETCH v.travel as t " +
                         "WHERE t.visibility = :visibility " +
                         "AND dwithin(p.location.point, :point, :radius, false)", Visit.class)
+                .setParameter("visibility", Visibility.PUBLIC)
                 .setParameter("point", location.getPoint())
                 .setParameter("radius", radius)
-                .setParameter("visibility", Visibility.PUBLIC)
                 .getResultList();
-    }
-
-    public List<Visit> findByTravel(Long travelID) {
-        return em.createQuery(
-                        "SELECT v FROM Visit as v " +
-                        "WHERE v.travel.id = :travelID", Visit.class)
-                .setParameter("travelID", travelID).getResultList();
     }
 
     @Override

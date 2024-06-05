@@ -1,6 +1,7 @@
 package com.yeohangttukttak.api.domain.place.api;
 
 import com.yeohangttukttak.api.domain.member.dao.MemberRepository;
+import com.yeohangttukttak.api.domain.member.entity.Block;
 import com.yeohangttukttak.api.domain.member.entity.JwtToken;
 import com.yeohangttukttak.api.domain.member.entity.Member;
 import com.yeohangttukttak.api.domain.place.dao.PlaceRepository;
@@ -104,11 +105,19 @@ public class PlaceController {
     }
 
     @GetMapping("/{id}/reviews")
-    public ApiResponse<List<PlaceReviewDto>> findReviews(@PathVariable("id") Long id) {
+    public ApiResponse<List<PlaceReviewDto>> findReviews(HttpServletRequest request,
+                                                         @PathVariable("id") Long id) {
+        JwtToken accessToken = (JwtToken) request.getAttribute("accessToken");
+        Member member = memberRepository.findByEmail(accessToken.getEmail())
+                .orElseThrow(() -> new ApiException(ApiErrorCode.MEMBER_NOT_FOUND));
+
+        List<Member> blockMembers = member.getBlocks().stream().map(Block::getBlocked).toList();
+
         Place place = placeRepository.find(id)
                 .orElseThrow(() -> new ApiException(ApiErrorCode.PLACE_NOT_FOUND));
 
         List<PlaceReviewDto> reviews = placeReviewRepository.findByPlace(place.getId()).stream()
+                .filter((review) -> !blockMembers.contains(review.getMember()))
                 .map(PlaceReviewDto::new)
                 .sorted(comparing(PlaceReviewDto::getCreatedAt).reversed())
                 .toList();
